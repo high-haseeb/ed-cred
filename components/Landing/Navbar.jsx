@@ -4,6 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { MenuIcon, XIcon } from 'lucide-react';
+import Signup from '../Signup';
+import Signin from '../Signin';
 
 const NavigationItems = [
     { title: "Home", link: "/home" },
@@ -28,8 +30,8 @@ const Navbar = () => {
                 }
             </div>
             <div className="flex gap-2 md:gap-4">
-                <Link href="/login"><Button variant="border">Join Now</Button></Link>
-                <Link href="/signup"><Button variant="primary">Sign-in</Button></Link>
+                <Signup />
+                <Signin />
             </div>
         </div>
     )
