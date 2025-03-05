@@ -17,7 +17,7 @@ const Categories = () => {
                 </div>
                 <div className="text-3xl font-[400]">What are <span className="font-bold">you looking for?</span></div>
             </div>
-            <div className="flex w-2/3 items-center justify-center gap-8 flex-wrap md:flex-nowrap">
+            <div className="flex w-full flex-wrap items-center justify-center gap-8 px-10 md:w-2/3 md:flex-nowrap md:px-0">
                 {
                     CategoriesCards.map((category, index) => <Card {...category} key={`card-${index}`} />)
                 }
@@ -28,10 +28,12 @@ const Categories = () => {
 
 const Card = ({ title, icon, description }) => {
     return (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-[#E5F4F2] bg-white p-8 text-center shadow-lg">
-            <div><Image src={`/icons/${icon}`} width={100} height={300} alt={title} /></div>
-            <div className="text-xl font-[600]">{title}</div>
-            <div className="font-[400]">{description}</div>
+        <div className="flex items-center justify-center gap-4 rounded-3xl border border-[#E5F4F2] bg-white p-8 text-center shadow-lg md:flex-col">
+            <div><Image src={`/icons/${icon}`} width={200} height={300} alt={title} className="w-[200px] md:w-[100px]" /></div>
+            <div className="text-left md:text-center">
+                <div className="text-xl font-[600]">{title}</div>
+                <div className="font-[400]">{description}</div>
+            </div>
         </div>
     )
 }
