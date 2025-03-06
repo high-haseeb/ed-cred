@@ -2,9 +2,34 @@
 import { useState } from 'react'
 import Button from './ui/Button';
 import { CircleXIcon } from 'lucide-react';
+import { signup } from '@/api/auth';
 
 const Signup = () => {
     const [open, setOpen] = useState(false);
+    const [email, setEmail] = useState("");
+    const [error, setError] = useState(null);
+    const [username, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const handleSignup = async (e) => {
+        e.preventDefault();
+
+        setError("");
+        if (password !== confirmPassword) {
+            setError("Passwords don't match");
+            return;
+        } 
+
+        try {
+            const response = await signup(username, email, password);
+            setError(response.message);
+
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        }
+    };
 
     return (
         <>
@@ -13,14 +38,15 @@ const Signup = () => {
                 style={{ bottom: open ? "0" : "-100%" }}
             >
                 <div className='text-2xl sm:text-3xl font-bold'>Sign Up below</div>
-                <form className='flex w-full max-w-md flex-col gap-4'>
+                <form className='flex w-full max-w-md flex-col gap-4' onSubmit={handleSignup}>
                     <div>
                         <label className="block text-sm font-medium">Email</label>
                         <input
                             className='w-full p-3 border rounded-md'
                             type='email'
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder='haseeb@high-house.com'
                             required
-                            placeholder='Enter Email'
                         />
                     </div>
                     <div>
@@ -28,8 +54,9 @@ const Signup = () => {
                         <input
                             className='w-full p-3 border rounded-md'
                             type='text'
+                            onChange={(e) => setUserName(e.target.value)}
+                            placeholder='Haseeb Khalid'
                             required
-                            placeholder='Username'
                         />
                     </div>
                     <div>
@@ -37,8 +64,9 @@ const Signup = () => {
                         <input
                             type='password'
                             required
+                            onChange={(e) => setPassword(e.target.value)}
                             className='w-full p-3 border rounded-md'
-                            placeholder='Password (minimum 8 characters)'
+                            placeholder='password (minimum 8 characters)'
                         />
                     </div>
                     <div>
@@ -47,7 +75,8 @@ const Signup = () => {
                             type='password'
                             required
                             className='w-full p-3 border rounded-md'
-                            placeholder='Confirm Password'
+                            placeholder='confirm password'
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                     </div>
                     <div className="mb-4 flex items-center gap-2 text-sm">
@@ -56,6 +85,7 @@ const Signup = () => {
                             I'd like to receive newsletters & paid plans.
                         </label>
                     </div>
+                    <div className="text-red-600">{error}</div>
                     <Button variant='primary' type="submit" className="w-full">
                         <div className='text-lg'>Join Now</div>
                     </Button>
