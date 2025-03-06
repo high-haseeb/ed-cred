@@ -5,6 +5,24 @@ import { CircleXIcon } from 'lucide-react';
 
 const Signin = () => {
     const [open, setOpen] = useState(false);
+    const [name, setName] = useState("");
+
+    const handleSumbit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:6969', {
+                method: "POST",
+                body: JSON.stringify({
+                    name: name,
+                })
+            });
+
+            const body = await response.json();
+            alert(body.name);
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     return (
         <>
@@ -15,11 +33,12 @@ const Signin = () => {
             >
                 <div className='text-2xl sm:text-3xl font-bold'>Log in below</div>
                 
-                <form className='flex w-full max-w-sm flex-col gap-3'>
+                <form className='flex w-full max-w-sm flex-col gap-3' onSubmit={handleSumbit}>
                     <div className='flex flex-col'>
                         <label className="text-sm font-medium">Email/Username</label>
                         <input
                             className='input w-full p-3 border border-gray-300 rounded-lg'
+                            onChange={(e) => setName(e.target.value)}
                             type='email'
                             required
                             placeholder='Enter Email or Username'
