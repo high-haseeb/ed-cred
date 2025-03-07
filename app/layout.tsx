@@ -18,7 +18,7 @@ const jakarta = Plus_Jakarta_Sans({
     variable: "--font-jakarta"
 });
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: any }) {
     return (
         <html lang="en">
             <body className={`${poppins.className} antialiased font-light`} suppressHydrationWarning>

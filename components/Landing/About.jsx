@@ -14,11 +14,13 @@ const About = () => {
                 <div className="px-10 text-center text-base text-pretty md:px-0 md:text-left md:text-xl">
                     Ed-Cred is a platform dedicated to fostering transparency and accountability in education. We provide a space for honest, anonymous reviews of educators, schools, and institutions. Our mission is to empower the education community by sharing insights that help educators, leaders, and school staff grow and improve. Join us in creating a more informed and collaborative educational experience for all.
                 </div>
-                <div><Button>Read More About Us</Button></div>
+                <div>
+                    <Button>Read More About Us</Button>
+                </div>
             </div>
             <Image src={'/icons/about-image.png'} width={900} height={800} alt="about-image" className="w-80 md:w-auto" />
         </div>
     )
 }
 
-export default About
+export default About;

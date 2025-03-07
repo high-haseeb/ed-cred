@@ -3,10 +3,8 @@ import FeedbackForm from '@/components/Dashboard/FeedbackForm';
 import SideBar from '@/components/Dashboard/SideBar';
 import TopBar from '@/components/Dashboard/TopBar';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { Button } from '@/components/ui/button';
 
 const Dashboard = () => {
-
     return (
         <ProtectedRoute>
             <div className='w-screen h-screen overflow-hidden flex bg-secondary'>
