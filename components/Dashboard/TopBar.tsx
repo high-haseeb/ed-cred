@@ -15,7 +15,8 @@ const TopBar = () => {
     }, []);
 
     return (
-        <div className='w-full shadow-lg h-max p-2 flex items-center px-8 bg-white'>
+        <div className='fixed top-0 left-0 w-full shadow-sm h-max p-2 flex gap-8 items-center px-8 bg-white'>
+            <Logo />
             <SearchBar />
             <div className='flex gap-4 ml-auto items-center justify-center'>
                 <BellIcon size={20} />
@@ -31,6 +32,13 @@ const TopBar = () => {
         </div>
     )
 }
+
+const Logo = () => (
+    <div className='flex items-center justify-center gap-4 px-2' >
+        <div><Image src='/images/logo.png' width={80} height={80} alt='ed-cred logo' className='w-8 md:w-[40px]' /></div>
+        <div className='text-lg font-[500] md:text-2xl'>Ed-Cred</div>
+    </div>
+)
 
 const Avatar = () => {
     return(

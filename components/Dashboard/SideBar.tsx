@@ -86,10 +86,8 @@ const SideBar = () => {
 
 
     return (
-        <div className='flex h-full w-[300px] flex-col items-center gap-4 bg-white px-6 font-sans shadow-lg'>
-            <Logo />
+        <div className='flex absolute top-0 pt-20 left-0 h-full w-[300px] flex-col items-center gap-4 bg-white px-6 font-sans shadow-lg'>
             <div className='flex w-full flex-col gap-4'>
-                <Divider />
                 {
                     SideMenuOptions.map((option, index) => (
                         <div key={`option-${index}`} className="gap-4 flex flex-col">
@@ -137,11 +135,5 @@ const Option = (props: SideMenuOption) => {
 
 const Divider = () => <div className='h-0.5 w-full bg-black/10' />
 
-const Logo = () => (
-    <div className='flex items-center justify-center gap-4 py-4 px-2 mt-4' >
-        <div><Image src='/images/logo.png' width={80} height={80} alt='ed-cred logo' className='w-8 md:w-[80px]' /></div>
-        <div className='text-lg font-[500] md:text-2xl'>Ed-Cred</div>
-    </div>
-)
 
 export default SideBar;
