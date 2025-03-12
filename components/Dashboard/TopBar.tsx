@@ -1,3 +1,4 @@
+"use client";
 import { getProfile } from '@/api/auth';
 import { BellIcon, MailIcon, SearchIcon } from 'lucide-react'
 import Image from 'next/image';

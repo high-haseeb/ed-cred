@@ -18,7 +18,7 @@ const NavigationItems = [
 
 const Navbar = () => {
     return (
-        <div className="fixed top-0 left-0 flex h-max w-full items-center justify-between bg-white px-4 py-2 shadow-md md:px-8 z-50">
+        <div className="fixed top-0 left-0 flex h-max w-screen items-center justify-between bg-white px-4 py-2 shadow-md md:px-8 z-50">
             <div className="flex items-center justify-center gap-2 md:gap-4">
                 <SideMenu />
                 <div><Image src="/images/logo.png" width={80} height={80} alt="ed-cred logo" className="w-8 md:w-[80px]" /></div>
