@@ -1,8 +1,10 @@
-import { ChevronRightIcon, EyeIcon, PencilIcon } from "lucide-react";
+import { ArrowsUpFromLine, ChevronRightIcon, EyeIcon, PencilIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { useFeedbackStore } from "@/store/createFeedbackStore";
 
 const Route = ({ route }: { route: string[] }) => {
+    const { sendFeedback } = useFeedbackStore();
     return(
         <div className="flex items-start justify-between bg-neutral-300 px-10 py-10 capitalize text-gray-800">
             <div className="flex flex-col gap-2">
@@ -22,9 +24,9 @@ const Route = ({ route }: { route: string[] }) => {
                 </div>
             </div>
             <div className="flex w-max items-center justify-center gap-2">
-                <Button variant={"secondary"} className="font-normal">
-                    <PencilIcon />
-                    Edit Feedback
+                <Button variant={"default"} className="font-normal" onClick={() => sendFeedback()}>
+                    <ArrowsUpFromLine />
+                    Publish Feedback
                 </Button>
                 <Button variant={"secondary"} className="font-normal">
                     <EyeIcon />

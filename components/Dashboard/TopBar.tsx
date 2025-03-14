@@ -1,11 +1,23 @@
 "use client";
 import { getProfile } from '@/api/auth';
-import { BellIcon, MailIcon, SearchIcon } from 'lucide-react'
+import { BellIcon, LogOutIcon, MailIcon, SearchIcon } from 'lucide-react'
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
+import { Avatar, AvatarFallback, AvatarImage  } from '../ui/avatar';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
 
 const TopBar = () => {
     const [profile, setProfile] = useState<any>(null);
+    const router = useRouter();
     useEffect(() => {
         const setup = async () => {
             const profile = await getProfile();
@@ -22,7 +34,24 @@ const TopBar = () => {
                 <BellIcon size={20} />
                 <MailIcon size={20}/>
                 <div className='h-8 w-0.5 bg-black/10'></div>
-                <Avatar />
+                <DropdownMenu>
+                    <DropdownMenuTrigger className='cursor-pointer'>
+                        <Avatar>
+                            <AvatarImage src='/images/dp.png' />
+                            <AvatarFallback>{profile && profile.username}</AvatarFallback>
+                        </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                            <Button variant={"destructive"} className='cursor-pointer' onClick={() => router.push("/")}>
+                                <LogOutIcon stroke='white' />
+                                Logout
+                            </Button>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
                 <div className='font-semibold text-left'>
                     {profile && profile.username}
                     <br />
@@ -39,12 +68,6 @@ const Logo = () => (
         <div className='text-lg font-[500] md:text-2xl'>Ed-Cred</div>
     </div>
 )
-
-const Avatar = () => {
-    return(
-    <div className='w-10 h-8 rounded-full'><Image src={"/images/dp.png"} width={100} height={100} alt='profile-picture' /></div> 
-    )
-}
 
 const SearchBar = () => {
 

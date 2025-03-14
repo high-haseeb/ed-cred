@@ -86,7 +86,7 @@ const SideBar = () => {
 
 
     return (
-        <div className='flex absolute top-0 pt-20 left-0 h-full w-[300px] flex-col items-center gap-4 bg-white px-6 font-sans shadow-lg'>
+        <div className='flex fixed top-0 pt-20 left-0 h-full w-[300px] flex-col items-center gap-4 bg-white px-6 font-sans shadow-lg'>
             <div className='flex w-full flex-col gap-4'>
                 {
                     SideMenuOptions.map((option, index) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -12,11 +12,15 @@ import {
     SwitchInput,
     TitleInput,
     QuestionSelectInput,
-    QuestionTypeInput
+    QuestionTypeInput,
+    AddQuestion
 } from "./FeedbackElements";
 import { Button } from "../ui/button";
+import { Feedback, useFeedbackStore } from "@/store/createFeedbackStore";
+import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
 
-export const FormSchema = z.object({
+export const GeneralFormSchema = z.object({
     title: z.string().min(2, "Title must be at least 2 characters").max(50, "Title must be under 50 characters"),
     category: z.string().min(1, "Category is required"),
     subcategory: z.string().min(1, "Subcategory is required"),
@@ -27,19 +31,30 @@ export const FormSchema = z.object({
         dates: z.boolean(),
         salary: z.boolean(),
         web: z.boolean(),
-    }),
+    })
+});
 
+export const QuestionFormSchema = z.object({
     question: z.string().min(4, "The question needs to be atleast 4 characters!"),
     questionType: z.enum(["rating", "multiple_choice", "true_false", "open_ended"], {
         required_error: "Question type is required",
     }),
-    questionOptions: z.array(z.object({value: z.string().min(2, "The option must be altest 2 characters!")})).min(2, "atlest two options are required").optional(),
+    questionOptions: z.array(z.object({value: z.string().min(2, "The option must be altest 2 characters!")})).optional(),
     questionCorrectAnswer: z.string().optional(),
 });
 
 const FeedbackForm = () => {
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+
+    const questionForm = useForm<z.infer<typeof QuestionFormSchema>>({
+        resolver: zodResolver(QuestionFormSchema),
+        defaultValues: {
+            question: "",
+            questionType: "rating",
+        }
+    });
+
+    const form = useForm<z.infer<typeof GeneralFormSchema>>({
+        resolver: zodResolver(GeneralFormSchema),
         defaultValues: {
             title: "",
             category: "",
@@ -51,19 +66,16 @@ const FeedbackForm = () => {
                 salary:  false,
                 web:     false,
             },
-            question: "",
             status: "inactive",
-            questionType: "rating",
-            questionOptions: [{ value: "default value"}]
         },
     });
 
-    const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    const onSubmit = (data: z.infer<typeof GeneralFormSchema>) => {
         console.log("Form Data:", data);
     };
 
     return (
-        <div className="flex flex-grow items-center justify-between bg-white px-10">
+        <div className="flex items-center justify-between bg-white px-10 my-10">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-start justify-between gap-10">
                     <div className="flex w-full items-start justify-between">
@@ -75,18 +87,37 @@ const FeedbackForm = () => {
                             </div>
                             <StatusInput form={form} />
                             <SwitchInput form={form} />
+                            <SubmitButton form={form} />
                         </div>
                         <div className="flex w-1/2 flex-col gap-6 pl-10 outline-stone-300">
-                            <QuestionSelectInput form={form} />
-                            <QuestionTypeInput form={form} />
-                            <QuestionInput form={form} />
+                            <QuestionSelectInput form={questionForm} />
+                            <QuestionTypeInput form={questionForm} />
+                            <QuestionInput form={questionForm} />
+                            <AddQuestion form={questionForm} />
                         </div>
                     </div>
-                    <Button type="submit" className="mr-10 self-end">submit</Button>
                 </form>
             </Form>
         </div>
     );
 };
+
+const SubmitButton = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
+    const { setFeedback } = useFeedbackStore();
+    const handleFeedbackSave = () => {
+        const data = form.getValues();
+        const feedback: Feedback = {
+            id: uuidv4(),
+            ...data,
+        };
+        setFeedback(feedback);
+        toast("Feedback Saved successfully!");
+    }
+    return (
+        <Button disabled={!form.formState.isValid} onClick={handleFeedbackSave}>
+            Save Feedback
+        </Button>
+    )
+}
 
 export default FeedbackForm;

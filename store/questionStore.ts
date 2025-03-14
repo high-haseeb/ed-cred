@@ -1,15 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-// Define question types
 type QuestionType = "rating" | "multiple_choice" | "true_false" | "open_ended";
 
-interface Question {
+export interface Question {
     id: string;
     type: QuestionType;
     text: string;
-    options?: string[]; // Only for multiple_choice
-    answer?: string | number | boolean; // Placeholder for response
+    options?: any[];
+    answer?: string | number | boolean;
 }
 
 interface QuestionStore {

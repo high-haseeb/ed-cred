@@ -18,15 +18,14 @@ import {
     SelectItem
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { FormSchema } from "./FeedbackForm";
+import { GeneralFormSchema, QuestionFormSchema } from "./FeedbackForm";
 import { Button } from "../ui/button";
 import { AppleIcon, CheckIcon, MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import { Textarea } from "../ui/textarea";
-import { useQuestionStore } from "@/sotre/questionStore";
+import { Question, useQuestionStore } from "@/store/questionStore";
 import { v4 as uuidv4 } from "uuid";
-import { useEffect } from "react";
 
-export const TitleInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSchema>>}) => {
+export const TitleInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
     return (
         <FormField
             control={form.control}
@@ -44,7 +43,7 @@ export const TitleInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSch
     )
 }
 
-export const QuestionSelectInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSchema>>}) => {
+export const QuestionSelectInput = ({ form }: {form: UseFormReturn<z.infer<typeof QuestionFormSchema>>}) => {
     return (
         <FormField
             control={form.control}
@@ -62,7 +61,7 @@ export const QuestionSelectInput = ({ form }: {form: UseFormReturn<z.infer<typeo
     )
 }
 
-export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSchema>>}) => {
+export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
     return (
         <FormField
             control={form.control}
@@ -89,7 +88,7 @@ export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof Form
     )
 }
 
-export const SubCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSchema>>}) => {
+export const SubCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
     return (
         <FormField
             control={form.control}
@@ -116,7 +115,7 @@ export const SubCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof F
     )
 }
 
-export const StatusInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSchema>>}) => {
+export const StatusInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
     return (
         <FormField
             control={form.control}
@@ -142,7 +141,7 @@ export const StatusInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSc
     )
 }
 
-export const SwitchInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSchema>>}) => {
+export const SwitchInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
     return (
         <div className="flex flex-col gap-4">
             <Label>Feedback Details</Label>
@@ -167,13 +166,13 @@ export const SwitchInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSc
     )
 }
 
-export const TrueFalseInput = ({ form }: { form: UseFormReturn<any> }) => {
+export const TrueFalseInput = ({ form }: { form: UseFormReturn<z.infer<typeof QuestionFormSchema>> }) => {
     return (
         <div className="flex flex-col gap-2">
             <Label>Correct Answer</Label>
             <Select
-                onValueChange={(value) => form.setValue("trueFalse", value === "true")}
-                defaultValue={form.getValues("trueFalse")?.toString()}
+                onValueChange={(value) => form.setValue("questionCorrectAnswer", value)}
+                defaultValue={form.getValues("questionCorrectAnswer")?.toString()}
             >
                 <SelectTrigger className="border p-2 rounded w-full">
                     <SelectValue placeholder="Select an option" />
@@ -187,13 +186,13 @@ export const TrueFalseInput = ({ form }: { form: UseFormReturn<any> }) => {
     );
 };
 
-export const RatingInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) => {
+export const RatingInput = ({ form }: { form: UseFormReturn<z.infer<typeof QuestionFormSchema>> }) => {
     return (
         <div className="flex flex-col gap-2">
             <Label>Rating Options</Label>
             <Select
-                onValueChange={(value) => form.setValue("rating", Number(value))}
-                defaultValue={form.getValues("rating")?.toString()}
+                onValueChange={(value) => form.setValue("questionCorrectAnswer", value)}
+                defaultValue={form.getValues("questionCorrectAnswer")?.toString()}
             >
                 <SelectTrigger className="border p-2 rounded w-full">
                     <SelectValue placeholder="Select a rating" />
@@ -210,7 +209,7 @@ export const RatingInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) => 
     );
 };
 
-export const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<typeof FormSchema>> }) => {
+export const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<typeof QuestionFormSchema>> }) => {
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "questionOptions"
@@ -247,7 +246,7 @@ export const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<type
                 </div>
             </div>
 
-             {fields.map((option, i) => (
+             {fields.map((_, i) => (
                 <Input
                     key={i}
                     onChange={(e: any) => form.setValue(`questionOptions.${i}.value`, e.target.value)}
@@ -278,7 +277,7 @@ export const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<type
     );
 };
 
-export const QuestionTypeInput = ({ form }: { form: UseFormReturn<z.infer<typeof FormSchema>> }) => {
+export const QuestionTypeInput = ({ form }: { form: UseFormReturn<z.infer<typeof QuestionFormSchema>> }) => {
     return(
         <FormField
             control={form.control}
@@ -306,23 +305,8 @@ export const QuestionTypeInput = ({ form }: { form: UseFormReturn<z.infer<typeof
     )
 }
 
-export const QuestionInput = ({ form }: { form: UseFormReturn<z.infer<typeof FormSchema>> }) => {
-  const { addQuestion } = useQuestionStore();
+export const QuestionInput = ({ form }: { form: UseFormReturn<z.infer<typeof QuestionFormSchema>> }) => {
   const questionType = form.watch("questionType");
-
-  const handleSubmit = () => {
-    const data = form.getValues();
-
-    const newQuestion = {
-      id: uuidv4(),
-      type: data.questionType,
-      text: data.question,
-      options: data.questionType === "multiple_choice" ? data.questionOptions || [] : undefined,
-      correctAnswer: data.questionType !== "open_ended" ? data.questionCorrectAnswer : undefined,
-    };
-
-    form.reset();
-  };
 
   return (
     <div className="">
@@ -333,3 +317,28 @@ export const QuestionInput = ({ form }: { form: UseFormReturn<z.infer<typeof For
     </div>
   );
 };
+
+export const AddQuestion = ({ form }: { form: UseFormReturn<z.infer<typeof QuestionFormSchema>> }) => {
+    const { addQuestion } = useQuestionStore();
+    const handleClick = () => {
+        const data = form.getValues();
+
+        const newQuestion: Question = {
+            id: uuidv4(),
+            type: data.questionType,
+            text: data.question,
+            options: data.questionType === "multiple_choice" ? data.questionOptions || [] : undefined,
+            answer: data.questionType !== "open_ended" ? data.questionCorrectAnswer : undefined,
+        };
+        addQuestion(newQuestion);
+
+        form.resetField("question");
+        form.resetField("questionOptions");
+    };
+
+    return(
+        <Button className="" variant={"default"} onClick={handleClick} disabled={!form.formState.isValid}>
+            <PlusIcon /> Add Question
+        </Button>
+    )
+}

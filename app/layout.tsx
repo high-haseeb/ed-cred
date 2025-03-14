@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const metadata = {
     title: "Ed-Cred",
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: any }) {
         <html lang="en">
             <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
                 {children}
+                <Toaster />
             </body>
         </html>
     );
