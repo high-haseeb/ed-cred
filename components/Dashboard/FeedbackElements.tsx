@@ -247,10 +247,10 @@ export const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<type
                 </div>
             </div>
 
-             {options && options.map((option, i) => (
+             {fields.map((option, i) => (
                 <Input
-                    key={fields[i]?.id || i} // Ensure key updates properly
-                    {...form.register(`questionOptions.${i}.value`)}
+                    key={i}
+                    onChange={(e: any) => form.setValue(`questionOptions.${i}.value`, e.target.value)}
                     className="border p-2 rounded w-full mt-1"
                     placeholder={`Option ${i + 1}`}
                     maxLength={50}
