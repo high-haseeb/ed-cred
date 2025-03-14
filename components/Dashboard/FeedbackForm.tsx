@@ -4,13 +4,23 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
-import MultipleChoiceInput, { CategoryInput, QuestionInput, StatusInput, SubCategoryInput, SwitchInput, TitleInput } from "./FeedbackElements";
+import {
+    CategoryInput,
+    QuestionInput,
+    StatusInput,
+    SubCategoryInput,
+    SwitchInput,
+    TitleInput,
+    QuestionSelectInput,
+    QuestionTypeInput
+} from "./FeedbackElements";
 import { Button } from "../ui/button";
 
 export const FormSchema = z.object({
     title: z.string().min(2, "Title must be at least 2 characters").max(50, "Title must be under 50 characters"),
     category: z.string().min(1, "Category is required"),
     subcategory: z.string().min(1, "Subcategory is required"),
+    status: z.enum(["active", "inactive"]),
     details: z.object({
         name: z.boolean(),
         country: z.boolean(),
@@ -18,11 +28,13 @@ export const FormSchema = z.object({
         salary: z.boolean(),
         web: z.boolean(),
     }),
+
+    question: z.string().min(4, "The question needs to be atleast 4 characters!"),
     questionType: z.enum(["rating", "multiple_choice", "true_false", "open_ended"], {
         required_error: "Question type is required",
     }),
-    question: z.string(),
-    status: z.enum(["active", "inactive"]),
+    questionOptions: z.array(z.object({value: z.string().min(2, "The option must be altest 2 characters!")})).min(2, "atlest two options are required").optional(),
+    questionCorrectAnswer: z.string().optional(),
 });
 
 const FeedbackForm = () => {
@@ -42,6 +54,7 @@ const FeedbackForm = () => {
             question: "",
             status: "inactive",
             questionType: "rating",
+            questionOptions: [{ value: "default value"}]
         },
     });
 
@@ -52,9 +65,9 @@ const FeedbackForm = () => {
     return (
         <div className="flex flex-grow items-center justify-between bg-white px-10">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-start justify-between w-full gap-10">
-                    <div className="flex items-start justify-between w-full gap-10">
-                        <div className="flex flex-col gap-6 p-8 outline-stone-300 rounded-md w-1/2">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-start justify-between gap-10">
+                    <div className="flex w-full items-start justify-between">
+                        <div className="flex w-1/2 flex-col gap-6 border-r-2 border-r-stone-200 pr-10 outline-stone-300">
                             <TitleInput form={form} />
                             <div className="flex gap-2">
                                 <CategoryInput form={form} />
@@ -63,13 +76,13 @@ const FeedbackForm = () => {
                             <StatusInput form={form} />
                             <SwitchInput form={form} />
                         </div>
-                        <div className="w-0.5 h-[400px] bg-stone-200"></div>
-                        <div className="flex flex-col gap-6 p-8 outline-stone-300 rounded-md w-1/2">
+                        <div className="flex w-1/2 flex-col gap-6 pl-10 outline-stone-300">
+                            <QuestionSelectInput form={form} />
+                            <QuestionTypeInput form={form} />
                             <QuestionInput form={form} />
-                            <MultipleChoiceInput form={form} />
                         </div>
                     </div>
-                    <Button type="submit" className="self-end mr-10">submit</Button>
+                    <Button type="submit" className="mr-10 self-end">submit</Button>
                 </form>
             </Form>
         </div>

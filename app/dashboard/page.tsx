@@ -8,7 +8,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 const Dashboard = () => {
     return (
         <ProtectedRoute>
-            <div className="bg-white relative flex flex-col h-screen w-screen overflow-hidden pl-[300px] pt-12 font-sans">
+            <div className="bg-white relative flex flex-col h-screen w-screen overflow-hidden pl-[300px] pt-12 font-inter">
                 <SideBar />
                 <TopBar />
                 <Route route={["feedback", "create feedback"]} />

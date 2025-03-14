@@ -11,6 +11,7 @@ const inter = Inter({
     variable: "--font-inter"
 });
 
+
 export default function RootLayout({ children }: { children: any }) {
     return (
         <html lang="en">

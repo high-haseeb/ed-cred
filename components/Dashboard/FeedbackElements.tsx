@@ -1,5 +1,5 @@
 "use client";
-import { UseFormReturn } from "react-hook-form";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -19,12 +19,12 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { FormSchema } from "./FeedbackForm";
-import { useState } from "react";
 import { Button } from "../ui/button";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { AppleIcon, CheckIcon, MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { useQuestionStore } from "@/sotre/questionStore";
 import { v4 as uuidv4 } from "uuid";
+import { useEffect } from "react";
 
 export const TitleInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSchema>>}) => {
     return (
@@ -144,8 +144,8 @@ export const StatusInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSc
 
 export const SwitchInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSchema>>}) => {
     return (
-        <div className="flex flex-col gap-2">
-            <FormLabel>Feedback Details</FormLabel>
+        <div className="flex flex-col gap-4">
+            <Label>Feedback Details</Label>
             <div className="flex gap-10">
                 {["name", "country", "dates", "salary", "web"].map((detail) => (
                     <FormField
@@ -170,7 +170,7 @@ export const SwitchInput = ({ form }: {form: UseFormReturn<z.infer<typeof FormSc
 export const TrueFalseInput = ({ form }: { form: UseFormReturn<any> }) => {
     return (
         <div className="flex flex-col gap-2">
-            <Label>True or False</Label>
+            <Label>Correct Answer</Label>
             <Select
                 onValueChange={(value) => form.setValue("trueFalse", value === "true")}
                 defaultValue={form.getValues("trueFalse")?.toString()}
@@ -179,8 +179,8 @@ export const TrueFalseInput = ({ form }: { form: UseFormReturn<any> }) => {
                     <SelectValue placeholder="Select an option" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="true">True ✅</SelectItem>
-                    <SelectItem value="false">False ❌</SelectItem>
+                    <SelectItem value="true"><CheckIcon />True</SelectItem>
+                    <SelectItem value="false"><XIcon />False</SelectItem>
                 </SelectContent>
             </Select>
         </div>
@@ -190,7 +190,7 @@ export const TrueFalseInput = ({ form }: { form: UseFormReturn<any> }) => {
 export const RatingInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) => {
     return (
         <div className="flex flex-col gap-2">
-            <Label>Rating</Label>
+            <Label>Rating Options</Label>
             <Select
                 onValueChange={(value) => form.setValue("rating", Number(value))}
                 defaultValue={form.getValues("rating")?.toString()}
@@ -201,7 +201,7 @@ export const RatingInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) => 
                 <SelectContent>
                     {[1, 2, 3, 4, 5].map((num) => (
                         <SelectItem key={num} value={num.toString()}>
-                            {num} ⭐
+                            {num} {Array.from({length: num}).map(_ => <AppleIcon key={`apple-${uuidv4()}`} fill="green" stroke="green" />)}
                         </SelectItem>
                     ))}
                 </SelectContent>
@@ -210,20 +210,25 @@ export const RatingInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) => 
     );
 };
 
-const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) => {
-    const [numberOptions, setNumberOptions] = useState(2);
+export const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<typeof FormSchema>> }) => {
+    const { fields, append, remove } = useFieldArray({
+        control: form.control,
+        name: "questionOptions"
+    });
+
+    const options = form.watch("questionOptions");
 
     return (
         <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-                <span className="font-[500]">Options</span>
+                <Label>Options</Label>
                 <div className="self-end flex gap-2">
                     <Button
                         variant="secondary"
                         size="sm"
                         onClick={(e) => {
                             e.preventDefault();
-                            setNumberOptions((options) => (options > 2 ? options - 1 : options));
+                            if (fields.length > 2) remove(fields.length - 1);
                         }}
                     >
                         <MinusIcon />
@@ -234,7 +239,7 @@ const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) =>
                         size="sm"
                         onClick={(e) => {
                             e.preventDefault();
-                            setNumberOptions((options) => options + 1);
+                            append({ value: "" })
                         }}
                     >
                         <PlusIcon />
@@ -242,10 +247,10 @@ const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) =>
                 </div>
             </div>
 
-            {[...Array(numberOptions)].map((_, i) => (
+             {options && options.map((option, i) => (
                 <Input
-                    key={i}
-                    {...form.register(`options.${i}`)}
+                    key={fields[i]?.id || i} // Ensure key updates properly
+                    {...form.register(`questionOptions.${i}.value`)}
                     className="border p-2 rounded w-full mt-1"
                     placeholder={`Option ${i + 1}`}
                     maxLength={50}
@@ -255,16 +260,16 @@ const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) =>
 
             <Label className="block mt-2">Correct Answer</Label>
             <Select
-                onValueChange={(value) => form.setValue("correctAnswer", value)}
-                defaultValue={form.getValues("correctAnswer")}
+                onValueChange={(value) => form.setValue("questionCorrectAnswer", value)}
+                defaultValue={form.getValues("questionCorrectAnswer")}
             >
                 <SelectTrigger className="border p-2 rounded w-full">
                     <SelectValue placeholder="Select the correct answer" />
                 </SelectTrigger>
                 <SelectContent>
-                    {[...Array(numberOptions)].map((_, i) => (
-                        <SelectItem key={i} value={form.getValues(`options.${i}`) || `Option ${i + 1}`}>
-                            {form.getValues(`options.${i}`) || `Option ${i + 1}`}
+                    {options && options.map((option, i) => (
+                        <SelectItem key={i} value={option.value || `Option ${i + 1}`}>
+                            {option.value}
                         </SelectItem>
                     ))}
                 </SelectContent>
@@ -272,6 +277,34 @@ const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<any>> }) =>
         </div>
     );
 };
+
+export const QuestionTypeInput = ({ form }: { form: UseFormReturn<z.infer<typeof FormSchema>> }) => {
+    return(
+        <FormField
+            control={form.control}
+            name="questionType"
+            render={({ field }) => (
+                <FormItem className="w-full">
+                    <FormLabel>Question Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a subcategory" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            <SelectItem value="rating">Rating</SelectItem>
+                            <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
+                            <SelectItem value="true_false">True/False</SelectItem>
+                            <SelectItem value="open_ended">Open Ended</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
+                </FormItem>
+            )}
+        />
+    )
+}
 
 export const QuestionInput = ({ form }: { form: UseFormReturn<z.infer<typeof FormSchema>> }) => {
   const { addQuestion } = useQuestionStore();
@@ -284,63 +317,19 @@ export const QuestionInput = ({ form }: { form: UseFormReturn<z.infer<typeof For
       id: uuidv4(),
       type: data.questionType,
       text: data.question,
-      options: data.questionType === "multiple_choice" ? data.options || [] : undefined,
-      correctAnswer: data.questionType !== "open_ended" ? data.correctAnswer : undefined,
+      options: data.questionType === "multiple_choice" ? data.questionOptions || [] : undefined,
+      correctAnswer: data.questionType !== "open_ended" ? data.questionCorrectAnswer : undefined,
     };
 
-    addQuestion(newQuestion);
-    form.reset(); // Reset form after adding
+    form.reset();
   };
 
   return (
-    <div className="p-4 border rounded">
-      <label className="block mb-2">Question:</label>
-      <input
-        {...form.register("question")}
-        className="border p-2 rounded w-full"
-        placeholder="Enter your question..."
-      />
-
-      {questionType === "multiple_choice" && (
-        <div>
-          <label className="block mt-2">Options:</label>
-          {[...Array(4)].map((_, i) => (
-            <input
-              key={i}
-              {...form.register(`options.${i}`)}
-              className="border p-2 rounded w-full mt-1"
-              placeholder={`Option ${i + 1}`}
-            />
-          ))}
-
-          <label className="block mt-2">Correct Answer:</label>
-          <input
-            {...form.register("correctAnswer")}
-            className="border p-2 rounded w-full"
-            placeholder="Enter the correct answer"
-          />
-        </div>
-      )}
-
-      {questionType === "true_false" && (
-        <div>
-          <label className="block mt-2">Correct Answer:</label>
-          <select {...form.register("correctAnswer")} className="border p-2 rounded w-full">
-            <option value="">Select Correct Answer</option>
-            <option value="true">True</option>
-            <option value="false">False</option>
-          </select>
-        </div>
-      )}
-
-      {questionType === "rating" && <div>⭐ Rating Scale (e.g., 1-5)</div>}
-      {questionType === "open_ended" && <div>📝 Open-ended Text Response</div>}
-
-      <button onClick={handleSubmit} className="bg-blue-500 text-white p-2 rounded mt-4">
-        Add Question
-      </button>
+    <div className="">
+      {questionType === "multiple_choice" && <MultipleChoiceInput form={form} />}
+      {questionType === "true_false" && <TrueFalseInput form={form} />}
+      {questionType === "rating" && <RatingInput form={form} />}
+      {questionType === "open_ended" && <div></div>}
     </div>
   );
 };
-
-export default MultipleChoiceInput;
