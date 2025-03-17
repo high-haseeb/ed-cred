@@ -3,6 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './auth/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { FeedbackModule } from './feedback/feedback.module';
+import { Feedback } from './feedback/feedback.entity';
+import { PostModule } from './posts/post.module';
 
 @Module({
     imports: [
@@ -13,7 +16,10 @@ import { AuthModule } from './auth/auth.module';
             autoLoadEntities: true,
             synchronize: true,
         }),
+        TypeOrmModule.forFeature([User, Feedback]),
         AuthModule,
+        FeedbackModule,
+        PostModule,
     ],
 })
 export class AppModule { }

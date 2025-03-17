@@ -309,13 +309,13 @@ export const QuestionInput = ({ form }: { form: UseFormReturn<z.infer<typeof Que
   const questionType = form.watch("questionType");
 
   return (
-    <div className="">
-      {questionType === "multiple_choice" && <MultipleChoiceInput form={form} />}
-      {questionType === "true_false" && <TrueFalseInput form={form} />}
-      {questionType === "rating" && <RatingInput form={form} />}
-      {questionType === "open_ended" && <div></div>}
-    </div>
-  );
+        <div className="">
+            {questionType === "multiple_choice" && <MultipleChoiceInput form={form} />}
+            {questionType === "true_false" && <TrueFalseInput form={form} />}
+            {questionType === "rating" && <RatingInput form={form} />}
+            {questionType === "open_ended" && <div></div>}
+        </div>
+    );
 };
 
 export const AddQuestion = ({ form }: { form: UseFormReturn<z.infer<typeof QuestionFormSchema>> }) => {

@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:6969/auth';
+export const API_BASE_URL = 'http://localhost:6969/auth';
 
 export async function signup(username: string, email: string, password: string) {
     const response = await fetch(`${API_BASE_URL}/signup`, {

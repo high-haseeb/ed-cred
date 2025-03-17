@@ -2,9 +2,12 @@ import { ArrowsUpFromLine, ChevronRightIcon, EyeIcon, PencilIcon } from "lucide-
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useFeedbackStore } from "@/store/createFeedbackStore";
+import { sendFeedback } from "@/api/feedback";
+import { useQuestionStore } from "@/store/questionStore";
 
 const Route = ({ route }: { route: string[] }) => {
-    const { sendFeedback } = useFeedbackStore();
+    const { feedback } = useFeedbackStore();
+    const { questions } = useQuestionStore();
     return(
         <div className="flex items-start justify-between bg-neutral-300 px-10 py-10 capitalize text-gray-800">
             <div className="flex flex-col gap-2">
@@ -24,7 +27,13 @@ const Route = ({ route }: { route: string[] }) => {
                 </div>
             </div>
             <div className="flex w-max items-center justify-center gap-2">
-                <Button variant={"default"} className="font-normal" onClick={() => sendFeedback()}>
+                <Button variant={"default"} className="font-normal" onClick={() => {
+                    const tempFeedback = {
+                        ...feedback,
+                        questions: questions
+                    }
+                    sendFeedback(tempFeedback);
+                }}>
                     <ArrowsUpFromLine />
                     Publish Feedback
                 </Button>
