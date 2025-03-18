@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 export const API_BASE_URL = 'http://localhost:6969/auth';
 
 export async function signup(username: string, email: string, password: string) {
@@ -16,7 +18,7 @@ export async function login(identifier: string, password: string) {
     const response = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, password }), // identifier can be username or email
+        body: JSON.stringify({ identifier, password }),
     });
 
     const data = await response.json();
@@ -38,7 +40,8 @@ export async function getProfile() {
     });
 
     if (!response.ok) {
-        throw new Error('Failed to fetch profile');
+        toast("token expired! please log in again.");
+        window.location.replace("/login");
     }
 
     return await response.json();

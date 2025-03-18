@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import {
@@ -48,7 +49,9 @@ function UserNav() {
     useEffect(() => {
         const setup = async() => {
             let profile = await getProfile();
-            setProfile(profile);
+            if (profile) {
+                setProfile(profile);
+            }
         }
         setup();
     }, []);
