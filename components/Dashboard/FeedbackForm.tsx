@@ -75,7 +75,7 @@ const FeedbackForm = () => {
     };
 
     return (
-        <div className="flex items-center justify-between bg-white px-10 my-10">
+        <div className="flex items-center justify-between bg-background px-10 my-10">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-start justify-between gap-10">
                     <div className="flex w-full items-start justify-between">

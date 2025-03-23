@@ -1,73 +1,112 @@
 "use client";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { AppleIcon, OctagonAlertIcon } from "lucide-react";
-import { useState } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import { Label } from "../ui/label";
+import { Question } from "@/store/questionStore";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 
-type QuestionType = "rating" | "multiple_choice" | "true_false" | "open_ended";
+export const FeedbackForm = ({ questions, color = "red" }: { questions: Question[], color?: string }) => {
+    const [responses, setResponses] = useState<{ [key: string]: any }>({});
 
-export interface FeedbackQuestion {
-    question: string;
-    type?: QuestionType;
-}
+    const handleResponseChange = (id: string, value: any) => {
+        setResponses((prev) => ({ ...prev, [id]: value }));
+    };
 
-export const FeedbackForm = ({ questions, color = "red" }: { questions: FeedbackQuestion[], color?: string }) => {
+    const handleSubmit = () => {
+        console.log("Submitted Feedback:", responses);
+        toast("Feedback submitted!");
+    };
+
     return (
         <div className="w-4xl mb-20 flex max-w-4xl flex-col gap-4 py-10">
-            {
-                questions.map((question, index) => (
-                    <div
-                        className={cn("bg-muted flex w-full items-center justify-between",
-                                      "rounded-md p-4")} 
-                        key={`feedback-question-${index}`}
-                    >
-                        {question.question}
-                        {question.type !== "rating" ? <RatingInput color={color} key={`rating-input-${index}`} /> : null}
-                    </div>
-                ))
-            }
+            {questions.map((question, index) => (
+                <div className={`bg-muted flex ${question.type != "rating" ? "flex-col" : ""} w-full justify-between rounded-md p-4`} key={`feedback-question-${index}`}>
+                    <p className="mb-2 font-medium">{question.text}</p>
+                    <QuestionInput
+                        question={question}
+                        color={color}
+                        onChange={(value) => handleResponseChange(question.id, value)}
+                    />
+                </div>
+            ))}
+
+            {/* Additional Comments */}
             <div className="my-8 space-y-2">
                 <Label className="flex flex-col items-start gap-1">
                     <div>Please add your comments below</div>
-                    <div className="text-muted-foreground text-sm">Feedback with comments take top priority!</div>
+                    <div className="text-muted-foreground text-sm">Feedback with comments takes top priority!</div>
                 </Label>
-                <Textarea />
+                <Textarea onChange={(e) => handleResponseChange("comments", e.target.value)} />
             </div>
 
+            {/* AI Review Warning */}
             <div className={cn("bg-destructive/10 dark:bg-destructive/20 border-destructive-foreground",
-                                "text-destructive-foreground flex gap-2 rounded-md p-4 text-sm")}>
-                <OctagonAlertIcon size={18}/>
-                <div>Please avoid submitting AI generated reviews. The human experience is what Ed Cred is all about!</div>
+                "text-destructive-foreground flex gap-2 rounded-md p-4 text-sm")}>
+                <OctagonAlertIcon size={18} />
+                <div>Please avoid submitting AI-generated reviews. The human experience is what Ed Cred is all about!</div>
             </div>
+
+            {/* Submission Terms */}
             <div className="text-sm text-muted-foreground">
-                Conditions of Submission: Before you Submit your Review to ISR, please be certain the contents of your Review are exactly what you intend to share with the International teaching community. Your School Review is anonymous, even to us at ISR. For this reason we are not able to respond to requests to delete, change, or edit Reviews. Submission of a Review is an irreversible action. By clicking the Submit button you Confirm that you AGREE to abide by our Terms of Use. (Your Review will remain intact if you wish to reread the Terms of Use.)
+                Conditions of Submission: Your School Review is anonymous, even to us at ISR. We cannot delete, change, or edit Reviews. Submission is irreversible. By clicking the Submit button, you confirm that you AGREE to abide by our Terms of Use.
             </div>
-            <Button 
-                size={"lg"}
-                onClick={() => {
-                    toast("feedback submitted!");
-                    // take somewhere else from here!
-                }}
-            >
+
+            {/* Submit Button */}
+            <Button size={"lg"} onClick={handleSubmit}>
                 Submit Feedback
             </Button>
         </div>
-    )
-}
-
-const colorVariants: Record<string, string> = {
-    red: "text-red-400 fill-red-400 hover:fill-red-300",
-    blue: "text-blue-400 fill-blue-400 hover:fill-blue-300",
-    green: "text-green-400 fill-green-400 hover:fill-green-300",
-    yellow: "text-yellow-400 fill-yellow-400 hover:fill-yellow-300",
+    );
 };
 
-const RatingInput = ({ color }: { color: string }) => {
+// Dynamically renders the correct input type based on the question type
+const QuestionInput = ({ question, color, onChange }: { question: Question, color: string, onChange: (value: any) => void }) => {
+    switch (question.type) {
+        case "rating":
+            return <RatingInput color={color} onChange={onChange} />;
+        case "multiple_choice":
+            return (
+                <RadioGroup onValueChange={(value) => onChange(value)} className="ml-auto">
+                    {question.options?.map((option, i) => (
+                        <Label key={i} className="flex items-center gap-2">
+                            <RadioGroupItem value={option.value} />
+                            {option.value}
+                        </Label>
+                    ))}
+                </RadioGroup>
+            );
+        case "true_false":
+            return (
+                <RadioGroup onValueChange={(value) => onChange(value === "true")}>
+                    <Label className="flex items-center gap-2">
+                        <RadioGroupItem value="true" /> True
+                    </Label>
+                    <Label className="flex items-center gap-2">
+                        <RadioGroupItem value="false" /> False
+                    </Label>
+                </RadioGroup>
+            );
+        case "open_ended":
+            return <Textarea onChange={(e) => onChange(e.target.value)} />;
+        default:
+            return null;
+    }
+};
+
+// Rating Input Component
+const RatingInput = ({ color, onChange }: { color: string, onChange: (value: number) => void }) => {
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
+
+    const handleRating = (value: number) => {
+        setRating(value);
+        onChange(value);
+    };
 
     return (
         <div className="flex items-center justify-center gap-2">
@@ -84,7 +123,7 @@ const RatingInput = ({ color }: { color: string }) => {
                         )}
                         onMouseOver={() => setHoverRating(10 - i)}
                         onMouseLeave={() => setHoverRating(0)}
-                        onClick={() => setRating(10 - i)}
+                        onClick={() => handleRating(10 - i)}
                     />
                 );
             })}
@@ -92,4 +131,12 @@ const RatingInput = ({ color }: { color: string }) => {
     );
 };
 
-export default RatingInput;
+// Color Variants for Rating Icons
+const colorVariants: Record<string, string> = {
+    red: "text-red-400 fill-red-400 hover:fill-red-300",
+    blue: "text-blue-400 fill-blue-400 hover:fill-blue-300",
+    green: "text-green-400 fill-green-400 hover:fill-green-300",
+    yellow: "text-yellow-400 fill-yellow-400 hover:fill-yellow-300",
+};
+
+export default FeedbackForm;

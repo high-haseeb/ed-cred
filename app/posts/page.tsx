@@ -36,7 +36,7 @@ const PostListingPage = () => {
     )
 };
 
-const Stats = () => {
+export const Stats = () => {
     const { posts } = usePostStore();
     
     const StatCard = ({title, value, description}: {title: string, value: string, description?: string}) => {

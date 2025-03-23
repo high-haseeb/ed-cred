@@ -18,7 +18,6 @@ interface QuestionStore {
     sendQuestions: () => Promise<void>;
 }
 
-// Create the Zustand store
 export const useQuestionStore = create<QuestionStore>()(
     persist(
         (set, get) => ({
@@ -32,7 +31,7 @@ export const useQuestionStore = create<QuestionStore>()(
             sendQuestions: async () => {
                 const { questions } = get();
                 try {
-                    const response = await fetch("https://your-api.com/questions", {
+                    const response = await fetch("http://localhost:3000/questions", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ questions }),

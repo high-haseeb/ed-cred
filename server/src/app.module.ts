@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { Feedback } from './feedback/feedback.entity';
 import { PostModule } from './posts/post.module';
+import { Category } from './category/category.entity';
+import { CategoryModule } from './category/category.module';
 
 @Module({
     imports: [
@@ -16,10 +18,11 @@ import { PostModule } from './posts/post.module';
             autoLoadEntities: true,
             synchronize: true,
         }),
-        TypeOrmModule.forFeature([User, Feedback]),
+        TypeOrmModule.forFeature([User, Feedback, Category]),
         AuthModule,
         FeedbackModule,
         PostModule,
+        CategoryModule,
     ],
 })
-export class AppModule { }
+export class AppModule {}

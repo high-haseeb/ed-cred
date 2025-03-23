@@ -24,6 +24,9 @@ import { AppleIcon, CheckIcon, MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Question, useQuestionStore } from "@/store/questionStore";
 import { v4 as uuidv4 } from "uuid";
+import { useCategoryStore } from "@/store/categoryStore";
+import { useEditor } from "@tiptap/react";
+import { useEffect } from "react";
 
 export const TitleInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
     return (
@@ -62,6 +65,10 @@ export const QuestionSelectInput = ({ form }: {form: UseFormReturn<z.infer<typeo
 }
 
 export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
+    const { categories, fetchCategories } = useCategoryStore();
+    useEffect(() => {
+        fetchCategories();
+    }, []);
     return (
         <FormField
             control={form.control}
@@ -76,9 +83,9 @@ export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof Gene
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent className="">
-                            <SelectItem value="education">Education</SelectItem>
-                            <SelectItem value="health">Health</SelectItem>
-                            <SelectItem value="technology">Technology</SelectItem>
+                            {
+                                categories.map((category) => <SelectItem value={category.name} key={category.id}>{category.name}</SelectItem>)
+                            }
                         </SelectContent>
                     </Select>
                     <FormMessage />

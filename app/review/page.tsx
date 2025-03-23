@@ -11,11 +11,11 @@ interface ReviewCategory {
 }
 
 const categories : ReviewCategory[] = [
-    { icon: "/icons/teacher.png",    title: "teachers' feedback",           href: "/review/teacher/" },
+    { icon: "/icons/teacher.png", title: "teachers' feedback", href: "/review/teacher/" },
     { icon: "/icons/leadership-members.png", title: "leadership feedback", href: "/review/leader-ship/" },
-    { icon: "/icons/staff-members.png",      title: "staff members' feedback",      href: "/review/staff-members/" },
-    { icon: "/icons/districts.png",   title: "districts' feedback",          href: "/review/discrict/" },
-    { icon: "/icons/school.png",     title: "schools' feedback",            href: "/review/shcool/" },
+    { icon: "/icons/staff-members.png", title: "staff members' feedback", href: "/review/staff-members/" },
+    { icon: "/icons/districts.png", title: "districts' feedback", href: "/review/discrict/" },
+    { icon: "/icons/school.png", title: "schools' feedback", href: "/review/school/" },
 ];
 
 const CategoryCard = ({ category } : { category: ReviewCategory }) => {

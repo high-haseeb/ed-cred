@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
@@ -6,17 +6,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Input } from "../ui/input";
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationEllipsis, PaginationLink } from "../ui/pagination";
 import { FilterXIcon } from "lucide-react";
+import { fetchFeedbacks } from "@/api/feedback";
+import { useFeedbacksStore } from "@/store/feedbackStore";
 
-const feedbacks = [
-    { title: "UI Feedback", category: "Design", subcategory: "UI", status: "active", questions: 5, date: "2024-03-10" },
-    { title: "Feature Request", category: "Functionality", subcategory: "Features", status: "inactive", questions: 3, date: "2024-02-25" },
-    { title: "Performance Issue", category: "Performance", subcategory: "Speed", status: "active", questions: 8, date: "2024-01-15" },
-    { title: "Bug Report", category: "Development", subcategory: "Bugs", status: "inactive", questions: 6, date: "2024-03-05" },
-    { title: "Accessibility Feedback", category: "Design", subcategory: "Accessibility", status: "active", questions: 4, date: "2024-03-12" },
-    { title: "API Issues", category: "Development", subcategory: "API", status: "inactive", questions: 7, date: "2024-02-18" },
-];
 
 export const RecentFeedback = () => {
+    const { feedbacks, fetchFeedbacks } = useFeedbacksStore();
+    useEffect(() => {
+        fetchFeedbacks();
+    }, []);
+
     const [filteredStatus, setFilteredStatus] = useState("");
     const [filteredCategory, setFilteredCategory] = useState("");
     const [filteredSubcategory, setFilteredSubcategory] = useState("");
@@ -101,7 +100,6 @@ export const RecentFeedback = () => {
                             <TableHead>Subcategory</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Questions</TableHead>
-                            <TableHead>Date</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -113,50 +111,52 @@ export const RecentFeedback = () => {
                                 <TableCell className={fb.status === "active" ? "text-green-500" : "text-red-500"}>
                                     {fb.status}
                                 </TableCell>
-                                <TableCell>{fb.questions}</TableCell>
-                                <TableCell>{fb.date}</TableCell>
+                                <TableCell>{fb.questions.length}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
 
                 {/* Pagination */}
-                <div className="flex justify-center mt-4">
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious 
-                                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} 
-                                    disabled={currentPage === 1}
-                                />
-                            </PaginationItem>
+                {
+                    feedbacks.length >= itemsPerPage &&
+                        <div className="flex justify-center mt-4">
+                            <Pagination>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious 
+                                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} 
+                                            disabled={currentPage === 1}
+                                        />
+                                    </PaginationItem>
 
-                            {Array.from({ length: totalPages }, (_, i) => (
-                                <PaginationItem key={i}>
-                                    <PaginationLink 
-                                        isActive={currentPage === i + 1} 
-                                        onClick={() => setCurrentPage(i + 1)}
-                                    >
-                                        {i + 1}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            ))}
+                                    {Array.from({ length: totalPages }, (_, i) => (
+                                        <PaginationItem key={i}>
+                                            <PaginationLink 
+                                                isActive={currentPage === i + 1} 
+                                                onClick={() => setCurrentPage(i + 1)}
+                                            >
+                                                {i + 1}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    ))}
 
-                            {totalPages > 5 && (
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                            )}
+                                    {totalPages > 5 && (
+                                        <PaginationItem>
+                                            <PaginationEllipsis />
+                                        </PaginationItem>
+                                    )}
 
-                            <PaginationItem>
-                                <PaginationNext 
-                                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} 
-                                    disabled={currentPage === totalPages}
-                                />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                </div>
+                                    <PaginationItem>
+                                        <PaginationNext 
+                                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} 
+                                            disabled={currentPage === totalPages}
+                                        />
+                                    </PaginationItem>
+                                </PaginationContent>
+                            </Pagination>
+                        </div>
+                    }
             </CardContent>
         </Card>
     );

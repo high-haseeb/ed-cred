@@ -3,19 +3,25 @@ import Route from '@/components/common/Route';
 import FeedbackForm from '@/components/Dashboard/FeedbackForm';
 import QuestionsList from '@/components/Dashboard/QuestionsList';
 import SideBar from '@/components/Dashboard/SideBar';
-import TopBar from '@/components/Dashboard/TopBar';
+import { DashboardSidebar } from '@/components/MainDashboard/Sidebar';
+import { SiteHeader } from '@/components/MainDashboard/SiteHeader';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 const Dashboard = () => {
     return (
         <ProtectedRoute>
-            <div className="bg-white relative flex flex-col h-screen w-screen overflow-x-hidden pl-[300px] pt-12 font-inter">
-                <SideBar />
-                <TopBar />
-                <Route route={["feedback", "create feedback"]} />
-                <FeedbackForm />
-                <QuestionsList />
-            </div>
+            <SidebarProvider>
+                <DashboardSidebar />
+                <SidebarInset>
+                    <div className="bg-background relative flex flex-col overflow-x-hidden font-inter">
+                        <SiteHeader />
+                        <Route route={["feedback", "create feedback"]} />
+                        <FeedbackForm />
+                        <QuestionsList />
+                    </div>
+                </SidebarInset>
+            </SidebarProvider>
         </ProtectedRoute>
     )
 };

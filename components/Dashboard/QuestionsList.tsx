@@ -31,7 +31,7 @@ const QuestionsList = () => {
 const QuestionListItem = ({ question } : { question: Question}) => {
     const { removeQuestion } = useQuestionStore();
     return(
-        <div className="flex flex-col bg-white outline-neutral-200 shadow-sm outline-1 px-8 py-4 rounded-md">
+        <div className="flex flex-col bg-background outline-neutral-200 shadow-sm outline-1 px-8 py-4 rounded-md">
             <div className="flex gap-2 items-center justify-center">
                 <DropdownMenu>
                     <DropdownMenuTrigger>

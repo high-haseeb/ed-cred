@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { usePostStore } from "@/store/usePostStore";
 import { useRouter } from "next/navigation";
 import { SiteHeader } from "@/components/MainDashboard/SiteHeader";
 import { Separator } from "@/components/ui/separator";
 
-export default function PostPage({ params }: { params: { slug: string } }) {
-    const { slug } = params;
+export default function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = React.use(params);
     const { selectedPost, fetchPost, loading } = usePostStore();
     const router = useRouter();
 

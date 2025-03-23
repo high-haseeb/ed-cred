@@ -23,7 +23,6 @@ interface FeedbackSotre {
     sendFeedback: () => Promise<void>;
 }
 
-// Create the Zustand store
 export const useFeedbackStore = create<FeedbackSotre>()(
     persist(
         (set, get) => ({
@@ -48,6 +47,6 @@ export const useFeedbackStore = create<FeedbackSotre>()(
                 }
             },
         }),
-        { name: "question-store" } 
+        { name: "question-store" }
     )
 );
