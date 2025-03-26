@@ -8,12 +8,36 @@ import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, Pagi
 import { FilterXIcon } from "lucide-react";
 import { fetchFeedbacks } from "@/api/feedback";
 import { useFeedbacksStore } from "@/store/feedbackStore";
+import { Question } from "@/store/questionStore";
 
+// TODO:factor it out in the common module
+export interface Feedback {
+    id: string;
+    title: string;
+    category: any;
+    subCategory: string;
+    status: boolean;
+    createdAt: Date;
+    author: { username: string };
+    details: {
+        name: boolean;
+        country: boolean;
+        dates: boolean;
+        salary: boolean;
+        web: boolean;
+    };
+    questions: Question[];
+}
 
 export const RecentFeedback = () => {
-    const { feedbacks, fetchFeedbacks } = useFeedbacksStore();
+    const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+
     useEffect(() => {
-        fetchFeedbacks();
+        async function loadFeedbacks() {
+            const data = await fetchFeedbacks();
+            setFeedbacks(data);
+        }
+        loadFeedbacks();
     }, []);
 
     const [filteredStatus, setFilteredStatus] = useState("");
@@ -100,18 +124,24 @@ export const RecentFeedback = () => {
                             <TableHead>Subcategory</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Questions</TableHead>
+                            <TableHead>Date</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {paginatedFeedbacks.map((fb, index) => (
                             <TableRow key={index}>
                                 <TableCell>{fb.title}</TableCell>
-                                <TableCell>{fb.category}</TableCell>
-                                <TableCell>{fb.subcategory}</TableCell>
-                                <TableCell className={fb.status === "active" ? "text-green-500" : "text-red-500"}>
-                                    {fb.status}
+                                <TableCell>{fb.category.name}</TableCell>
+                                <TableCell>{fb.subCategory}</TableCell>
+                                <TableCell className={fb.status ? "text-green-500" : "text-red-500"}>
+                                    {fb.status ? "active" : "draft"}
                                 </TableCell>
                                 <TableCell>{fb.questions.length}</TableCell>
+                                <TableCell>{new Intl.DateTimeFormat("en-US", {
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                        }).format(new Date(fb.createdAt ?? ""))}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

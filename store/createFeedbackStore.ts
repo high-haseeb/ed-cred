@@ -1,11 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { toast } from "sonner";
+import { useQuestionStore } from "./questionStore";
+import { getProfile } from "@/api/auth";
+import { title } from "process";
 
 export interface Feedback {
     id: string;
     title: string;
-    category: string;
+    category: number;
     subcategory: string;
     status: "active" | "inactive";
     details: {
@@ -20,32 +23,15 @@ export interface Feedback {
 interface FeedbackSotre {
     feedback: Feedback | null;
     setFeedback: (feedback: Feedback) => void;
-    sendFeedback: () => Promise<void>;
-}
+    resetFeedback: () => void;
+}   
 
 export const useFeedbackStore = create<FeedbackSotre>()(
     persist(
         (set, get) => ({
             feedback: null,
-            setFeedback: (feedback) =>
-                set(() => ({ feedback })),
-            sendFeedback: async () => {
-                const { feedback } = get();
-                try {
-                    const response = await fetch("https://your-api.com/questions", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ feedback }),
-                    });
-
-                    if (!response.ok) throw new Error("Failed to send questions");
-
-                    set({ feedback: null }); 
-                } catch (error) {
-                    toast(`Error saving the feedback: ${error}`);
-                    console.error("Error sending questions:", error);
-                }
-            },
+            setFeedback: (feedback) => set(() => ({ feedback })),
+            resetFeedback: () => set(() => ({ feedback: null })), 
         }),
         { name: "question-store" }
     )

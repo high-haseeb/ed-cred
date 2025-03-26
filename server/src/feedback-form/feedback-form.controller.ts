@@ -1,0 +1,33 @@
+import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { FeedbackFormService } from './feedback-form.service';
+import { CreateFeedbackFormDto } from './dto/create-feedback-form.dto';
+
+@Controller('feedback-form')
+export class FeedbackFormController {
+    constructor(private readonly feedbackFormService: FeedbackFormService) {}
+
+    @Post()
+    create(@Body() createFeedbackFormDto: CreateFeedbackFormDto) {
+        return this.feedbackFormService.create(createFeedbackFormDto);
+    }
+
+    @Get()
+    findAll() {
+        return this.feedbackFormService.findAll();
+    }
+
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.feedbackFormService.findOne(+id);
+    }
+
+    @Get('category/:categoryId')
+    async getByCategory(@Param('categoryId', ParseIntPipe) categoryId: number) {
+        return this.feedbackFormService.findByCategoryId(categoryId);
+    }
+
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.feedbackFormService.remove(+id);
+    }
+}

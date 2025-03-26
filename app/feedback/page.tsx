@@ -16,6 +16,7 @@ export default function FeedbacksPage() {
         }
         loadFeedbacks();
     }, []);
+
     const stats = [
         {
             title: "Total feedbacks",
@@ -40,7 +41,6 @@ export default function FeedbacksPage() {
                     <h1 className="text-3xl font-semibold">Feedbacks</h1>
                     <Stats stats={stats}/>
                     <RecentFeedback />
-
                 </div>
             </div>
         </div>

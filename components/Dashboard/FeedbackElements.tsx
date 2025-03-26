@@ -25,7 +25,6 @@ import { Textarea } from "../ui/textarea";
 import { Question, useQuestionStore } from "@/store/questionStore";
 import { v4 as uuidv4 } from "uuid";
 import { useCategoryStore } from "@/store/categoryStore";
-import { useEditor } from "@tiptap/react";
 import { useEffect } from "react";
 
 export const TitleInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
@@ -55,7 +54,7 @@ export const QuestionSelectInput = ({ form }: {form: UseFormReturn<z.infer<typeo
                 <FormItem>
                     <FormLabel>Question</FormLabel>
                     <FormControl>
-                        <Textarea placeholder="Ask a question" {...field} maxLength={100} />
+                        <Textarea placeholder="Ask a question" {...field} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>
@@ -69,6 +68,7 @@ export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof Gene
     useEffect(() => {
         fetchCategories();
     }, []);
+
     return (
         <FormField
             control={form.control}
@@ -76,7 +76,7 @@ export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof Gene
             render={({ field }) => (
                 <FormItem className="w-full">
                     <FormLabel>Category</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
                         <FormControl>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select a category" />
@@ -84,7 +84,7 @@ export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof Gene
                         </FormControl>
                         <SelectContent className="">
                             {
-                                categories.map((category) => <SelectItem value={category.name} key={category.id}>{category.name}</SelectItem>)
+                                categories.map((category) => <SelectItem value={category.id?.toString() ?? ""} key={category.id}>{category.name}</SelectItem>)
                             }
                         </SelectContent>
                     </Select>
@@ -152,7 +152,7 @@ export const SwitchInput = ({ form }: {form: UseFormReturn<z.infer<typeof Genera
     return (
         <div className="flex flex-col gap-4">
             <Label>Feedback Details</Label>
-            <div className="flex gap-10">
+            <div className="flex justify-between flex-wrap">
                 {["name", "country", "dates", "salary", "web"].map((detail) => (
                     <FormField
                         key={detail}
@@ -226,7 +226,7 @@ export const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<type
 
     return (
         <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-end justify-between">
                 <Label>Options</Label>
                 <div className="self-end flex gap-2">
                     <Button
@@ -237,7 +237,7 @@ export const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<type
                             if (fields.length > 2) remove(fields.length - 1);
                         }}
                     >
-                        <MinusIcon />
+                        <MinusIcon stroke="black" />
                     </Button>
 
                     <Button
@@ -248,7 +248,7 @@ export const MultipleChoiceInput = ({ form }: { form: UseFormReturn<z.infer<type
                             append({ value: "" })
                         }}
                     >
-                        <PlusIcon />
+                        <PlusIcon stroke="black" />
                     </Button>
                 </div>
             </div>

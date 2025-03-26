@@ -1,6 +1,19 @@
 import { toast } from "sonner";
+import { API_BASE_URL } from "./config";
 
-const API_URL = 'http://localhost:6969/feedback';
+const API_URL = `${API_BASE_URL}/feedback-form`
+
+export async function getFeedbackByCategory(catgeoryId: string) {
+    try {
+        const response = await fetch(`${API_URL}/category/${catgeoryId}`);
+        const body = await response.json();
+        return body;
+    } catch (e) {
+        toast.error("Something went wrong while fetching the feedback form");
+        return false;
+    }
+    return true;
+}
 
 export async function sendFeedback(feedback: any) {
     try {

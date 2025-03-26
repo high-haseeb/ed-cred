@@ -1,4 +1,4 @@
-import { ArrowsUpFromLine, ChevronRightIcon, EyeIcon, PencilIcon } from "lucide-react";
+import { ArrowsUpFromLine, ChevronRightIcon, EyeIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useFeedbackStore } from "@/store/createFeedbackStore";
@@ -9,7 +9,7 @@ const Route = ({ route }: { route: string[] }) => {
     const { feedback } = useFeedbackStore();
     const { questions } = useQuestionStore();
     return(
-        <div className="flex items-start justify-between bg-neutral-300 px-10 py-10 capitalize text-gray-800">
+        <div className="flex items-start justify-between bg-muted px-10 py-10 capitalize text-foreground">
             <div className="flex flex-col gap-2">
                 <div className="text-4xl font-semibold">{route[route.length - 1]}</div>
                 <div className="flex w-max items-center justify-center gap-1 rounded-full bg-white px-4 py-0.5 text-sm font-normal outline outline-gray-400">

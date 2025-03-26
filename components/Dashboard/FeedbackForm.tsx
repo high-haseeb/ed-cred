@@ -19,10 +19,12 @@ import { Button } from "../ui/button";
 import { Feedback, useFeedbackStore } from "@/store/createFeedbackStore";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
+import { useState } from "react";
+import { ChevronDownIcon } from "lucide-react";
 
 export const GeneralFormSchema = z.object({
     title: z.string().min(2, "Title must be at least 2 characters").max(50, "Title must be under 50 characters"),
-    category: z.string().min(1, "Category is required"),
+    category: z.string(),
     subcategory: z.string().min(1, "Subcategory is required"),
     status: z.enum(["active", "inactive"]),
     details: z.object({
@@ -57,7 +59,6 @@ const FeedbackForm = () => {
         resolver: zodResolver(GeneralFormSchema),
         defaultValues: {
             title: "",
-            category: "",
             subcategory: "",
             details: {
                 name:    false,
@@ -75,32 +76,56 @@ const FeedbackForm = () => {
     };
 
     return (
-        <div className="flex items-center justify-between bg-background px-10 my-10">
+        <div className="flex items-center justify-between">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-start justify-between gap-10">
-                    <div className="flex w-full items-start justify-between">
-                        <div className="flex w-1/2 flex-col gap-6 border-r-2 border-r-stone-200 pr-10 outline-stone-300">
-                            <TitleInput form={form} />
-                            <div className="flex gap-2">
-                                <CategoryInput form={form} />
-                                <SubCategoryInput form={form} />
-                            </div>
-                            <StatusInput form={form} />
-                            <SwitchInput form={form} />
-                            <SubmitButton form={form} />
+                    <MetaDataInput form={form} />
+                    <div className="flex w-full flex-col gap-4">
+                        <div className="">
+                            <div className="text-2xl font-semibold">Questions</div>
+                            <p className="text-muted-foreground mb-4 text-sm">
+                                Ask the users questions.
+                            </p>
                         </div>
-                        <div className="flex w-1/2 flex-col gap-6 pl-10 outline-stone-300">
-                            <QuestionSelectInput form={questionForm} />
-                            <QuestionTypeInput form={questionForm} />
-                            <QuestionInput form={questionForm} />
-                            <AddQuestion form={questionForm} />
-                        </div>
+                        <QuestionSelectInput form={questionForm} />
+                        <QuestionTypeInput form={questionForm} />
+                        <QuestionInput form={questionForm} />
+                        <AddQuestion form={questionForm} />
                     </div>
                 </form>
             </Form>
         </div>
     );
 };
+
+const MetaDataInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
+    const [collapsed, setCollapsed] = useState(false);
+    return(
+        <div className="outline-muted relative flex w-full flex-col gap-4 rounded-md p-6 outline-2 isolate shadow-sm">
+            <ChevronDownIcon 
+                className={`absolute right-6 top-6 transition-transform ${collapsed ? "rotate-0" : "rotate-180"}`} 
+                onClick={() => setCollapsed(s => !s)}
+            />
+            <div className={`${collapsed ? "opacity-100" : "opacity-0"} bg-destructive text-white absolute bottom-6 right-6 rounded-sm text-sm px-3 py-1 -z-10`}>
+                required
+            </div>
+            <div className="">
+                <div className="text-2xl font-semibold">Form Metadata</div>
+                <p className="text-muted-foreground mb-0 text-sm">Metadata means data about data. This is information about the feedback form.</p>
+            </div>
+            <div className={`mt-2 flex flex-col gap-4 overflow-hidden transition-[max-height] ${collapsed ? "max-h-0" : "max-h-96"}`} >
+                <TitleInput form={form} />
+                <div className="flex gap-2">
+                    <CategoryInput form={form} />
+                    <SubCategoryInput form={form} />
+                </div>
+                <StatusInput form={form} />
+                <SwitchInput form={form} />
+                <SubmitButton form={form} />
+            </div>
+        </div>
+    )
+}
 
 const SubmitButton = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
     const { setFeedback } = useFeedbackStore();
@@ -114,8 +139,8 @@ const SubmitButton = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormS
         toast("Feedback Saved successfully!");
     }
     return (
-        <Button disabled={!form.formState.isValid} onClick={handleFeedbackSave}>
-            Save Feedback
+        <Button disabled={!form.formState.isValid} onClick={handleFeedbackSave} className="mt-2">
+            Save Metadata
         </Button>
     )
 }

@@ -5,14 +5,19 @@ import { SiteHeader } from "@/components/MainDashboard/SiteHeader";
 import { FeedbackForm } from "@/components/Review/FeedbackForm";
 import SchoolInformationForm from "@/components/Review/SchoolInformationForm";
 import { useFeedbacksStore } from "@/store/feedbackStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Feedback } from "@/components/MainDashboard/RecentFeedbacks";
+import { getFeedbackByCategory } from "@/api/feedback";
 
 const SchoolReview = () => {
-    const { feedbacks, fetchFeedbacks } = useFeedbacksStore();
+    const [feedbacks, setFeedback] = useState<Feedback[]>([]);
 
-    console.log(feedbacks[0]);
     useEffect(() => {
-        fetchFeedbacks();
+        async function loadFeedbacks() {
+            const data = await getFeedbackByCategory();
+            setFeedbacks(data);
+        }
+        loadFeedbacks();
     }, []);
 
     return(

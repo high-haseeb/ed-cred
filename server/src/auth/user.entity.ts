@@ -1,6 +1,7 @@
 import { ForumQuestion } from 'src/forum-question/entities/forum-question.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { ForumReply } from 'src/forum-reply/entities/forum-reply.entity';
+import { FeedbackForm } from 'src/feedback-form/entities/feedback-form.entity';
 
 @Entity()
 export class User {
@@ -23,4 +24,8 @@ export class User {
 
     @OneToMany(() => ForumReply, (reply) => reply.author)
     replies: ForumReply[];
+
+    // A User can publish multiple feedback forms
+    @OneToMany(() => FeedbackForm, (form) => form.author)
+    feedbackForms: FeedbackForm[];
 }

@@ -23,9 +23,9 @@ export const FeedbackForm = ({ questions, color = "red" }: { questions: Question
     };
 
     return (
-        <div className="w-4xl mb-20 flex max-w-4xl flex-col gap-4 py-10">
+        <div className="w-full mb-20 flex max-w-4xl flex-col gap-4 py-10">
             {questions.map((question, index) => (
-                <div className={`bg-muted flex ${question.type != "rating" ? "flex-col" : ""} w-full justify-between rounded-md p-4`} key={`feedback-question-${index}`}>
+                <div className={`outline-2 outline-muted flex ${question.type != "rating" ? "flex-col" : ""} w-full justify-between rounded-md p-4`} key={`feedback-question-${index}`}>
                     <p className="mb-2 font-medium">{question.text}</p>
                     <QuestionInput
                         question={question}
