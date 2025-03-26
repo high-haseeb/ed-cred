@@ -45,7 +45,7 @@ export const RecentFeedback = () => {
     };
 
     return (
-        <Card className="col-span-4">
+        <Card className="col-span-4 shadow-none">
             <CardHeader>
                 <CardTitle>Recent Feedback</CardTitle>
             </CardHeader>

@@ -9,7 +9,7 @@ import Dissussions from '@/components/Landing/RecentDisscussions';
 
 const HomePage = () => {
     return (
-        <main className="h-screen w-screen flex flex-col items-center overflow-x-hidden pt-10 md:pt-20">
+        <main className="flex h-screen w-screen flex-col items-center overflow-x-hidden pt-10 md:pt-20">
             <Navbar />
             <Header />
             <Categories />

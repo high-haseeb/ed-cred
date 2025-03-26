@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { fetchFeedbacks } from "@/api/feedback";
+import { SiteHeader } from "@/components/MainDashboard/SiteHeader";
+import { RecentFeedback } from "@/components/MainDashboard/RecentFeedbacks";
+import { Stats } from "@/components/common/Stats";
+import { useRouter } from "next/navigation";
 
 export default function FeedbacksPage() {
     const [feedbacks, setFeedbacks] = useState<any[]>([]);
@@ -12,61 +16,33 @@ export default function FeedbacksPage() {
         }
         loadFeedbacks();
     }, []);
+    const stats = [
+        {
+            title: "Total feedbacks",
+            value: feedbacks.length.toString(),
+        }, 
+        {
+            title: "Active Feedbacks",
+            value: feedbacks.filter(s => s.status === "active").length.toString(),
+        }
+    ];
+
+    const router = useRouter();
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">All Feedbacks</h1>
-            {feedbacks.length === 0 ? (
-                <p>No feedbacks available.</p>
-            ) : (
-                <ul className="space-y-6">
-                    {feedbacks.map((feedback) => (
-                        <li key={feedback.id} className="border p-6 rounded-lg shadow">
-                            <h2 className="text-xl font-semibold">{feedback.title}</h2>
-                            <p className="text-gray-600">
-                                {feedback.category} - {feedback.subcategory}
-                            </p>
-                            <p>
-                                Status:{" "}
-                                <span
-                                    className={`font-bold ${
-                                        feedback.status === "active"
-                                            ? "text-green-600"
-                                            : "text-red-600"
-                                    }`}
-                                >
-                                    {feedback.status}
-                                </span>
-                            </p>
+        <div className="w-full bg-background">
+            <SiteHeader />
+            <div className="flex flex-col items-center">
+                <div className="p-10 flex flex-col gap-10 w-4xl">
+                    <button onClick={() => router.back()} className="text-blue-500 hover:underline w-full text-left">
+                        ← Back to Dashboard
+                    </button>
+                    <h1 className="text-3xl font-semibold">Feedbacks</h1>
+                    <Stats stats={stats}/>
+                    <RecentFeedback />
 
-                            {/* List of Questions */}
-                            <h3 className="mt-4 text-lg font-semibold">Questions:</h3>
-                            {feedback.questions.length === 0 ? (
-                                <p className="text-gray-500">No questions available.</p>
-                            ) : (
-                                <ul className="mt-2 space-y-3">
-                                    {feedback.questions.map((question: any) => (
-                                        <li key={question.id} className="p-3 border rounded-md">
-                                            <p className="font-medium">{question.text}</p>
-                                            <p className="text-sm text-gray-500">
-                                                Type: {question.type}
-                                            </p>
-                                            {/* Display options if available */}
-                                            {question.options && question.options.length > 0 && (
-                                                <ul className="mt-1 list-disc pl-5 text-sm text-gray-600">
-                                                    {question.options.map((option: any, index: number) => (
-                                                        <li key={index}>{option.value}</li>
-                                                    ))}
-                                                </ul>
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-            )}
+                </div>
+            </div>
         </div>
     );
 }

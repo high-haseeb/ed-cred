@@ -7,45 +7,52 @@ import { User } from './user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
-    private jwtService: JwtService,
-  ) { }
+    constructor(
+        @InjectRepository(User) private userRepository: Repository<User>,
+        private jwtService: JwtService,
+    ) { }
 
-  async signup(username: string, email: string, password: string) {
-    const existingUser = await this.userRepository.findOne({ where: [{ username }, { email }] });
+    async signup(username: string, email: string, password: string) {
+        const existingUser = await this.userRepository.findOne({ where: [{ username }, { email }] });
 
-    if (existingUser) {
-      if (existingUser.username === username) throw new ConflictException('Username already taken');
-      if (existingUser.email === email) throw new ConflictException('Email already registered');
+        if (existingUser) {
+            if (existingUser.username === username) throw new ConflictException('Username already taken');
+            if (existingUser.email === email) throw new ConflictException('Email already registered');
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = this.userRepository.create({ username, email, password: hashedPassword });
+        await this.userRepository.save(newUser);
+
+        return { message: 'Signup successful' };
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = this.userRepository.create({ username, email, password: hashedPassword });
-    await this.userRepository.save(newUser);
+    async login(identifier: string, password: string) {
+        // Allow login with either username or email
+        const user = await this.userRepository.findOne({
+            where: [{ email: identifier }, { username: identifier }],
+        });
 
-    return { message: 'Signup successful' };
-  }
+        if (!user) throw new UnauthorizedException('Invalid credentials');
 
-  async login(identifier: string, password: string) {
-    // Allow login with either username or email
-    const user = await this.userRepository.findOne({
-      where: [{ email: identifier }, { username: identifier }],
-    });
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
 
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+        const token = this.jwtService.sign({ id: user.id, username: user.username, email: user.email });
+        return { accessToken: token };
+    }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
+    async getProfile(userId: number) {
+        const user = await this.userRepository.findOne({ where: { id: userId }, select: ['id', 'username', 'email'] });
+        if (!user) throw new UnauthorizedException('User not found');
 
-    const token = this.jwtService.sign({ id: user.id, username: user.username, email: user.email });
-    return { accessToken: token };
-  }
+        return user;
+    }
 
-  async getProfile(userId: number) {
-    const user = await this.userRepository.findOne({ where: { id: userId }, select: ['id', 'username', 'email'] });
-    if (!user) throw new UnauthorizedException('User not found');
+    async findUserById(userId: number) {
+        const user = await this.userRepository.findOne({ where: { id: userId }, select: ['id', 'username', 'email'] });
+        if (!user) throw new UnauthorizedException('User not found');
 
-    return user;
-  }
+        return user;
+    }
 }

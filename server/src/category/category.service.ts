@@ -14,7 +14,7 @@ export class CategoryService {
         const category = this.categoryRepository.create({
             name,
             status,
-            permissions: permissions as any, // Cast explicitly to fix TS error
+            permissions: permissions as any,
             createdAt: new Date(),
         });
 

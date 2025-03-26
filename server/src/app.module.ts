@@ -8,6 +8,8 @@ import { Feedback } from './feedback/feedback.entity';
 import { PostModule } from './posts/post.module';
 import { Category } from './category/category.entity';
 import { CategoryModule } from './category/category.module';
+import { ForumQuestionModule } from './forum-question/forum-question.module';
+import { ForumReplyModule } from './forum-reply/forum-reply.module';
 
 @Module({
     imports: [
@@ -23,6 +25,8 @@ import { CategoryModule } from './category/category.module';
         FeedbackModule,
         PostModule,
         CategoryModule,
+        ForumQuestionModule,
+        ForumReplyModule,
     ],
 })
 export class AppModule {}
