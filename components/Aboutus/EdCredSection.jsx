@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const EdCredSection = () => {
     return (
-        <div className="w-6xl mx-auto px-6 md:px-12 py-16 pb-34">
+        <div className="w-6xl mx-auto px-6 md:px-12 py-16 pb-34 bg-white">
             <div className="text-sm flex flex-col md:flex-row items-start md:items-center gap-10">
                 {/* Text Section */}
                 <div className="md:w-2/3 text-black">
