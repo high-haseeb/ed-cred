@@ -16,7 +16,7 @@ export default function ReivewPage({ params }: { params: Promise<{ category: str
         async function loadFeedbacks() {
             const data = await getFeedbackByCategory(category);
             console.log(data);
-            if (data.error) {
+            if (data.error || data.length == 0) {
                 setNotFound(true);
                 return;
             }
