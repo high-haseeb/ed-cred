@@ -30,7 +30,7 @@ export async function login(identifier: string, password: string) {
 
 export async function getProfile() {
     const token = localStorage.getItem('token');
-    if (!token) throw new Error('User not authenticated');
+    if (!token) return false;
 
     const response = await fetch(`${API_BASE_URL}/profile`, {
         method: 'GET',

@@ -1,7 +1,6 @@
 "use client"
 import { getFeedbackByCategory } from "@/api/feedback";
 import { Feedback } from "@/components/MainDashboard/RecentFeedbacks";
-import { SiteHeader } from "@/components/MainDashboard/SiteHeader";
 import FeedbackForm from "@/components/Review/FeedbackForm";
 import { Input } from "@/components/ui/input";
 import { LoaderIcon } from "lucide-react";
@@ -27,7 +26,6 @@ export default function ReivewPage({ params }: { params: Promise<{ category: str
 
     return(
         <div className="bg-background text-foreground h-auto">
-            <SiteHeader />
             <div className="flex h-screen w-full items-center justify-center">
                 {
                     notFound ? 

@@ -3,29 +3,26 @@ import { getProfile } from '@/api/auth';
 import { API_BASE_URL } from '@/api/config';
 import FeedbackForm from '@/components/Dashboard/FeedbackForm';
 import QuestionsList from '@/components/Dashboard/QuestionsList';
-import { SiteHeader } from '@/components/MainDashboard/SiteHeader';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import ProtectedRoute from '@/components/Common/ProtectedRoute';
 import { Button } from '@/components/ui/button';
 import { useFeedbackStore } from '@/store/createFeedbackStore';
 import { useQuestionStore } from '@/store/questionStore';
 import { ArrowUpFromLineIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { Title } from '@/components/Common/Title';
 
 const Dashboard = () => {
     const router = useRouter();
     return (
         <ProtectedRoute>
-            <div className="bg-background relative flex flex-col overflow-x-hidden font-inter">
-                <SiteHeader />
+            <div className="bg-background font-inter relative flex flex-col overflow-x-hidden">
                 {/* <Route route={["feedback", "create feedback"]} /> */}
-                <div className='w-2xl max-w-2xl mx-auto bg-red h-auto _bg-purple-50'>
-                    <button onClick={() => router.back()} className="text-blue-500 hover:underline w-full text-left mb-2 mt-10">
-                        ← Back to Questions
-                    </button>
-                    <div className="mt-0 text-3xl font-semibold">Create Feedback Form</div>
-                    <p className="text-muted-foreground text-base mb-10">You can create a feedback form. The category refers to the added <a className='text-blue-500' href='/categories'>categories</a> and the subcategory refers to the users role.</p>
-
+                <div className='w-2xl mx-auto mt-10 h-auto max-w-2xl'>
+                    <Title
+                        title='Create Feedback Form'
+                        desc='You can create a feedback form. The category refers to the added and the subcategory refers to the users role.'
+                    />
                     <FeedbackForm />
                     <QuestionsList />
                     <PublishFeedback />
@@ -41,7 +38,6 @@ const PublishFeedback = () => {
     const { feedback, resetFeedback } = useFeedbackStore();
 
     const sendFeedback = async() => {
-        const user = await getProfile();
         try {
             const user = await getProfile();
             if (!feedback || questions.length < 2) {
@@ -77,7 +73,7 @@ const PublishFeedback = () => {
     return (
         <Button 
             variant={"default"} 
-            className="font-normal w-full mb-10" 
+            className="mb-10 w-full font-normal" 
             onClick={sendFeedback}
         >
             <ArrowUpFromLineIcon />

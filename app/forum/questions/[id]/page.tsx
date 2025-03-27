@@ -2,7 +2,6 @@
 import { API_BASE_URL } from "@/api/config";
 import { useRouter } from "next/navigation";
 import { useEffect, use, useState } from "react";
-import { SiteHeader } from "@/components/MainDashboard/SiteHeader";
 import { Separator } from "@/components/ui/separator";
 import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -72,7 +71,6 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
 
     return(
         <div className="w-full bg-background text-foreground">
-            <SiteHeader />
             <div className="max-w-2xl mx-auto mt-10">
                 <button onClick={() => router.back()} className="text-blue-500 hover:underline w-full text-left mb-2">
                     ← Back to Dashboard

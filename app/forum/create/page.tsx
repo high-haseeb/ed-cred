@@ -2,23 +2,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { SiteHeader } from "@/components/MainDashboard/SiteHeader";
 import { getProfile } from "@/api/auth";
 import { API_BASE_URL } from "@/api/config";
 import { useRouter } from "next/navigation";
-
-interface ForumQuestion {
-    title: string;
-    text:  string;
-    //`authorId` would be added when sending the request.
-}
+import { Title } from "@/components/Common/Title";
 
 export default function CreateForumQuestionPage() {
     const [title, setTitle] = useState("");
     const [text, setText] = useState("");
 
-    const sumbitQuestion = async (question: ForumQuestion) => {
-        const token = localStorage.getItem("token");
+    const sumbitQuestion = async () => {
         // TODO: this must be factored out to a store.
         // We should not ping the server again and again
         // to get the users profile.
@@ -50,10 +43,7 @@ export default function CreateForumQuestionPage() {
         // under his account name.
 
         if (title && text) {
-            const response = await sumbitQuestion({
-                title: title,
-                text: text,
-            });
+            const response = await sumbitQuestion();
             if (response) {
                 console.log(response);
                 setTitle("");
@@ -66,13 +56,11 @@ export default function CreateForumQuestionPage() {
 
     return (
         <div className="bg-background text-foreground mx-auto h-full space-y-6">
-            <SiteHeader />
             <div className="outline-muted _outline-2 mx-auto my-auto mt-10 flex h-full max-w-2xl flex-col gap-2 rounded-md p-4">
-                <button onClick={() => router.back()} className="text-blue-500 hover:underline w-full text-left mb-0">
-                    ← Back to Questions
-                </button>
-                <div className="mt-0 text-3xl font-semibold">Ask a Question</div>
-                <p className="text-muted-foreground mb-2 text-base">Note that the questions you ask will be publically visible under your name! Kindly Don't ask irrelevant or inappropriate questions.</p>
+                <Title
+                    title="Ask a Question"
+                    desc="Note that the questions you ask will be publically visible under your name! Kindly Don't ask irrelevant or inappropriate questions." 
+                />
                 <input
                     placeholder="question title"
                     className="outline-muted focus:bg-muted focus:outline-muted-foreground rounded-md px-3 py-2 text-base outline-2"

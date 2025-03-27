@@ -1,11 +1,10 @@
 "use client";
-import { useState } from 'react'
-import Image from 'next/image'
+import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import Button from '@/components/ui/Button';
 import { MenuIcon, XIcon } from 'lucide-react';
-import Signup from '../Signup';
-import Signin from '../Signin';
+import Signup from '@/components/Landing/Signup';
+import Signin from '@/components/Landing/Signin';
 
 const NavigationItems = [
     { title: "Home", link: "/home" },

@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import { usePostStore } from "@/store/usePostStore";
 import { useRouter } from "next/navigation";
-import { SiteHeader } from "@/components/MainDashboard/SiteHeader";
 import { Separator } from "@/components/ui/separator";
 
 export default function PostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -19,7 +18,6 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
 
     return (
         <div>
-            <SiteHeader />
             <div className="max-w-2xl mx-auto p-6">
                 <button onClick={() => router.back()} className="mb-6 text-blue-500 hover:underline">
                     ← Back to Posts

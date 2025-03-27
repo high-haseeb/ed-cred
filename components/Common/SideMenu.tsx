@@ -1,5 +1,5 @@
 import {
-    ChevronRight, type LucideIcon,
+    ChevronRight, ChevronUp, User2, type LucideIcon,
 } from "lucide-react"
 import {
     Collapsible,
@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/collapsible"
 import {
     SidebarGroup,
-    SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
@@ -19,27 +18,58 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
-    SidebarRail 
+    SidebarRail, 
+    useSidebar
 } from "@/components/ui/sidebar"
 import { data } from "./sidebar-data"
 import Image from "next/image"
 import { Separator } from "../ui/separator"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 
-export const DashboardSidebar = () => {
+export const SideMenu = () => {
     return(
-        <Sidebar className="font-inter">
+        <Sidebar className="font-inter" collapsible="icon">
             <SidebarHeader>
-                <div className="flex items-center justify-center w-max gap-4 py-2">
-                    <Image src={"/logo.png"} width={100} height={200} className="w-10 h-auto" alt="logo" />
-                    <div className="font-semibold text-lg">Ed Cred</div>
-                </div>
+                <SidebarMenu >
+                    <SidebarMenuItem className="my-2">
+                        <SidebarMenuButton>
+                            <Image src={"/logo.png"} width={100} height={200} className="w-10 h-auto" alt="logo" />
+                            <div className="font-semibold text-lg">Ed Cred</div>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
                 <Separator />
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
             </SidebarContent>
             <SidebarFooter>
-                <div className="font-gray-700 text-center">created by high house</div>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <SidebarMenuButton>
+                                    <User2 /> Username
+                                    <ChevronUp className="ml-auto" />
+                                </SidebarMenuButton>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                side="top"
+                                className="w-[--radix-popper-anchor-width]"
+                            >
+                                <DropdownMenuItem>
+                                    <span>Account</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <span>Billing</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <span>Sign out</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

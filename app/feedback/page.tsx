@@ -1,10 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { fetchFeedbacks } from "@/api/feedback";
-import { SiteHeader } from "@/components/MainDashboard/SiteHeader";
 import { RecentFeedback } from "@/components/MainDashboard/RecentFeedbacks";
-import { Stats } from "@/components/common/Stats";
-import { useRouter } from "next/navigation";
+import { Stats } from "@/components/Common/Stats";
+import { Title } from "@/components/Common/Title";
 
 export default function FeedbacksPage() {
     const [feedbacks, setFeedbacks] = useState<any[]>([]);
@@ -28,21 +27,14 @@ export default function FeedbacksPage() {
         }
     ];
 
-    const router = useRouter();
-
     return (
-        <div className="w-full bg-background">
-            <SiteHeader />
-            <div className="flex flex-col items-center">
-                <div className="p-10 flex flex-col gap-10 w-4xl">
-                    <button onClick={() => router.back()} className="text-blue-500 hover:underline w-full text-left">
-                        ← Back to Dashboard
-                    </button>
-                    <h1 className="text-3xl font-semibold">Feedbacks</h1>
-                    <Stats stats={stats}/>
-                    <RecentFeedback />
-                </div>
-            </div>
+        <div className="w-3xl mx-auto my-10 flex max-w-4xl flex-col">
+            <Title 
+                title="Feedbacks"
+                desc="Here are the recent feedback forms. You can go here to create a new feedback form."
+            />
+            <Stats stats={stats}/>
+            <RecentFeedback />
         </div>
     );
 }

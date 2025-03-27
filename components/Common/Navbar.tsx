@@ -1,11 +1,11 @@
 "use client";
-import { cn } from "@/lib/utils"
-import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-} from "@/components/ui/avatar"
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -14,19 +14,25 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import Link from "next/link"
-import { useEffect, useState } from "react"
-import { getProfile, logout } from "@/api/auth"
-import { ThemeToggle } from "../common/ThemeToggle"
-import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getProfile, logout } from "@/api/auth";
+import { ThemeToggle } from "@/components/Common/ThemeToggle";
+import { usePathname, useRouter } from "next/navigation";
+import { useSidebar } from "../ui/sidebar";
+import { PanelRightIcon } from "lucide-react";
 
-export const SiteHeader = () => {
+export const Navbar = () => {
+    const { toggleSidebar } = useSidebar();
+
     return (
-        <div className="border-b">
+        <div className="bg-background sticky top-0 z-50 border-b">
             <div className="flex h-16 items-center px-4">
+                <Button size={"icon"} variant={"outline"} onClick={toggleSidebar} >
+                    <PanelRightIcon />
+                </Button>
                 <MainNav className="mx-6" />
                 <div className="ml-auto flex items-center space-x-4">
                     <ThemeToggle />
@@ -47,11 +53,20 @@ export interface UserProfile {
 function UserNav() {
 
     const [profile, setProfile] = useState<UserProfile | null>();
+    const router = useRouter();
+
+    const logoutAndRedirect = () => {
+        logout();
+        router.push("/");
+    }
+
     useEffect(() => {
         const setup = async() => {
             let profile = await getProfile();
             if (profile) {
                 setProfile(profile);
+            } else {
+                router.push("/");
             }
         }
         setup();
@@ -71,7 +86,7 @@ function UserNav() {
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">{profile?.username}</p>
-                        <p className="text-xs leading-none text-muted-foreground">
+                        <p className="text-muted-foreground text-xs leading-none">
                             {profile?.email}
                         </p>
                     </div>
@@ -89,7 +104,7 @@ function UserNav() {
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => logout()}>
+                <DropdownMenuItem onClick={logoutAndRedirect}>
                     Log out
                 </DropdownMenuItem>
             </DropdownMenuContent>
@@ -119,7 +134,7 @@ function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
                     key={href}
                     href={href}
                     className={cn(
-                        "text-sm font-medium transition-colors hover:text-primary",
+                        "hover:text-primary text-sm font-medium transition-colors",
                         pathname === href ? "text-foreground" : "text-muted-foreground"
                     )}
                 >

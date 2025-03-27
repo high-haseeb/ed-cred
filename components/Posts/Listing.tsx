@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { usePostStore } from "@/store/usePostStore";
-import { Search, XCircle, Pencil, Trash2, Star, ExternalLinkIcon } from "lucide-react";
+import { Search, XCircle, Trash2, Star, ExternalLinkIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -32,8 +32,8 @@ export function PostsListing() {
     const filteredPosts = posts.filter(post => {
         return (
             (status === "all" || post.status === status) &&
-            (!featured || post.featured) &&
-            (post.title.toLowerCase().includes(search.toLowerCase()) || post.description.toLowerCase().includes(search.toLowerCase()))
+                (!featured || post.featured) &&
+                (post.title.toLowerCase().includes(search.toLowerCase()) || post.description.toLowerCase().includes(search.toLowerCase()))
         );
     });
 
@@ -98,14 +98,11 @@ export function PostsListing() {
                     <div 
                         key={post.id}
                         className="flex items-center justify-between border-b pb-4 hover:bg-foreground/2 py-4 px-2 rounded-md" 
-                        >
-                        {/* Icons */}
-
-                        {/* Post Details */}
+                    >
                         <div className="flex flex-col">
-                            <p className="text-sm font-medium leading-none">{post.title}</p>
-                            <p className="text-sm text-muted-foreground">{post.description}</p>
-                            <div className="text-xs text-gray-500 space-x-2">
+                            <p className="text-base font-medium leading-none">{post.title}</p>
+                            <p className="text-sm text-muted-foreground w-3/4 my-2 line-clamp-1 text-ellipsis">{post.description}</p>
+                            <div className="text-sm text-gray-500 space-x-2">
                                 <span>
                                     {new Intl.DateTimeFormat("en-US", {
                                         day: "numeric",
@@ -152,8 +149,8 @@ export function PostsListing() {
                     </div>
                 ))
             ) : (
-                <p className="text-center text-gray-500">No posts found.</p>
-            )}
+                    <p className="text-center text-gray-500">No posts found.</p>
+                )}
 
             {/* Pagination */}
             {totalPages > 1 && (

@@ -1,20 +1,16 @@
-import { TabsContent } from "@/components/ui/tabs"
 import {
     Card,
     CardHeader,
     CardTitle,
     CardContent,
-    CardDescription,
-} from "../ui/card"
-import { RecentFeedback } from "./RecentFeedbacks"
-import { RecentUsers } from "./RecentUsers"
-import { RecentPosts } from "./RecentPosts"
-import { usePostStore } from "@/store/usePostStore"
-import { Stats } from "../common/Stats"
-import { useCategoryStore } from "@/store/categoryStore"
-import { useEffect, useState } from "react"
-import { fetchFeedbacks } from "@/api/feedback"
-import { useFeedbacksStore } from "@/store/feedbackStore"
+} from "@/components/ui/card";
+import { RecentFeedback } from "./RecentFeedbacks";
+import { RecentPosts } from "./RecentPosts";
+import { usePostStore } from "@/store/usePostStore";
+import { Stats } from "@/components/Common/Stats";
+import { useCategoryStore } from "@/store/categoryStore";
+import { useEffect } from "react";
+import { useFeedbacksStore } from "@/store/feedbackStore";
 
 export const OverviewTab = () => {
     const { posts } = usePostStore();
@@ -45,7 +41,7 @@ export const OverviewTab = () => {
 
     ]
     return(
-        <TabsContent value="overview" className="space-y-4">
+        <div>
             <Stats stats={stats}/>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 <RecentFeedback />
@@ -58,6 +54,6 @@ export const OverviewTab = () => {
                     </CardContent>
                 </Card>
             </div>
-        </TabsContent>
+    </div>
     )
 }

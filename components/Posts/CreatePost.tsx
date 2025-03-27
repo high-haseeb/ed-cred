@@ -45,7 +45,7 @@ export default function CreatePost() {
     }
 
     return (
-        <div className="flex gap-8 px-8 mb-8">
+        <div className="flex gap-8 mb-8">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div>
@@ -154,14 +154,15 @@ export default function CreatePost() {
                     <Button type="submit">Save Post</Button>
                 </form>
             </Form>
+            {/*
             <Card className="w-full">
                 <CardHeader>
                     <CardTitle>Post Preview</CardTitle>
                 </CardHeader>
                 <CardContent dangerouslySetInnerHTML={{ __html: form.watch("body") }}>
-
                 </CardContent>
             </Card>
+ */}
         </div>
     );
 }

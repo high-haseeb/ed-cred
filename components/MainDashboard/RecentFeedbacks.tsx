@@ -7,7 +7,6 @@ import { Input } from "../ui/input";
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationEllipsis, PaginationLink } from "../ui/pagination";
 import { FilterXIcon } from "lucide-react";
 import { fetchFeedbacks } from "@/api/feedback";
-import { useFeedbacksStore } from "@/store/feedbackStore";
 import { Question } from "@/store/questionStore";
 
 // TODO:factor it out in the common module

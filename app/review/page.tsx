@@ -2,16 +2,10 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { ThemeToggle } from "@/components/common/ThemeToggle";
+import { ThemeToggle } from "@/components/Common/ThemeToggle";
 import { useEffect, useState } from "react";
 import { Category } from "@/store/categoryStore";
 import { getAllCategories } from "@/api/categories";
-
-interface ReviewCategory {
-    title: string;
-    icon:  string;
-    href:  string;
-}
 
 const CategoryCard = ({ category } : { category: Category }) => {
     const router = useRouter();
@@ -28,7 +22,7 @@ const CategoryCard = ({ category } : { category: Category }) => {
 }
 
 const ReviewPage = () => {
-    const [categories, setCategories] = useState<Category>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     useEffect(() => {
         const setup = async() => {
             const data = await getAllCategories();

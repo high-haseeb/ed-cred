@@ -1,15 +1,10 @@
-import { url } from "inspector"
 import {
-    BookOpen,
-    Bot,
-    icons,
     Layers,
     Settings2,
     SquareTerminal,
     StickyNote,
     UserRoundPenIcon,
-} from "lucide-react"
-import { title } from "process"
+} from "lucide-react";
 
 export const data = {
     navMain: [
