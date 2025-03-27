@@ -1,7 +1,9 @@
 import { User } from "src/auth/user.entity";
 import { Category } from "src/category/category.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { FeedbackDetails, Question } from "../dto/create-feedback-form.dto";
+import { Subcategory } from "src/subcategory/subcategory.entity";
+import { FeedbackResponse } from "src/feedback-response/entities/feedback-response.entity";
 
 @Entity()
 export class FeedbackForm {
@@ -14,9 +16,8 @@ export class FeedbackForm {
     @ManyToOne(() => Category, (category) => category.feedbackForms, { onDelete: 'CASCADE' })
     category: Category;
 
-    // TODO:This should also be a ID that links to the subcategory table.
-    @Column({ type: "text" })
-    subCategory: string;
+    @ManyToOne(() => Subcategory, (subcategory) => subcategory.feedbackForms, { onDelete: 'CASCADE' })
+    subcategory: Subcategory;
 
     @Column({ type: "text" })
     title: string;
@@ -32,4 +33,8 @@ export class FeedbackForm {
 
     @Column({ type: "jsonb" })
     questions: Question[];
+
+    // Mapping responses to feedback form
+    @OneToMany(() => FeedbackResponse, (response) => response.feedbackForm, { cascade: true })
+    responses: FeedbackResponse[];
 }

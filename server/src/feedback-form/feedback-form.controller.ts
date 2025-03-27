@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { FeedbackFormService } from './feedback-form.service';
 import { CreateFeedbackFormDto } from './dto/create-feedback-form.dto';
+import { FeedbackForm } from './entities/feedback-form.entity';
 
 @Controller('feedback-form')
 export class FeedbackFormController {
@@ -24,6 +25,14 @@ export class FeedbackFormController {
     @Get('category/:categoryId')
     async getByCategory(@Param('categoryId', ParseIntPipe) categoryId: number) {
         return this.feedbackFormService.findByCategoryId(categoryId);
+    }
+
+    @Get('category/:categoryId/subcategory/:subcategoryId')
+    async getByCategoryAndSubcategory(
+        @Param('categoryId', ParseIntPipe) categoryId: number,
+        @Param('subcategoryId', ParseIntPipe) subcategoryId: number
+    ): Promise<FeedbackForm[]> {
+        return this.feedbackFormService.findByCategoryAndSubcategory(categoryId, subcategoryId);
     }
 
     @Delete(':id')

@@ -11,6 +11,7 @@ export default function FeedbacksPage() {
     useEffect(() => {
         async function loadFeedbacks() {
             const data = await fetchFeedbacks();
+            console.log(data)
             setFeedbacks(data);
         }
         loadFeedbacks();

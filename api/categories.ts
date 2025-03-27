@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:6969/categories';
+const API_URL = 'http://localhost:6969/category';
 
 function getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem('token');

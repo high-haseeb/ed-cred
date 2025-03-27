@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, NotFoundException } from '@nestjs/common';
 import { FeedbackResponseService } from './feedback-response.service';
 import { CreateFeedbackResponseDto } from './dto/create-feedback-response.dto';
-import { UpdateFeedbackResponseDto } from './dto/update-feedback-response.dto';
 
-@Controller('feedback-response')
+@Controller('feedback-responses')
 export class FeedbackResponseController {
-  constructor(private readonly feedbackResponseService: FeedbackResponseService) {}
+    constructor(private readonly feedbackResponseService: FeedbackResponseService) {}
 
-  @Post()
-  create(@Body() createFeedbackResponseDto: CreateFeedbackResponseDto) {
-    return this.feedbackResponseService.create(createFeedbackResponseDto);
-  }
+    // Create a new feedback response
+    @Post()
+    async create(@Body() createFeedbackResponseDto: CreateFeedbackResponseDto) {
+        return await this.feedbackResponseService.createResponse(createFeedbackResponseDto);
+    }
 
-  @Get()
-  findAll() {
-    return this.feedbackResponseService.findAll();
-  }
+    // Get all feedback responses for a specific form
+    @Get('form/:formId')
+    async findAllByForm(@Param('formId') formId: string) {
+        return await this.feedbackResponseService.getResponsesByForm(formId);
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.feedbackResponseService.findOne(+id);
-  }
+    // Get a specific feedback response by ID
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+        const response = await this.feedbackResponseService.getResponseById(id);
+        if (!response) {
+            throw new NotFoundException('Feedback response not found');
+        }
+        return response;
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFeedbackResponseDto: UpdateFeedbackResponseDto) {
-    return this.feedbackResponseService.update(+id, updateFeedbackResponseDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.feedbackResponseService.remove(+id);
-  }
+    // Delete a feedback response by ID
+    @Delete(':id')
+    async remove(@Param('id') id: string) {
+        await this.feedbackResponseService.deleteResponse(id);
+        return { message: 'Feedback response deleted successfully' };
+    }
 }

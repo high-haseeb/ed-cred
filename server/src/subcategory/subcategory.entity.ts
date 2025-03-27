@@ -1,11 +1,9 @@
+import { Category } from 'src/category/category.entity';
 import { FeedbackForm } from 'src/feedback-form/entities/feedback-form.entity';
-import { Subcategory } from 'src/subcategory/subcategory.entity';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
-
-export type Permission = "post" | "feedback" | "review";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, ManyToOne } from 'typeorm';
 
 @Entity()
-export class Category {
+export class Subcategory {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -18,13 +16,10 @@ export class Category {
     @CreateDateColumn()
     createdAt: Date;
 
-    @Column("simple-array", { nullable: true })
-    permissions?: Permission[];
-
     // A category can be linked with multiple feedback forms
     @OneToMany(() => FeedbackForm, (feedbackForm) => feedbackForm.category)
     feedbackForms: FeedbackForm[];
 
-    @OneToMany(() => Subcategory, (subcategory) => subcategory.parentCategory)
-    subCategories: Subcategory[];
+    @ManyToOne(() => Category, (category) => category.subCategories, { onDelete: 'CASCADE' })
+    parentCategory: Category;
 }

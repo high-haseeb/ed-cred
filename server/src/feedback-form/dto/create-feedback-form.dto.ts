@@ -18,10 +18,7 @@ export interface Question {
 
 export class CreateFeedbackFormDto {
     categoryId: number;
-
-    // TODO:This should also be a ID that links to the subcategory table.
-    subCategory: string;
-
+    subCategoryId: number;
     authorId: number;
     title: string;
     isDraft: boolean;

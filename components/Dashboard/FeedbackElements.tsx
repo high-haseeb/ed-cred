@@ -24,7 +24,7 @@ import { AppleIcon, CheckIcon, MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Question, useQuestionStore } from "@/store/questionStore";
 import { v4 as uuidv4 } from "uuid";
-import { useCategoryStore } from "@/store/categoryStore";
+import { useCategoryStore, useSubCategoryStore } from "@/store/categoryStore";
 import { useEffect } from "react";
 
 export const TitleInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
@@ -96,6 +96,11 @@ export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof Gene
 }
 
 export const SubCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
+    const { categories, fetchCategories } = useSubCategoryStore();
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
     return (
         <FormField
             control={form.control}
@@ -110,9 +115,11 @@ export const SubCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof G
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                            <SelectItem value="school">School</SelectItem>
-                            <SelectItem value="hospital">Hospital</SelectItem>
-                            <SelectItem value="software">Software</SelectItem>
+                            {
+                                categories.length > 0 &&
+                                categories.filter(category => category.parentCategory.id?.toString()  == form.watch("category"))
+                                .map((category) => <SelectItem value={category.id?.toString() ?? ""} key={category.id}>{category.name}</SelectItem>)
+                            }
                         </SelectContent>
                     </Select>
                     <FormMessage />

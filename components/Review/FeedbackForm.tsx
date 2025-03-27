@@ -8,22 +8,99 @@ import { Textarea } from "../ui/textarea";
 import { Label } from "../ui/label";
 import { Question } from "@/store/questionStore";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Feedback } from "../MainDashboard/RecentFeedbacks";
+import { Input } from "../ui/input";
+import { createFeedbackResponse, CreateFeedbackResponseDto } from "@/api/feedback-response";
 
-export const FeedbackForm = ({ questions, color = "red" }: { questions: Question[], color?: string }) => {
+export const FeedbackForm = ({ feedback, color = "red" }: { feedback: Feedback, color?: string }) => {
     const [responses, setResponses] = useState<{ [key: string]: any }>({});
+    const [details, setDetails] = useState({
+        name: "",
+        web: "",
+        dates: "",
+        salary: "",
+        country: "",
+    });
 
     const handleResponseChange = (id: string, value: any) => {
         setResponses((prev) => ({ ...prev, [id]: value }));
     };
 
-    const handleSubmit = () => {
-        console.log("Submitted Feedback:", responses);
-        toast("Feedback submitted!");
+const handleSubmit = async () => {
+    try {
+            const feedbackResponse: CreateFeedbackResponseDto = {
+                feedbackFormId: feedback.id, 
+                details: {
+                    name: details.name || "",
+                    country: details.country || "",
+                    dates: details.dates || "",
+                    salary: details.salary || "",
+                    web: details.web || "",
+                },
+                answers: Object.entries(responses)
+                .filter(([key]) => !["name", "country", "dates", "salary", "web", "comments"].includes(key))
+                .map(([questionId, answer]) => ({
+                    questionId,
+                    answer,
+                })),
+                comments: responses["comments"] || "",
+                submittedAt: new Date().toISOString(),
+            };
+
+            await createFeedbackResponse(feedbackResponse);
+
+            toast("Feedback submitted successfully!");
+            setResponses({}); // Clear responses after submission
+        } catch (error) {
+            toast("Error submitting feedback.");
+            console.error(error);
+        }
     };
+
+    const questions = feedback.questions;
 
     return (
         <div className="w-full mb-20 flex max-w-4xl flex-col gap-4 py-10">
+            <div className="outline-muted rounded-md p-6 outline-2 flex flex-col w-full mt-10 gap-4">
+                <Input
+                    type="text"
+                    placeholder="Your name"
+                    value={details.name}
+                    onChange={(e) => setDetails((prev) => ({ ...prev, name: e.target.value }))}
+                />
+                {feedback.details.web && (
+                    <Input
+                        type="text"
+                        placeholder="Website"
+                        value={details.web}
+                        onChange={(e) => setDetails((prev) => ({ ...prev, web: e.target.value }))}
+                    />
+                )}
+                {feedback.details.dates && (
+                    <Input
+                        type="text"
+                        placeholder="Dates you worked there"
+                        value={details.dates}
+                        onChange={(e) => setDetails((prev) => ({ ...prev, dates: e.target.value }))}
+                    />
+                )}
+                {feedback.details.salary && (
+                    <Input
+                        type="text"
+                        placeholder="Your estimated salary"
+                        value={details.salary}
+                        onChange={(e) => setDetails((prev) => ({ ...prev, salary: e.target.value }))}
+                    />
+                )}
+                {feedback.details.country && (
+                    <Input
+                        type="text"
+                        placeholder="Your country"
+                        value={details.country}
+                        onChange={(e) => setDetails((prev) => ({ ...prev, country: e.target.value }))}
+                    />
+                )}
+            </div>
             {questions.map((question, index) => (
                 <div className={`outline-2 outline-muted flex ${question.type != "rating" ? "flex-col" : ""} w-full justify-between rounded-md p-4`} key={`feedback-question-${index}`}>
                     <p className="mb-2 font-medium">{question.text}</p>

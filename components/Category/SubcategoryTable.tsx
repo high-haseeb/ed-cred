@@ -1,21 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Input } from "../ui/input";
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationEllipsis, PaginationLink } from "../ui/pagination";
 import { FilterXIcon, Trash2Icon } from "lucide-react";
-import { useCategoryStore } from "@/store/categoryStore";
+import { useSubCategoryStore } from "@/store/categoryStore";
 
-export const CategoryTable = () => {
+export const SubCategoryTable = () => {
     const [filteredStatus, setFilteredStatus] = useState<string>("");
     const [search, setSearch] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 6;
 
-    const { categories, removeCategory } = useCategoryStore();
+    const { categories, removeCategory, fetchCategories } = useSubCategoryStore();
+    useEffect(() => {
+        fetchCategories();
+    }, []);
 
     // Filtering logic
     const filteredCategories = categories.filter((cat) =>
@@ -61,10 +64,10 @@ export const CategoryTable = () => {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Category</TableHead>
+                        <TableHead>Sub Category</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Sub Categories</TableHead>
                         <TableHead>Created At</TableHead>
+                        <TableHead>Parent Category</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -74,7 +77,6 @@ export const CategoryTable = () => {
                             <TableCell className={category.status === "active" ? "text-green-500" : "text-red-500"}>
                                 {category.status}
                             </TableCell>
-                            <TableCell>{category.subCategories && category.subCategories.length}</TableCell>
                             <TableCell className="">
                                 {new Intl.DateTimeFormat("en-US", {
                                     day: "numeric",
@@ -82,6 +84,7 @@ export const CategoryTable = () => {
                                     year: "numeric",
                                 }).format(new Date(category.createdAt ?? ""))}
                             </TableCell>
+                            <TableCell>{category.parentCategory.name}</TableCell>
                             <TableCell className="text-right self-end w-10">
                             <div className="flex gap-2 w-max">
                                 <Button 

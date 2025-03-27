@@ -5,16 +5,18 @@ import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Input } from "../ui/input";
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext, PaginationEllipsis, PaginationLink } from "../ui/pagination";
-import { FilterXIcon } from "lucide-react";
-import { fetchFeedbacks } from "@/api/feedback";
+import { FilterXIcon, Trash2Icon } from "lucide-react";
+import { deleteFeedback, fetchFeedbacks } from "@/api/feedback";
 import { Question } from "@/store/questionStore";
+import { Category, SubCategory } from "@/store/categoryStore";
+import { useRouter } from "next/navigation";
 
 // TODO:factor it out in the common module
 export interface Feedback {
     id: string;
     title: string;
-    category: any;
-    subCategory: string;
+    category: Category;
+    subcategory: SubCategory;
     status: boolean;
     createdAt: Date;
     author: { username: string };
@@ -31,11 +33,11 @@ export interface Feedback {
 export const RecentFeedback = () => {
     const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
 
+    async function loadFeedbacks() {
+        const data = await fetchFeedbacks();
+        setFeedbacks(data);
+    }
     useEffect(() => {
-        async function loadFeedbacks() {
-            const data = await fetchFeedbacks();
-            setFeedbacks(data);
-        }
         loadFeedbacks();
     }, []);
 
@@ -47,9 +49,9 @@ export const RecentFeedback = () => {
     const itemsPerPage = 6;
 
     const filteredFeedbacks = feedbacks.filter(fb => 
-        (filteredStatus ? fb.status === filteredStatus : true) &&
-            (filteredCategory ? fb.category === filteredCategory : true) &&
-            (filteredSubcategory ? fb.subcategory === filteredSubcategory : true) &&
+        (filteredStatus ? fb.status : true) &&
+            (filteredCategory ? fb.category.name === filteredCategory : true) &&
+            (filteredSubcategory ? fb.subcategory.name === filteredSubcategory : true) &&
             (search ? fb.title.toLowerCase().includes(search.toLowerCase()) : true)
     );
 
@@ -66,6 +68,7 @@ export const RecentFeedback = () => {
         setSearch("");
         setCurrentPage(1);
     };
+    const router = useRouter();
 
     return (
         <Card className="col-span-4 shadow-none">
@@ -129,18 +132,28 @@ export const RecentFeedback = () => {
                     <TableBody>
                         {paginatedFeedbacks.map((fb, index) => (
                             <TableRow key={index}>
-                                <TableCell>{fb.title}</TableCell>
+                                <TableCell onClick={() => router.push(`/feedback/${fb.id}`)}>{fb.title}</TableCell>
                                 <TableCell>{fb.category.name}</TableCell>
-                                <TableCell>{fb.subCategory}</TableCell>
+                                <TableCell>{fb.subcategory && fb.subcategory.name}</TableCell>
                                 <TableCell className={fb.status ? "text-green-500" : "text-red-500"}>
                                     {fb.status ? "active" : "draft"}
                                 </TableCell>
                                 <TableCell>{fb.questions.length}</TableCell>
-                                <TableCell>{new Intl.DateTimeFormat("en-US", {
-                                            day: "numeric",
-                                            month: "long",
-                                            year: "numeric",
-                                        }).format(new Date(fb.createdAt ?? ""))}</TableCell>
+                                <TableCell>
+                                    {new Intl.DateTimeFormat("en-US", {
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric",
+                                    }).format(new Date(fb.createdAt ?? ""))}
+                                </TableCell>
+                                <TableCell>
+                                    <Button variant={"destructive"} size={"icon"} onClick={() => {
+                                        deleteFeedback(fb.id)
+                                        loadFeedbacks();
+                                    }}>
+                                        <Trash2Icon />
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

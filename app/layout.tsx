@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Geist, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/Common/theme-provider";
@@ -8,7 +8,7 @@ export const metadata = {
     description: "Your Trusted Platform for Honest Feedbacks. With stellar one-click reports and unmatched support, see how Circle will make a difference in your business.",
 };
 
-const inter = Inter({
+const inter = Geist({
     subsets: ["latin"],
     variable: "--font-inter"
 });

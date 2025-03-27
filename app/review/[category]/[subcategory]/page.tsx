@@ -2,18 +2,17 @@
 import { getFeedbackByCategory } from "@/api/feedback";
 import { Feedback } from "@/components/MainDashboard/RecentFeedbacks";
 import FeedbackForm from "@/components/Review/FeedbackForm";
-import { Input } from "@/components/ui/input";
 import { LoaderIcon } from "lucide-react";
 import { use, useEffect, useState } from "react";
 
-export default function ReivewPage({ params }: { params: Promise<{ category: string }> }) {
-    const { category } = use(params);
+export default function ReivewPage({ params }: { params: Promise<{ category: string; subcategory: string; }> }) {
+    const { category, subcategory } = use(params);
     const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
     const [notFound, setNotFound] = useState(false);
 
     useEffect(() => {
         async function loadFeedbacks() {
-            const data = await getFeedbackByCategory(category);
+            const data = await getFeedbackByCategory(category, subcategory);
             console.log(data);
             if (data.error || data.length == 0) {
                 setNotFound(true);
@@ -34,7 +33,7 @@ export default function ReivewPage({ params }: { params: Promise<{ category: str
                             <p className="text-lg">The review you are looking for is not found</p>
                         </div> 
                         :
-                            feedbacks.length <= 0 ? 
+                        feedbacks.length <= 0 ? 
                             <LoaderIcon className="animate-spin" />
                             :
                             <div className="w-2xl flex h-full flex-col items-start py-10">
@@ -47,7 +46,7 @@ export default function ReivewPage({ params }: { params: Promise<{ category: str
                                                     published by <span className="font-semibold">{feedback.author.username}</span>
                                                 </p>
                                                 <p className="text-muted-foreground text-base font-normal lowercase">
-                                                on {new Intl.DateTimeFormat("en-US", {
+                                                    on {new Intl.DateTimeFormat("en-US", {
                                                         day: "numeric",
                                                         month: "long",
                                                         year: "numeric",
@@ -55,18 +54,10 @@ export default function ReivewPage({ params }: { params: Promise<{ category: str
                                                 </p>
                                             </div>
 
-                                            <div className="outline-muted rounded-md p-6 outline-2 flex flex-col w-full mt-10 gap-4">
-                                                <Input type="text" placeholder="your name"/>
-                                                { feedback.details.name ? <Input type="text" placeholder="your name" /> : null }
-                                                { feedback.details.web ? <Input type="text" placeholder="website" /> : null }
-                                                { feedback.details.dates ? <Input type="text" placeholder="dates you worked there" /> : null }
-                                                { feedback.details.salary ? <Input type="text" placeholder="your estimated salary" /> : null }
-                                                { feedback.details.country ? <Input type="text" placeholder="your country" /> : null }
-                                            </div>
-                                            <FeedbackForm questions={feedback.questions} />
+                                            <FeedbackForm feedback={feedback} />
                                         </div>
                                     )
-                                )}
+                                    )}
                             </div>
                 }
             </div>

@@ -5,6 +5,7 @@ import { CreateFeedbackFormDto } from './dto/create-feedback-form.dto';
 import { FeedbackForm } from './entities/feedback-form.entity';
 import { User } from 'src/auth/user.entity';
 import { Category } from 'src/category/category.entity';
+import { Subcategory } from 'src/subcategory/subcategory.entity';
 
 @Injectable()
 export class FeedbackFormService {
@@ -17,10 +18,13 @@ export class FeedbackFormService {
 
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,
+
+        @InjectRepository(Subcategory)
+        private readonly subcategoryRepository: Repository<Subcategory>,
     ) {}
 
     async create(createFeedbackFormDto: CreateFeedbackFormDto): Promise<FeedbackForm> {
-        const { categoryId, authorId, ...rest } = createFeedbackFormDto;
+        const { categoryId, subCategoryId, authorId, ...rest } = createFeedbackFormDto;
 
         // Fetch user and category
         const user = await this.userRepository.findOne({ where: { id: authorId } });
@@ -29,10 +33,14 @@ export class FeedbackFormService {
         const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
         if (!category) throw new NotFoundException(`Category with ID ${categoryId} not found`);
 
+        const subcategory = await this.subcategoryRepository.findOne({ where: { id: subCategoryId } });
+        if (!subcategory) throw new NotFoundException(`SubCategory with ID ${subCategoryId} not found`);
+
         // Create new FeedbackForm
         const feedbackForm = this.feedbackFormRepository.create({
             ...rest,
             category,
+            subcategory,
             author: user,
         });
 
@@ -40,31 +48,48 @@ export class FeedbackFormService {
     }
 
     async findAll(): Promise<FeedbackForm[]> {
-        return await this.feedbackFormRepository.find({ relations: ['author', 'category'] });
+        return await this.feedbackFormRepository.find({ relations: ['author', 'category', 'subcategory', 'responses'] });
     }
 
     async findOne(id: number): Promise<FeedbackForm> {
         const feedbackForm = await this.feedbackFormRepository.findOne({
             where: { id },
-            relations: ['author', 'category'],
+            relations: ['author', 'category', 'subcategory', 'responses'],
         });
 
         if (!feedbackForm) throw new NotFoundException(`FeedbackForm with ID ${id} not found`);
         return feedbackForm;
     }
 
-async findByCategoryId(categoryId: number): Promise<FeedbackForm[]> {
-    const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
+    async findByCategoryId(categoryId: number): Promise<FeedbackForm[]> {
+        const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
 
-    if (!category) {
-        throw new NotFoundException(`Category with ID ${categoryId} not found`);
+        if (!category) {
+            throw new NotFoundException(`Category with ID ${categoryId} not found`);
+        }
+
+        return await this.feedbackFormRepository.find({
+            where: { category },
+            relations: ['author', 'category', 'subcategory', 'responses'],
+        });
     }
 
-    return await this.feedbackFormRepository.find({
-        where: { category },
-        relations: ['author', 'category'],
-    });
-}
+    async findByCategoryAndSubcategory(categoryId: number, subcategoryId: number): Promise<FeedbackForm[]> {
+        const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
+        if (!category) {
+            throw new NotFoundException(`Category with ID ${categoryId} not found`);
+        }
+
+        const subcategory = await this.subcategoryRepository.findOne({ where: { id: subcategoryId, parentCategory: category } });
+        if (!subcategory) {
+            throw new NotFoundException(`Subcategory with ID ${subcategoryId} not found in Category ${categoryId}`);
+        }
+
+        return await this.feedbackFormRepository.find({
+            where: { category, subcategory: subcategory },
+            relations: ['author', 'category', 'subcategory', 'responses'],
+        });
+    }
 
     async remove(id: number): Promise<void> {
         const result = await this.feedbackFormRepository.delete(id);

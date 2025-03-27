@@ -128,6 +128,7 @@ function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
                 { href: "/review/", label: "Review" },
                 { href: "/posts", label: "Posts" },
                 { href: "/category", label: "Categories" },
+                { href: "/subcategory", label: "SubCategories" },
                 { href: "/settings", label: "Settings" },
             ].map(({ href, label }) => (
                 <Link

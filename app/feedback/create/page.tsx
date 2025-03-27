@@ -63,7 +63,7 @@ const PublishFeedback = () => {
             }
 
             resetFeedback();
-            router.push("/feedbacks");
+            router.push("/feedback");
         } catch (error) {
             toast(`Error saving the feedback: ${error}`);
             console.error("Error sending questions:", error);
