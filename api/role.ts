@@ -63,7 +63,7 @@ export const getRoleById = async (id: number): Promise<Role> => {
 };
 
 // Update a role
-export const updateRole = async (id: number, updatedRole: Partial<CreateRoleDto>): Promise<Role> => {
+export const updateRole = async (id: number, updatedRole: Permissions): Promise<Role> => {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
