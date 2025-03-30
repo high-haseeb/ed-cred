@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
-import { Content } from '@tiptap/react';
 
 @Entity()
 export class Post {
@@ -22,7 +21,7 @@ export class Post {
     image: string;
 
     @Column({ type: 'jsonb' })
-    body: Content;
+    body: any;
 
     @CreateDateColumn()
     createdAt: Date;

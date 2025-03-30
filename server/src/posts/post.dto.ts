@@ -1,5 +1,4 @@
 import { IsString, IsEnum, IsBoolean, IsOptional } from 'class-validator';
-import { Content } from '@tiptap/react';
 
 export class CreatePostDto {
     @IsString()
@@ -18,7 +17,7 @@ export class CreatePostDto {
     @IsString()
     image?: string;
 
-    body: Content;
+    body: any;
 }
 
 export class UpdatePostDto extends CreatePostDto {}
