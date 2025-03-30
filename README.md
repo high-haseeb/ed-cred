@@ -20,4 +20,4 @@ npm install
 npm run dev
 ```
 
-> <div style="display:flex;align-items:center;gap:1rem;">A project of<img src="./client/public/images/high-house-logo.png" width="100" ></img></div>
+> <div style="display:flex;align-items:center;gap:1rem;">A project of<img src="./client/public/images/high-house-logo.png" width="100" style="margin-left:0.5rem;" ></img></div>
