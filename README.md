@@ -1,4 +1,4 @@
-# <div style="display:flex; gap:1rem;align-items:center;"><img src="./public/images/logo.png" width="80"></img>Ed-Cred</div>
+# <div style="display:flex; gap:1rem;align-items:center;"><img src="./client/public/images/logo.png" width="80"></img>Ed-Cred</div>
 
 Your Trusted Platform for Honest Feedbacks. With stellar one-click reports and unmatched support, see how Circle will make a difference in your business.
 
@@ -20,4 +20,4 @@ npm install
 npm run dev
 ```
 
-> <div style="display:flex;align-items:center;gap:1rem;">A project of<img src="./public/images/high-house-logo.png" width="100" ></img></div>
+> <div style="display:flex;align-items:center;gap:1rem;">A project of<img src="./client/public/images/high-house-logo.png" width="100" ></img></div>
