@@ -66,7 +66,7 @@ export function LoginForm({
                     </span>
                 </div>
                 <Button variant="outline" className="w-full">
-                    <Image src="/google_icon.svg" width={24} height={24} alt="google_icon" />
+                    <Image src="/icons/google_icon.svg" width={24} height={24} alt="google_icon" />
                     Login with Google
                 </Button>
             </div>

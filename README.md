@@ -20,4 +20,9 @@ npm install
 npm run dev
 ```
 
+### Todo
+* make a happy flow
+* JWT refresh tokens
+* Refactor types into shared module
+
 > <div style="display:flex;align-items:center;gap:1rem;">A project of<img src="./client/public/images/high-house-logo.png" width="100" style="margin-left:0.5rem;" ></img></div>
