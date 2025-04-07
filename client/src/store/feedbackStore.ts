@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { toast } from "sonner";
 
-const API_URL = "http://localhost:6969/feedback";
+const BASE_URL = "188.132.135.5"  
+export const API_URL = `http://${BASE_URL}:6969/feedback`;
 
 export interface Feedback {
     id: string;

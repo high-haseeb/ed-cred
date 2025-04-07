@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 
-export const API_BASE_URL = 'http://localhost:6969/auth';
+const BASE_URL = "188.132.135.5"  
+export const API_BASE_URL = `http://${BASE_URL}:6969/auth`;
 
 export async function signup(username: string, email: string, password: string) {
     const response = await fetch(`${API_BASE_URL}/signup`, {

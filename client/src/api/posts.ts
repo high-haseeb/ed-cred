@@ -1,5 +1,6 @@
 import { toast } from "sonner";
-const API_BASE_URL  = "http://localhost:6969/posts"
+//const API_BASE_URL  = "http://localhost:6969/posts"
+const API_BASE_URL  = "http://188.132.135.5:6969/posts"
 
 export interface Post {
     id?: string;

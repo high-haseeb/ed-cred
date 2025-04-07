@@ -15,7 +15,9 @@ interface CategoryStore {
     removeCategory: (id: number) => Promise<void>;
 }
 
-const API_URL = "http://localhost:6969";
+
+const BASE_URL = "188.132.135.5"  
+export const API_URL = `http://${BASE_URL}:6969/`;
 
 function getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem("token");
