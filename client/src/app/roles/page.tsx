@@ -1,21 +1,38 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Title } from "@/components/Common/Title";
+import { Checkbox } from "@/components/ui/checkbox";
+import { 
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card";
+import { 
+    Dialog, 
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
+import {
+    getAllRoles,
+    createRole,
+    updateRole,
+    deleteRole,
+    Role,
+    Permissions
+} from "@/api/role";
 import { toast } from "sonner";
-import { getAllRoles, createRole, updateRole, deleteRole, Role, Permissions } from "@/api/role";
 
 const defaultPermissions: Permissions = {
-    teacher: { create: false, view: false, update: false, delete: false },
-    admin: { create: false, view: false, update: false, delete: false },
+    teacher:    { create: false, view: false, update: false, delete: false },
+    admin:      { create: false, view: false, update: false, delete: false },
     leadership: { create: false, view: false, update: false, delete: false },
-    district: { create: false, view: false, update: false, delete: false },
-    parent: { create: false, view: false, update: false, delete: false },
+    district:   { create: false, view: false, update: false, delete: false },
+    parent:     { create: false, view: false, update: false, delete: false },
 };
 
 const Roles = () => {
@@ -24,6 +41,7 @@ const Roles = () => {
     const [selectedRole, setSelectedRole] = useState<Role | null>(null);
     const [permissions, setPermissions] = useState<Permissions>(defaultPermissions);
 
+    //TODO: Seprate this out to a store
     useEffect(() => {
         fetchRoles();
     }, []);

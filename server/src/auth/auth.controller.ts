@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, UseGuards, ForbiddenException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
@@ -7,7 +7,7 @@ export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post('signup')
-    async signup(@Body() { username, email, password }: { username: string; email: string; password: string }) {
+    async signup(@Body() { username, email, password }: { username: string; email: string; password: string; }) {
         return this.authService.signup(username, email, password);
     }
 
@@ -20,5 +20,23 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     async getProfile(@Req() req) {
         return this.authService.getProfile(req.user.id);
+    }
+
+    @Get('users')
+    @UseGuards(JwtAuthGuard)
+    async getUsers(@Req() req) {
+        if (req.user.role !== "admin") {
+            throw new ForbiddenException("You do not have permission to view the users");
+        }
+        return this.authService.getUsers();
+    }
+
+    @Post('users/role')
+    @UseGuards(JwtAuthGuard)
+    async setUserRole(@Req() req) {
+        if (req.user.role !== "admin") {
+            throw new ForbiddenException("You do not have permission to change a users role");
+        }
+        return this.authService.updateUserRole(req.body.userId, req.body.userRole);
     }
 }

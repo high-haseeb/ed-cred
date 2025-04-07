@@ -1,21 +1,36 @@
 "use client";
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MenuIcon, XIcon } from 'lucide-react';
 import Signup from '@/components/Landing/Signup';
 import Signin from '@/components/Landing/Signin';
+import { getProfile } from '@/api/auth';
+import { UserNav } from '../Common/Navbar';
 
 const NavigationItems = [
-    { title: "Home", link: "/home" },
-    { title: "Write a Feedback", link: "/feedback/new" },
-    { title: "Read Feedbacks", link: "/feedback/read" },
-    { title: "Forums", link: "/forums" },
-    { title: "Disscussion Boards", link: "/disscussion-boards" },
-    { title: "Dispute Review", link: "/dispute-review" },
+    { title: "Home", link: "/" },
+    { title: "Write a Feedback", link: "/feedback/create/" },
+    { title: "Read Feedbacks", link: "/feedback/" },
+    { title: "Posts", link: "/posts/" },
+    { title: "Forums", link: "/forum" },
 ];
 
 const Navbar = () => {
+
+    const [user, setUser] = useState();
+    const setup = async() => {
+        const user = await getProfile();
+        if (!user.error) {
+            setUser(user);
+        }
+    }
+
+    useEffect(() => {
+        setup();
+    }, []);
+
     return (
         <div className="fixed top-0 left-0 flex h-max w-screen items-center justify-between bg-white px-4 py-2 shadow-md md:px-8 z-50 text-black">
             <div className="flex items-center justify-center gap-2 md:gap-4">
@@ -28,10 +43,15 @@ const Navbar = () => {
                     NavigationItems.map((item, index) => <NavigationItem {...item} key={index} />)
                 }
             </div>
-            <div className="flex gap-2 md:gap-4">
-                <Signup />
-                <Signin />
-            </div>
+            {
+                user ? 
+                    <UserNav />
+                :
+                <div className="flex gap-2 md:gap-4">
+                    <Signup />
+                    <Signin />
+                </div>
+            }
         </div>
     )
 };

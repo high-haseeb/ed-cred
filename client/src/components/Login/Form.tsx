@@ -57,6 +57,9 @@ export function LoginForm({
                     </div>
                     <Input id="password" type="password" required onChange={(e) => setPassword(e.target.value)} />
                 </div>
+                {
+                    error && <div className="text-destructive-foreground">{error}</div>
+                }
                 <Button type="submit" className="w-full">
                     Login
                 </Button>

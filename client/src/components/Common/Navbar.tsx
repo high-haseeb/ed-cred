@@ -50,7 +50,7 @@ export interface UserProfile {
     email: string;
 }
 
-function UserNav() {
+export function UserNav() {
 
     const [profile, setProfile] = useState<UserProfile | null>();
     const router = useRouter();
@@ -93,7 +93,7 @@ function UserNav() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/profile")}>
                         Profile
                     </DropdownMenuItem>
                     <DropdownMenuItem>
@@ -116,12 +116,7 @@ function UserNav() {
 function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
     const pathname = usePathname();
 
-    return (
-        <nav
-            className={cn("flex items-center space-x-4 lg:space-x-6", className)}
-            {...props}
-        >
-            {[
+    const links = [
                 { href: "/dashboard", label: "Overview" },
                 { href: "/feedback", label: "Feedback" },
                 { href: "/forum", label: "Forum" },
@@ -130,7 +125,14 @@ function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
                 { href: "/category", label: "Categories" },
                 { href: "/subcategory", label: "SubCategories" },
                 { href: "/settings", label: "Settings" },
-            ].map(({ href, label }) => (
+            ];
+
+    return (
+        <nav
+            className={cn("flex items-center space-x-4 lg:space-x-6", className)}
+            {...props}
+        >
+            {links.map(({ href, label }) => (
                 <Link
                     key={href}
                     href={href}

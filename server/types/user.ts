@@ -12,8 +12,8 @@ enum UserCategory {
 }
 
 enum Permission {
-    VIEW_POST            = "view_post",
-    CREATE_POST          = "create_post",
+    VIEW_POST   = "view_post",
+    CREATE_POST = "create_post",
     CREATE_FEEDBACK_FORM = "create_feedback_form",
     ANSWER_FEEDBACK_FORM = "answer_feedback_form",
 }

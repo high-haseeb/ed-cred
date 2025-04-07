@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Req, UseGuards, ForbiddenException } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto, UpdatePostDto } from './post.dto';
 import { Post as PostEntity } from './post.entity';
+import { JwtAuthGuard } from './../auth/jwt-auth.guard';
+import {  Permission } from "./../../types/user";
 
 @Controller('posts')
 export class PostController {
@@ -13,7 +15,11 @@ export class PostController {
     }
 
     @Get()
-    getPosts(): Promise<Partial<PostEntity>[]> {
+    @UseGuards(JwtAuthGuard)
+    getPosts(@Req() req): Promise<Partial<PostEntity>[]> {
+        if (!req.permissions?.includes(Permission.VIEW_POST) && req.user.role !== "admin") {
+            throw new ForbiddenException('You do not have permission to view posts');
+        }
         return this.postService.getPosts();
     }
 

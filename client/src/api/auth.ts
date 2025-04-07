@@ -9,8 +9,6 @@ export async function signup(username: string, email: string, password: string) 
         body: JSON.stringify({ username, email, password }),
     });
     const data = await response.json();
-    console.log(data);
-    if (data.error) return data;
     return data;
 }
 
@@ -24,7 +22,7 @@ export async function login(identifier: string, password: string) {
     const data = await response.json();
     console.log(data);
     if (data.error) return data;
-    localStorage.setItem('token', data.accessToken);
+    localStorage.setItem('token', data.token);
     return { success: true };
 }
 

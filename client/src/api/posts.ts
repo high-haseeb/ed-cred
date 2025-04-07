@@ -15,7 +15,14 @@ export interface Post {
 // Generic function to handle API requests
 async function apiRequest<T>(url: string, options?: RequestInit): Promise<T | null> {
     try {
-        const response = await fetch(url, options);
+        const token = localStorage.getItem('token');
+        if (!token) return null;
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
         if (!response.ok) {
             const errorText = await response.text();
             console.error(`Error: ${response.status} - ${errorText}`);

@@ -1,10 +1,26 @@
 "use client";
+import { useEffect } from "react";
 import { OverviewTab } from "@/components/MainDashboard/Overview";
 import { SideMenu } from "@/components/Common/SideMenu";
 import { Navbar } from "@/components/Common/Navbar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { getProfile } from "@/api/auth";
+import { redirect } from "next/navigation";
 
 const Dashboard = () => {
+
+    const checkStatus = async() => {
+        const user = await getProfile();
+        console.log(user.role);
+        if (user.role !== "admin") {
+            redirect("/");
+        }
+    }
+
+    useEffect(() => {
+        checkStatus();
+    }, []);
+
     return(
         <SidebarProvider>
             <SideMenu />
