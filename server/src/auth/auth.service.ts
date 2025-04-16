@@ -1,15 +1,17 @@
-import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from './user.entity';
-import { UserRole, UserCategory } from "./../../types/user";
+import { UserRole } from "./../../types/user";
+import { Category } from 'src/category/category.entity';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(Category) private categoryRepository: Repository<Category>,
         private jwtService: JwtService,
     ) {}
 
@@ -42,11 +44,20 @@ export class AuthService {
             password: hashedPassword,
             role: UserRole.USER,            // default role is USER
             permissions: [],                // no permissions allowed
-            category: UserCategory.STUDENT, // TODO: user must select their category
         });
         await this.userRepository.save(newUser);
 
-        return { message: "Signup successful" };
+        const token = this.jwtService.sign({ 
+            id: newUser.id,
+            username: newUser.username,
+            email: newUser.email,
+            role: newUser.role,
+            category: newUser.category,
+            subscription: newUser.subscription,
+            permissions: newUser.permissions,
+        });
+
+        return { token };
     }
 
     async login(identifier: string, password: string) {
@@ -85,7 +96,8 @@ export class AuthService {
                 'permissions',
                 'subscription',
                 'isVerified'
-            ]
+            ],
+            relations: ["category"],
         });
 
         if (!user) throw new UnauthorizedException("User not found");
@@ -98,11 +110,13 @@ export class AuthService {
                 'id',
                 'username',
                 'email',
+                'category',
                 'role',
                 'isVerified',
-                'category',
+                'subscription',
                 'createdAt'
-            ]
+            ],
+            relations: ['category'],
         });
 
         return users;
@@ -111,6 +125,22 @@ export class AuthService {
     async updateUserRole(id: number, role: UserRole): Promise<User> {
         await this.userRepository.update(id, { role });
         return await this.userRepository.findOneOrFail({ where: { id }, select: ['id', 'username', 'role']},)
+    }
+
+    async updateUserCategory(userId: number, categoryId: number) {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
+        if (!category) {
+            throw new NotFoundException('Category not found');
+        }
+
+        user.category = category;
+        await this.userRepository.save(user);
+        return user.category;
     }
 
     async findUserById(userId: number) {

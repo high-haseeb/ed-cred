@@ -22,7 +22,7 @@ const Navbar = () => {
     const [user, setUser] = useState();
     const setup = async() => {
         const user = await getProfile();
-        if (!user.error) {
+        if (!user.error && !user.message) {
             setUser(user);
         }
     }

@@ -1,10 +1,12 @@
 import { create } from "zustand";
+import { API_BASE_URL } from "@/api/config";
 
 export interface Category {
     id?: number;
     name: string;
     status: "active" | "draft";
     createdAt: Date;
+    requiresVerification: boolean;
     subCategories: SubCategory[];
 }
 
@@ -14,10 +16,6 @@ interface CategoryStore {
     addCategory: (category: Omit<Category, "createdAt">) => Promise<void>;
     removeCategory: (id: number) => Promise<void>;
 }
-
-
-const BASE_URL = "188.132.135.5"  
-export const API_URL = `http://${BASE_URL}:6969/`;
 
 function getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem("token");
@@ -34,7 +32,7 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
 
     fetchCategories: async () => {
         try {
-            const response = await fetch(`${API_URL}/category`, { headers: getAuthHeaders() });
+            const response = await fetch(`${API_BASE_URL}/category`, { headers: getAuthHeaders() });
             if (!response.ok) throw new Error("Failed to fetch categories");
             const data: Category[] = await response.json();
             set({ categories: data });
@@ -46,7 +44,7 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
     addCategory: async (category) => {
         try {
             const newCategory = { ...category, createdAt: new Date() };
-            const response = await fetch(`${API_URL}/category`, {
+            const response = await fetch(`${API_BASE_URL}/category`, {
                 method: "POST",
                 headers: getAuthHeaders(),
                 body: JSON.stringify(newCategory),
@@ -61,7 +59,7 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
 
     removeCategory: async (id) => {
         try {
-            const response = await fetch(`${API_URL}/category/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/category/${id}`, {
                 method: "DELETE",
                 headers: getAuthHeaders(),
             });
@@ -95,7 +93,7 @@ export const useSubCategoryStore = create<SubCategoryStore>((set) => ({
 
     fetchCategories: async () => {
         try {
-            const response = await fetch(`${API_URL}/subcategory`, { headers: getAuthHeaders() });
+            const response = await fetch(`${API_BASE_URL}/subcategory`, { headers: getAuthHeaders() });
             if (!response.ok) throw new Error("Failed to fetch categories");
             const data: SubCategory[] = await response.json();
             set({ categories: data });
@@ -108,7 +106,7 @@ export const useSubCategoryStore = create<SubCategoryStore>((set) => ({
     addCategory: async (category) => {
         try {
             const newCategory = { ...category, createdAt: new Date() };
-            const response = await fetch(`${API_URL}/subcategory/`, {
+            const response = await fetch(`${API_BASE_URL}/subcategory/`, {
                 method: "POST",
                 headers: getAuthHeaders(),
                 body: JSON.stringify(newCategory),
@@ -123,7 +121,7 @@ export const useSubCategoryStore = create<SubCategoryStore>((set) => ({
 
     removeCategory: async (id) => {
         try {
-            const response = await fetch(`${API_URL}/subcategory/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/subcategory/${id}`, {
                 method: "DELETE",
                 headers: getAuthHeaders(),
             });

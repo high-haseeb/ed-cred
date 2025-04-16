@@ -7,8 +7,8 @@ export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
 
     @Post()
-    async createCategory(@Body() data: { name: string; status: "active" | "draft"; permissions?: string[] }): Promise<Category> {
-        return this.categoryService.createCategory(data.name, data.status, data.permissions);
+    async createCategory(@Body() data: Category): Promise<Category> {
+        return this.categoryService.createCategory(data);
     }
 
     @Get()

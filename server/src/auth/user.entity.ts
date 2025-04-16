@@ -1,8 +1,9 @@
 import { ForumQuestion } from 'src/forum-question/entities/forum-question.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, ManyToOne } from 'typeorm';
 import { ForumReply } from 'src/forum-reply/entities/forum-reply.entity';
 import { FeedbackForm } from 'src/feedback-form/entities/feedback-form.entity';
-import { UserRole, UserCategory, Permission, SubscriptionPlan } from "./../../types/user";
+import { UserRole, Permission, SubscriptionPlan } from "./../../types/user";
+import { Category } from 'src/category/category.entity';
 
 @Entity()
 export class User {
@@ -28,8 +29,6 @@ export class User {
     @Column({ type: 'enum', enum: UserRole })
     role: UserRole;
 
-    @Column({ type: 'enum', enum: UserCategory })
-    category: UserCategory;
 
     @Column({ type: 'enum', enum: Permission, array: true })
     permissions: Permission[];
@@ -50,15 +49,17 @@ export class User {
     @Column({ type: 'jsonb', nullable: true })
     preferences?: Record<string, any>;
 
-    // A user can ask multiple questions and multiple replies
-    // This is a relationship that defines this.
+    //NOTE: if we delete a category, what shall happen to the 
+    // users of that category?
+    @ManyToOne(() => Category, (category) => category.users)
+    category: Category;
+
     @OneToMany(() => ForumQuestion, (question) => question.author)
     questions: ForumQuestion[];
 
     @OneToMany(() => ForumReply, (reply) => reply.author)
     replies: ForumReply[];
 
-    // A User can publish multiple feedback forms
     @OneToMany(() => FeedbackForm, (form) => form.author)
     feedbackForms: FeedbackForm[];
 }

@@ -10,21 +10,23 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
+import { Category } from "@/store/categoryStore";
 
 interface ListingUser {
     username:   string;
     email:      string;
     role:       string;
-    isVerified: boolean,
-    category:   string,
-    createdAt:  Date,
-    id:         number,
+    isVerified: boolean;
+    category:   Category;
+    createdAt:  Date;
+    id:         number;
 }
 
 const UsersPage = () => {
 
     const [users, setUsers] = useState<ListingUser[]>([]);
     const [error, setError] = useState("");
+    const [categories, setCategories] = useState<Category[]>([]);
 
     const setup = async () => {
         const response = await request('auth/users');
@@ -34,6 +36,9 @@ const UsersPage = () => {
         }
         setError("");
         setUsers(response);
+
+        const categories = await request('category');
+        setCategories(categories);
     }
 
     const updateUserRole = async(userId: number, newRole: string) => {
@@ -46,6 +51,17 @@ const UsersPage = () => {
         setup();
     }, []);
 
+    const setUserCategory = async (userId: string, categoryId: string)  => {
+        const response = await postRequest(
+            "auth/category/update/",
+            JSON.stringify({ userId, categoryId }));
+        if (response.error) {
+            toast.error(response.message);
+            return;
+        }
+        toast.info(`User with id ${userId} category has been updated to ${response.name}`);
+    }
+
     return (
         <div className="w-full h-full overflow-hidden bg-background text-foreground">
             <div className="w-2xl mx-auto flex flex-col gap-4 my-10">
@@ -56,7 +72,7 @@ const UsersPage = () => {
                 {
                     users.map((user, i) => (<div key={i} className="p-4 rounded-md border-2 border-muted">
                         <div className="text-2xl font-semibold capitalize flex gap-2 items-baseline">{user.username}
-                            <span className="text-muted-foreground text-xl">({user.category})</span>
+                            <span className="text-muted-foreground text-xl">({user.category.name})</span>
                             <div className={`ml-auto px-2 py-0.1 text-sm font-normal rounded-full ${user.isVerified ? "bg-green-800" : "bg-red-800"} text-white lowercase`}>
                                 {user.isVerified ? "verfied" : "not verified"}
                             </div>
@@ -89,14 +105,18 @@ const UsersPage = () => {
 
                             <div className="flex items-end justify-between">
                                 <div className="text-base mb-1 font-semibold">Change Category</div>
-                                <Select onValueChange={(category) => console.log(category)}>
+                                <Select onValueChange={(categoryId) => setUserCategory(user.id, categoryId)}>
                                     <SelectTrigger className="w-md">
-                                        <SelectValue placeholder={user.category} />
+                                        <SelectValue placeholder={user.category.name} />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="student">Student</SelectItem>
-                                        <SelectItem value="teacher">Teacher</SelectItem>
-                                        <SelectItem value="leadership">Leadership</SelectItem>
+                                        {
+                                            categories.length > 0 &&
+                                            categories.map((category) => (
+                                                <SelectItem value={category.id} key={category.id}>
+                                                    {category.name}
+                                                </SelectItem>))
+                                        }
                                     </SelectContent>
                                 </Select>
                             </div>

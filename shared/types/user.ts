@@ -1,3 +1,5 @@
+import { Category } from "@/store/categoryStore";
+
 enum UserRole {
     ADMIN     = "admin",
     MODERATOR = "moderator",
@@ -29,7 +31,7 @@ interface BaseUser {
     name: string;
     email: string;
     role: UserRole;
-    category: UserCategory;
+    category: Category;
     permissions: Permission[];
 
     subscription: {

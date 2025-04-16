@@ -8,10 +8,12 @@ import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCategoryStore } from "@/store/categoryStore";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 
 const FormSchema = z.object({
     name: z.string().min(2, "The category must be at least 2 characters"),
     status: z.enum(["active", "draft"]),
+    requiresVerification: z.boolean(),
 });
 
 export const AddCategory = () => {
@@ -20,6 +22,7 @@ export const AddCategory = () => {
         defaultValues: {
             name: "",
             status: "active",
+            requiresVerification: false,
         },
     });
 
@@ -32,7 +35,7 @@ export const AddCategory = () => {
         <div className="ring-2 ring-muted p-4 rounded-md">
             <div className="font-semibold text-xl mb-4">Add Category</div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full items-center justify-end gap-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex-wrap flex w-full items-center justify-start gap-4">
                     <FormField
                         control={form.control}
                         name="name"
@@ -51,7 +54,7 @@ export const AddCategory = () => {
                         control={form.control}
                         name="status"
                         render={({ field }) => (
-                            <FormItem className="w-full">
+                            <FormItem className="w-sm">
                                 <FormLabel>Status</FormLabel>
                                 <Select onValueChange={(value) => field.onChange(value)} defaultValue={field.value}>
                                     <FormControl>
@@ -69,7 +72,20 @@ export const AddCategory = () => {
                         )}
                     />
 
-                    <Button type="submit" className="self-end">Submit</Button>
+                    <FormField
+                        control={form.control}
+                        name="requiresVerification"
+                        render={({ field }) => (
+                            <FormItem className="w-md flex justify-between my-2 ">
+                                <FormLabel className="text-left flex-col items-start gap-1">
+                                    Verification Required
+                                </FormLabel>
+                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit" className="w-full mt-3">Submit</Button>
                 </form>
             </Form>
         </div>

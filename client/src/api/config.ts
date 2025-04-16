@@ -1,6 +1,6 @@
 
-//export const API_BASE_URL = "http://localhost:6969";
-export const API_BASE_URL = "http://188.132.135.5:6969";
+export const API_BASE_URL = "http://localhost:6969";
+//export const API_BASE_URL = "http://188.132.135.5:6969";
 
 export const request = async (route: string) => {
     const token = localStorage.getItem("token");

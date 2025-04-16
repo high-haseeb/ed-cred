@@ -28,12 +28,12 @@ const SingupPage = () => {
             return;
         }
         const response = await signup(username, email, password);
-        if (!response.ok) {
+        if (response.error) {
             setError(response.message);
             return;
         }
 
-        router.push("/login");
+        router.push("/signup/category/");
     }
 
     return(
@@ -80,16 +80,16 @@ const SingupPage = () => {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
 
-                    <div className="mb-6 w-full flex p-4 border-2 border-muted rounded-md items-center justify-center">
+                    {/*<div className="mb-6 w-full flex p-4 border-2 border-muted rounded-md items-center justify-center">
                         Do you want to receive promotional emails?
                         <Checkbox className="ml-auto" />
-                    </div>
+                    </div>*/}
 
                     {
                         error && <div className="text-destructive-foreground text-left mb-4">{error}</div>
                     }
 
-                    <Button className="w-full text-background" variant="secondary" type="submit">
+                    <Button className="w-full" variant="default" type="submit">
                         Signup
                     </Button>
                     <p className="mt-4 text-sm text-muted-foreground">By clicking continue, you agree to our <br/> <a className="underline underline-offset-4" href="terms-and-conditions">Terms of Service</a> and <a className="underline underline-offset-4" href="/privacy-policy">Privacy Policy</a>.</p>

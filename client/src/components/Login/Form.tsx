@@ -48,7 +48,7 @@ export function LoginForm({
             <div className="grid gap-6">
                 <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="user@gmail.com" required onChange={(e) => setIdentifier(e.target.value)}/>
+                    <Input id="email" placeholder="user@gmail.com" required onChange={(e) => setIdentifier(e.target.value)}/>
                 </div>
                 <div className="grid gap-2">
                     <div className="flex items-center">
@@ -75,7 +75,7 @@ export function LoginForm({
             </div>
             <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4"> Sign up </a>
+                <a href="/signup" className="underline underline-offset-4"> Sign up </a>
             </div>
         </form>
     )

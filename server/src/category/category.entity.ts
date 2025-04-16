@@ -1,3 +1,4 @@
+import { User } from 'src/auth/user.entity';
 import { FeedbackForm } from 'src/feedback-form/entities/feedback-form.entity';
 import { Subcategory } from 'src/subcategory/subcategory.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
@@ -20,6 +21,13 @@ export class Category {
 
     @Column("simple-array", { nullable: true })
     permissions?: Permission[];
+
+    @Column("boolean")
+    requiresVerification: boolean;
+
+    // There are multiple users in a category
+    @OneToMany(() => User, (user) => user.category)
+    users: User[];
 
     // A category can be linked with multiple feedback forms
     @OneToMany(() => FeedbackForm, (feedbackForm) => feedbackForm.category)

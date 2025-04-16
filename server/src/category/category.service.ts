@@ -10,14 +10,8 @@ export class CategoryService {
         private readonly categoryRepository: Repository<Category>,
     ) {}
 
-    async createCategory(name: string, status: "active" | "draft", permissions: string[]): Promise<Category> {
-        const category = this.categoryRepository.create({
-            name,
-            status,
-            permissions: permissions as any,
-            createdAt: new Date(),
-        });
-
+    async createCategory(categoryData: Category): Promise<Category> {
+        const category = this.categoryRepository.create({ ...categoryData });
         return await this.categoryRepository.save(category);
     }
 

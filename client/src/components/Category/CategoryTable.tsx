@@ -64,6 +64,7 @@ export const CategoryTable = () => {
                         <TableHead>Category</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Sub Categories</TableHead>
+                        <TableHead>Requires Verification</TableHead>
                         <TableHead>Created At</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -75,6 +76,7 @@ export const CategoryTable = () => {
                                 {category.status}
                             </TableCell>
                             <TableCell>{category.subCategories && category.subCategories.length}</TableCell>
+                            <TableCell>{category.requiresVerification ? "yes" : "no"}</TableCell>
                             <TableCell className="">
                                 {new Intl.DateTimeFormat("en-US", {
                                     day: "numeric",

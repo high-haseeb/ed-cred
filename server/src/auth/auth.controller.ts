@@ -39,4 +39,21 @@ export class AuthController {
         }
         return this.authService.updateUserRole(req.body.userId, req.body.userRole);
     }
+
+    @Post('users/category')
+    @UseGuards(JwtAuthGuard)
+    async setUserCategory(@Req() req) {
+        const { categoryId } = req.body;
+        return this.authService.updateUserCategory(req.user.id, categoryId);
+    }
+
+    @Post('category/update')
+    @UseGuards(JwtAuthGuard)
+    async updateUserCategory(@Req() req) {
+        if (req.user.role !== "admin") {
+            throw new ForbiddenException("You do not have permission to change a users role");
+        }
+        const { userId, categoryId } = req.body;
+        return this.authService.updateUserCategory(userId, categoryId);
+    }
 }

@@ -1,20 +1,21 @@
 import { toast } from "sonner";
+import { API_BASE_URL } from "./config";
 
-const BASE_URL = "188.132.135.5"  
-export const API_BASE_URL = `http://${BASE_URL}:6969/auth`;
+export const AUTH_BASE_URL = `${API_BASE_URL}/auth`;
 
 export async function signup(username: string, email: string, password: string) {
-    const response = await fetch(`${API_BASE_URL}/signup`, {
+    const response = await fetch(`${AUTH_BASE_URL}/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password }),
     });
     const data = await response.json();
+    localStorage.setItem('token', data.token);
     return data;
 }
 
 export async function login(identifier: string, password: string) {
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch(`${AUTH_BASE_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier, password }),
@@ -29,21 +30,40 @@ export async function login(identifier: string, password: string) {
 
 export async function getProfile() {
     const token = localStorage.getItem('token');
-    if (!token) return false;
+    if (!token) {
+        console.log("can not find the token!");
+        window.herf.replace('/login');
+    }
 
-    const response = await fetch(`${API_BASE_URL}/profile`, {
+    const response = await fetch(`${AUTH_BASE_URL}/profile`, {
         method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
+        headers: { 'Authorization': `Bearer ${token}` },
     });
 
-    if (!response.ok) {
-        toast("token expired! please log in again.");
-        window.location.replace("/login");
+    if (response.error) {
+        toast(response.message);
+        console.log(response.message);
     }
 
     return await response.json();
+}
+
+export async function setUserCategory(categoryId: number) : Promise<any> {
+
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+
+    const response = await fetch(`${AUTH_BASE_URL}/users/category`, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ categoryId }),
+    });
+
+    const data = await response.json();
+    return data;
 }
 
 export function logout() {
