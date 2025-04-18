@@ -46,6 +46,15 @@ export class User {
     @Column({ default: false })
     isVerified: boolean;
 
+    @Column({ nullable: true })
+    verificationDocumentUrl: string;
+
+    @Column({ nullable: true })
+    emailVerificationToken: string;
+
+    @Column({ nullable: true })
+    profilePictureUrl: string;
+
     @Column({ type: 'jsonb', nullable: true })
     preferences?: Record<string, any>;
 

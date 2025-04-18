@@ -35,3 +35,21 @@ export const postRequest = async (route: string, body: string) => {
 
     return await response.json();
 }
+
+export const postFormDataRequest = async (route: string, body: FormData) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        console.error("Can not find the token, please log in again!");
+        return false;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/${route}`, {
+        method: 'POST',
+        headers: { 
+            "Authorization": `Bearer ${token}`,
+        },
+        body: body,
+    });
+
+    return await response.json();
+}

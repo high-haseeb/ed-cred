@@ -13,6 +13,7 @@ import { FeedbackResponseModule } from './feedback-response/feedback-response.mo
 import { SubcategoryModule } from './subcategory/subcategory.module';
 import { Subcategory } from './subcategory/subcategory.entity';
 import { RoleModule } from './role/role.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
     imports: [
@@ -22,6 +23,20 @@ import { RoleModule } from './role/role.module';
             url: process.env.DATABASE_URL,
             autoLoadEntities: true,
             synchronize: true,
+        }),
+        MailerModule.forRoot({
+            transport: {
+                host: 'smtp.gmail.com',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: process.env.EMAIL_ADDRESS,
+                    pass: process.env.EMAIL_PASSWORD,
+                },
+            },
+            defaults: {
+                from: '"No Reply" <no-reply@yourdomain.com>',
+            },
         }),
         TypeOrmModule.forFeature([User, Category, Subcategory]),
         AuthModule,
@@ -35,4 +50,6 @@ import { RoleModule } from './role/role.module';
         RoleModule,
     ],
 })
+
+
 export class AppModule {}

@@ -1,6 +1,25 @@
-import { Controller, Post, Body, Get, Req, UseGuards, ForbiddenException } from '@nestjs/common';
+import {
+    Controller, 
+    Post,
+    Body,
+    Get,
+    Req,
+    UseGuards,
+    UploadedFile,
+    ForbiddenException,
+    UseInterceptors,
+    BadRequestException,
+    Query,
+    NotFoundException
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
+import { Roles } from 'src/decorators/roles.decorator';
+import { UserRole } from 'types/user';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -55,5 +74,50 @@ export class AuthController {
         }
         const { userId, categoryId } = req.body;
         return this.authService.updateUserCategory(userId, categoryId);
+    }
+
+    @Post('upload-verification')
+    @UseInterceptors(FileInterceptor('file', {
+        storage: diskStorage({
+            destination: join(__dirname, '..', '..', '..', '..', 'client', 'public', 'uploads', 'verification-documents'),
+            filename: (req, file, cb) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const ext = extname(file.originalname);
+                cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+            },
+        }),
+    }))
+    async uploadVerification(
+        @UploadedFile() file: Express.Multer.File,
+        @Body('userId') userId: number
+    ) {
+        const url = `/uploads/verification-documents/${file.filename}`;
+        return this.authService.saveVerificationDocument(userId, url);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Post('verify-user')
+    @Roles(UserRole.ADMIN)
+    async verifyUser(@Body() body: { userId: number, action: "approve" | "reject" }) {
+        return this.authService.handleVerification(body.userId, body.action);
+    }
+
+    @Post('send-verification-email')
+    async sendVerification(@Body('email') email: string) {
+        const result = await this.authService.sendVerificationEmail(email);
+        if (!result) {
+            throw new NotFoundException('User not found');
+        }
+        return { message: 'Verification email sent' };
+    }
+
+    @Get('verify-email')
+    async verifyEmail(@Query('token') token: string) {
+        if (!token) throw new BadRequestException('Token is required');
+        const result = await this.authService.verifyEmail(token);
+        if (!result) {
+            throw new NotFoundException('Invalid or expired token');
+        }
+        return { message: 'Email verified successfully' };
     }
 }

@@ -6,6 +6,8 @@ import * as bcrypt from 'bcryptjs';
 import { User } from './user.entity';
 import { UserRole } from "./../../types/user";
 import { Category } from 'src/category/category.entity';
+import { randomBytes } from 'crypto';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +15,7 @@ export class AuthService {
         @InjectRepository(User) private userRepository: Repository<User>,
         @InjectRepository(Category) private categoryRepository: Repository<Category>,
         private jwtService: JwtService,
+        private mailerService: MailerService,
     ) {}
 
     async signup(username: string, email: string, password: string) {
@@ -95,7 +98,8 @@ export class AuthService {
                 'category',
                 'permissions',
                 'subscription',
-                'isVerified'
+                'isVerified',
+                'verificationDocumentUrl',
             ],
             relations: ["category"],
         });
@@ -114,7 +118,8 @@ export class AuthService {
                 'role',
                 'isVerified',
                 'subscription',
-                'createdAt'
+                'createdAt',
+                'verificationDocumentUrl'
             ],
             relations: ['category'],
         });
@@ -150,5 +155,80 @@ export class AuthService {
         });
         if (!user) throw new UnauthorizedException("User not found");
         return user;
+    }
+
+    async saveVerificationDocument(userId: number, url: string) {
+        const user = await this.userRepository.findOneBy({ id: userId });
+        if (!user) throw new Error("User not found");
+
+        user.verificationDocumentUrl = url;
+        await this.userRepository.save(user);
+        return { message: "Your docuemnt has been uploaded. You will be notified when it will be approved" } 
+    }
+
+    async handleVerification(userId: number, action: 'approve' | 'reject') {
+        const user = await this.userRepository.findOneBy({ id: userId });
+        if (!user) throw new Error('User not found');
+
+        if (action === 'approve') {
+            user.isVerified = true;
+        } else if (action === 'reject') {
+            user.verificationDocumentUrl = null;
+        }
+
+        return this.userRepository.save(user);
+    }
+
+
+    async sendVerificationEmail(email: string): Promise<boolean> {
+        const user = await this.userRepository.findOne({ where: { email } });
+        if (!user) return false;
+
+        const token = randomBytes(32).toString('hex');
+        user.emailVerificationToken = token;
+        await this.userRepository.save(user);
+
+        const verifyUrl = `http://localhost:3000/verify?token=${token}`;
+
+        await this.mailerService.sendMail({
+          to: user.email,
+          subject: 'Verify Your Email - Ed-Cred',
+          html: `
+            <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 40px;">
+              <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+                <h2 style="color: #1e40af;">Welcome to Ed-Cred 👋</h2>
+                <p style="color: #333333; font-size: 16px;">
+                  Thank you for signing up! Please verify your email address to activate your account.
+                </p>
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${verifyUrl}" style="background-color: #1e40af; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                    Verify Email
+                  </a>
+                </div>
+                <p style="color: #777777; font-size: 14px;">
+                  If you didn’t request this, you can ignore this email.
+                </p>
+                <hr style="margin: 30px 0; border: none; border-top: 1px solid #eaeaea;" />
+                <p style="color: #999999; font-size: 12px;">
+                  © ${new Date().getFullYear()} Ed-Cred. All rights reserved.
+                </p>
+              </div>
+            </div>
+          `,
+        });
+
+        return true;
+    }
+
+    async verifyEmail(token: string): Promise<boolean> {
+        const user = await this.userRepository.findOne({
+            where: { emailVerificationToken: token },
+        });
+        if (!user) return false;
+
+        user.isVerified = true;
+        user.emailVerificationToken = null;
+        await this.userRepository.save(user);
+        return true;
     }
 }
