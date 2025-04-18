@@ -9,7 +9,7 @@ import {
 
 const PricingPage = () => {
     return (
-        <main className="w-full h-auto p-20 font-inter flex flex-col gap-40 bg-green-600 text-white items-center">
+        <main className="w-full h-auto font-inter bg-green-600 text-white p-20 flex flex-col gap-40 items-center pt-32">
             <div className="flex items-start justify-between w-3/4">
                 <div className="text-7xl font-semibold">Pricing Plans</div>
                 <div className="text-2xl font-normal">
@@ -28,8 +28,8 @@ const PricingPage = () => {
                 </div>
             </div>
             <FAQ />
-            <div className="flex items-center justify-between w-3/4">
-                <div className="text-lg font-semibold">Made by high house</div>
+            <div className="w-3/4 text-xl font-semibold">
+                Mady by high-house
             </div>
         </main>
     )
