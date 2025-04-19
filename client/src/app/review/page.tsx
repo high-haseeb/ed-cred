@@ -49,6 +49,7 @@ const ReviewPage = () => {
         const setup = async () => {
             const categoryData = await getAllCategories();
             setCategories(categoryData);
+            console.log(categoryData);
 
             const feedbackData = await fetchFeedbacks();
 

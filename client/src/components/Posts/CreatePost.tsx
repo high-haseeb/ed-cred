@@ -12,6 +12,7 @@ import { Textarea } from "../ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { savePost } from "@/api/posts";
 import { toast } from "sonner";
+import UnlayerEditor from "./UnlayerEditor";
 
 const PostFormSchema = z.object({
     title: z.string().min(2, "Please enter alteast 2 characters"),
@@ -38,6 +39,8 @@ export default function CreatePost() {
             image: null,
             body: data.body,
         });
+        console.log(saved);
+
         if (saved) {
             toast("Post saved successfully!");
             form.reset();
@@ -131,20 +134,26 @@ export default function CreatePost() {
                                             </FormLabel>
                                         </div>
                                         <FormControl>
-                                            <TooltipProvider>
-                                                <MinimalTiptapEditor
-                                                    value={field.value}
-                                                    onChange={field.onChange}
-                                                    //onChange={(e: Content) => setPost(post => ({...post, body: e}))}
-                                                    className="w-2xl"
-                                                    editorContentClassName="p-5"
-                                                    output="html"
-                                                    placeholder="Write your post here..."
-                                                    autofocus={true}
-                                                    editable={true}
-                                                    editorClassName="focus:outline-none"
-                                                />
-                                            </TooltipProvider>
+                                            {/* @ts-ignore */}
+                                            <UnlayerEditor
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                className="h-auto w-4xl"
+                                            />
+                                            {/* <TooltipProvider> */}
+                                            {/*     <MinimalTiptapEditor */}
+                                            {/*         value={field.value} */}
+                                            {/*         onChange={field.onChange} */}
+                                            {/*         //onChange={(e: Content) => setPost(post => ({...post, body: e}))} */}
+                                            {/*         className="w-2xl" */}
+                                            {/*         editorContentClassName="p-5" */}
+                                            {/*         output="html" */}
+                                            {/*         placeholder="Write your post here..." */}
+                                            {/*         autofocus={true} */}
+                                            {/*         editable={true} */}
+                                            {/*         editorClassName="focus:outline-none" */}
+                                            {/*     /> */}
+                                            {/* </TooltipProvider> */}
                                         </FormControl>
                                     </FormItem>
                                 )}

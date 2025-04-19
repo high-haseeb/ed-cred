@@ -10,16 +10,12 @@ export class PostController {
     constructor(private readonly postService: PostService) {}
 
     @Post()
-    createPost(@Body() data: CreatePostDto): Promise<PostEntity> {
+    async createPost(@Body() data: CreatePostDto): Promise<PostEntity> {
         return this.postService.createPost(data);
     }
 
     @Get()
-    @UseGuards(JwtAuthGuard)
-    getPosts(@Req() req): Promise<Partial<PostEntity>[]> {
-        if (!req.permissions?.includes(Permission.VIEW_POST) && req.user.role !== "admin") {
-            throw new ForbiddenException('You do not have permission to view posts');
-        }
+    async getPosts(@Req() req): Promise<Partial<PostEntity>[]> {
         return this.postService.getPosts();
     }
 

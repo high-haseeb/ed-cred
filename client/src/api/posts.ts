@@ -1,6 +1,7 @@
 import { toast } from "sonner";
-//const API_BASE_URL  = "http://localhost:6969/posts"
-const API_BASE_URL  = "http://188.132.135.5:6969/posts"
+import { postRequest } from "./config";
+const API_BASE_URL  = "http://localhost:6969/posts"
+//const API_BASE_URL  = "http://188.132.135.5:6969/posts"
 
 export interface Post {
     id?: string;
@@ -50,11 +51,7 @@ export async function getPost(id: string): Promise<Post | null> {
 
 // Function to save a new post
 export async function savePost(post: Omit<Post, 'id' | 'createdAt'>): Promise<Post | null> {
-    return apiRequest<Post>(API_BASE_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(post),
-    });
+    return postRequest("posts", JSON.stringify(post));
 }
 
 // Function to update an existing post

@@ -1,5 +1,5 @@
-//const API_URL = 'http://localhost:6969/category';
-const API_URL = 'http://188.132.135.5:6969/category';
+const API_URL = 'http://localhost:6969/category';
+//const API_URL = 'http://188.132.135.5:6969/category';
 
 function getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem('token');
