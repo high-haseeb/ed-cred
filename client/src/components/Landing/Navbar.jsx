@@ -11,10 +11,12 @@ import { UserNav } from '../Common/Navbar';
 
 const NavigationItems = [
     { title: "Home", link: "/" },
-    { title: "Write a Feedback", link: "/feedback/create/" },
-    { title: "Read Feedbacks", link: "/feedback/" },
+    { title: "Write a Feedback", link: "/review/" },
+    { title: "Read Feedbacks", link: "/feedback/listing" },
     { title: "Posts", link: "/posts/" },
     { title: "Forums", link: "/forum" },
+    { title: "About us", link: "/about" },
+    { title: "Contact us", link: "/contact" },
 ];
 
 const Navbar = () => {
