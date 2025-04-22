@@ -1,5 +1,6 @@
-const API_URL = 'http://localhost:6969/category';
-//const API_URL = 'http://188.132.135.5:6969/category';
+import { API_BASE_URL, postRequest } from "./config";
+
+const API_URL  = `${API_BASE_URL}/category`
 
 function getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem('token');
