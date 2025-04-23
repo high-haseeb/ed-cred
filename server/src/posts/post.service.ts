@@ -17,6 +17,14 @@ export class PostService {
         return this.postRepo.find({ select: ['id', 'title', 'description', 'status', 'featured', 'image', 'createdAt'] });
     }
 
+    async getPostsPreview(): Promise<Partial<Post>[]> {
+        return this.postRepo.find({
+            select: ['id', 'title', 'description', 'status', 'featured', 'image', 'createdAt'],
+            order: { createdAt: 'DESC' },
+            take: 3,
+        });
+    }
+
     async getPostById(id: string): Promise<Post> {
         return this.postRepo.findOne({ where: { id } });
     }

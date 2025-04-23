@@ -25,6 +25,9 @@ export class Category {
     @Column("boolean")
     requiresVerification: boolean;
 
+    @Column({ default: "categoryIcons/default.png" })
+    iconUrl: string;
+
     // There are multiple users in a category
     @OneToMany(() => User, (user) => user.category)
     users: User[];

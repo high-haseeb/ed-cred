@@ -1,14 +1,6 @@
 import { create } from "zustand";
 import { API_BASE_URL } from "@/api/config";
-
-export interface Category {
-    id?: number;
-    name: string;
-    status: "active" | "draft";
-    createdAt: Date;
-    requiresVerification: boolean;
-    subCategories: SubCategory[];
-}
+import { Category } from "@/types/user";
 
 interface CategoryStore {
     categories: Category[];

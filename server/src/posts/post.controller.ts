@@ -19,6 +19,11 @@ export class PostController {
         return this.postService.getPosts();
     }
 
+    @Get("/preview/")
+    async getPostsPreview(@Req() req): Promise<Partial<PostEntity>[]> {
+        return this.postService.getPostsPreview();
+    }
+
     @Get(':id')
     getPostById(@Param('id') id: string): Promise<PostEntity> {
         return this.postService.getPostById(id);

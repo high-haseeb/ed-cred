@@ -14,6 +14,12 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
 import { Subcategory } from './subcategory/subcategory.entity';
 import { RoleModule } from './role/role.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { SearchController } from './search/search.controller';
+import { SearchService } from './search/search.service';
+import { SearchModule } from './search/search.module';
+import { Post } from './posts/post.entity';
+import { FeedbackResponse } from './feedback-response/entities/feedback-response.entity';
+import { FeedbackForm } from './feedback-form/entities/feedback-form.entity';
 
 @Module({
     imports: [
@@ -38,7 +44,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
                 from: '"No Reply" <no-reply@yourdomain.com>',
             },
         }),
-        TypeOrmModule.forFeature([User, Category, Subcategory]),
+        TypeOrmModule.forFeature([User, Category, Subcategory, Post, FeedbackResponse, FeedbackForm]),
         AuthModule,
         PostModule,
         CategoryModule,
@@ -48,7 +54,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
         FeedbackFormModule,
         FeedbackResponseModule,
         RoleModule,
+        SearchModule,
     ],
+    controllers: [SearchController],
+    providers: [SearchService],
 })
 
 
