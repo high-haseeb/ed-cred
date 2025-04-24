@@ -6,8 +6,9 @@ import { ThemeToggle } from "@/components/Common/ThemeToggle";
 import { useEffect, useState } from "react";
 import { getAllCategories } from "@/api/categories";
 import { fetchFeedbacks } from "@/api/feedback";
-import { Category, SubCategory  } from "@/store/categoryStore";
+import { SubCategory  } from "@/store/categoryStore";
 import { Feedback } from "@/components/MainDashboard/RecentFeedbacks";
+import { Category } from "@/types/user";
 
 const CategoryCard = ({ category, subcategory, feedbacks }: { category: Category, subcategory: SubCategory, feedbacks: Feedback[] }) => {
     const router = useRouter();

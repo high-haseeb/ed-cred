@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from 'react';
+import { redirect } from 'next/navigation';
 import Image from 'next/image';
 import Signup from '@/components/Landing/Signup';
 import Signin from '@/components/Landing/Signin';
@@ -11,6 +13,12 @@ import { NavigationMenuItems } from './NavigationMenuItems';
 const Navbar = () => {
 
     const { user, loading } = useUserProfile();
+
+    useEffect(() => {
+        if (user && user.role === "admin") {
+            redirect("/dashboard");
+        }
+    }, [user]);
 
     return (
         <div className="fixed top-0 left-0 flex h-max w-screen items-center justify-center bg-white shadow-md md:px-8 z-50 text-black">

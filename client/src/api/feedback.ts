@@ -54,7 +54,6 @@ export async function fetchFeedbacks() {
 export async function fetchFeedbackById(id: string) {
     try {
         const response = await fetch(`${API_URL}/${id}`);
-
         if (!response.ok) throw new Error('Failed to fetch feedback');
 
         return await response.json();

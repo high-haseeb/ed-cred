@@ -1,10 +1,10 @@
 "use client";
 import { fetchFeedbackById } from "@/api/feedback";
 import { FeedbackResponse } from "@/api/feedback-response";
-import { UserProfile } from "@/components/Common/Navbar";
+import { UserProfile, Category } from "@/types/user";
 import { Stats } from "@/components/Common/Stats";
 import { Title } from "@/components/Common/Title";
-import { Category, SubCategory } from "@/store/categoryStore";
+import {  SubCategory } from "@/store/categoryStore";
 import { use, useEffect, useState } from "react";
 
 export interface FeedbackDetails {
@@ -36,15 +36,19 @@ interface Feedback {
 }
 
 export default function PostPage({ params }: { params: Promise<{ feedbackId: string }> }) {
+
     const { feedbackId } = use(params);
     const [feedback, setFeedback] = useState<Feedback>();
+
     const setup = async() => {
         const response = await fetchFeedbackById(feedbackId);
         setFeedback(response);
     }
+
     useEffect(() => {
         setup();
     }, []);
+
     const stats = [
         {
             title: "Total responses",
@@ -57,7 +61,7 @@ export default function PostPage({ params }: { params: Promise<{ feedbackId: str
         <div className="w-3xl mx-auto my-10 flex max-w-4xl flex-col">
             <Title 
                 title={feedback?.title ?? ""}
-                desc={ `created by ${feedback?.author.username} on ${new Intl.DateTimeFormat("en-US", {
+                desc={ `created by ${feedback?.author.name} on ${new Intl.DateTimeFormat("en-US", {
                                     day: "numeric",
                                     month: "long",
                                     year: "numeric",
