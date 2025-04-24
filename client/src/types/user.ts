@@ -1,10 +1,11 @@
 import { SubCategory } from "@/store/categoryStore";
 
 export type UserProfile = {
-    id:    string;
-    name:  string;
-    email: string;
+    id:       string;
+    name:     string;
+    email:    string;
     category: Category;
+    role:     string;
 };
 
 export interface Category {

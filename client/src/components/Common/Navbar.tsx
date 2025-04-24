@@ -17,22 +17,17 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { getProfile, logout } from "@/api/auth";
+import { useEffect } from "react";
+import { logout } from "@/api/auth";
 import { ThemeToggle } from "@/components/Common/ThemeToggle";
 import { usePathname, useRouter } from "next/navigation";
-import { useSidebar } from "../ui/sidebar";
-import { PanelRightIcon } from "lucide-react";
+import { useUserProfile } from "@/hooks/useProfile";
+import { Loader } from "@/components/ui/loader";
 
 export const Navbar = () => {
-    const { toggleSidebar } = useSidebar();
-
     return (
         <div className="bg-background sticky top-0 z-50 border-b">
             <div className="flex h-16 items-center px-4">
-                <Button size={"icon"} variant={"outline"} onClick={toggleSidebar} >
-                    <PanelRightIcon />
-                </Button>
                 <MainNav className="mx-6" />
                 <div className="ml-auto flex items-center space-x-4">
                     <ThemeToggle />
@@ -44,15 +39,16 @@ export const Navbar = () => {
     )
 }
 
-// TODO: factor this out to common
-export interface UserProfile {
-    username: string;
-    email: string;
-}
-
 export function UserNav() {
 
-    const [profile, setProfile] = useState<UserProfile | null>();
+    const { user: profile } = useUserProfile();
+
+    useEffect(() => {
+        if (profile && profile.role !== "admin") {
+            router.replace("/");
+        }
+    }, [profile]);
+
     const router = useRouter();
 
     const logoutAndRedirect = () => {
@@ -60,17 +56,9 @@ export function UserNav() {
         router.push("/");
     }
 
-    useEffect(() => {
-        const setup = async() => {
-            let profile = await getProfile();
-            if (profile) {
-                setProfile(profile);
-            } else {
-                router.push("/");
-            }
-        }
-        setup();
-    }, []);
+    if (!profile) {
+        return <Loader />
+    }
 
     return (
         <DropdownMenu>
@@ -78,14 +66,14 @@ export function UserNav() {
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
                         <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-                        <AvatarFallback>{profile?.username.slice(0, 2)}</AvatarFallback>
+                        <AvatarFallback>{profile.name.slice(0, 2)}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{profile?.username}</p>
+                        <p className="text-sm font-medium leading-none">{profile.name}</p>
                         <p className="text-muted-foreground text-xs leading-none">
                             {profile?.email}
                         </p>
@@ -150,6 +138,7 @@ function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
 
 export default MainNav;
 
+// TODO: connect it with the backend
 function Search() {
     return (
         <div>

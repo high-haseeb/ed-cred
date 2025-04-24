@@ -95,7 +95,7 @@ export class AuthService {
                 'username',
                 'email',
                 'category',
-                // 'role',
+                'role',
                 // 'permissions',
                 'subscription',
                 // 'isVerified',
