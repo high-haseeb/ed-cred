@@ -26,10 +26,10 @@ const Categories = () => {
     )
 }
 
-const Card = ({ title, icon, description }) => {
+export const Card = ({ title, icon, description }) => {
     return (
         <div className="flex items-center justify-center gap-4 rounded-3xl border border-[#E5F4F2] bg-white p-8 text-center shadow-lg md:flex-col">
-            <div><Image src={`/icons/${icon}`} width={200} height={300} alt={title} className="w-[200px] md:w-[100px]" /></div>
+            <div><Image src={`/${icon}`} width={200} height={300} alt={title} className="w-[200px] md:w-[100px]" /></div>
             <div className="text-left md:text-center">
                 <div className="text-xl font-[600]">{title}</div>
                 <div className="font-[400]">{description}</div>

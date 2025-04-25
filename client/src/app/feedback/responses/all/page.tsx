@@ -1,11 +1,9 @@
 "use client";
-import { fetchFeedbackById } from "@/api/feedback";
+
+import { useEffect } from "react";
+import { getRequest } from "@/api/config";
 import { FeedbackResponse } from "@/api/feedback-response";
-import { UserProfile, Category } from "@/types/user";
-import { Stats } from "@/components/Common/Stats";
 import { Title } from "@/components/Common/Title";
-import {  SubCategory } from "@/store/categoryStore";
-import { use, useEffect } from "react";
 import { useState, useMemo } from "react";
 import {
     Table,
@@ -18,66 +16,33 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export interface FeedbackDetails {
+const AllResponsePage = () => {
 
-}
-
-export interface Question {
-    id: string;
-    text: string;
-    type: "rating" | "multiple_choice" | "true_false" | "open_ended";
-    options?: string[];
-    correctAnswer?: string;
-}
-
-interface Feedback {
-    id: number;
-    title: string;
-    author: UserProfile;
-    category: Category;
-    subcategory: SubCategory;
-    details: FeedbackDetails;
-    questions: Question[];
-    responses: FeedbackResponse[];
-    createdAt: Date;
-}
-
-export default function PostPage({ params }: { params: Promise<{ feedbackId: string }> }) {
-
-    const { feedbackId } = use(params);
-    const [feedback, setFeedback] = useState<Feedback>();
-
-    const setup = async() => {
-        const response = await fetchFeedbackById(feedbackId);
-        setFeedback(response);
-    }
-
+    const [responses, setResponses] = useState<FeedbackResponse[]>([]);
     useEffect(() => {
+        const setup = async() => { 
+            const res = await getRequest('/feedback-form');
+            if (!res) return;
+            const body = await res.json();
+            const responses : FeedbackResponse[] = [];
+            body.forEach((form: any) => responses.push(...form.responses))
+            setResponses(responses);
+        }
         setup();
     }, []);
 
-    const stats = [
-        {
-            title: "Total responses",
-            value: feedback?.responses.length.toString() || "0",
-        }
-    ]
-
-    return(
-
-        <div className="w-full mx-auto my-10 flex flex-col px-40">
+    return (
+        <div className="mx-auto my-10 flex flex-col px-20">
             <Title 
-                title={feedback?.title ?? ""}
-                desc={ `created by ${feedback?.author.name} on ${new Intl.DateTimeFormat("en-US", { day: "numeric", month: "long", year: "numeric", }).format(new Date(feedback?.createdAt ?? new Date))} ` }
+                title="All Feedbacks Responses"
+                desc=""
             />
-            <Stats stats={stats}/>
-            <FeedbackResponsesTable responses={feedback?.responses || []}  />
+            <FeedbackResponsesTable responses={responses} />
         </div>
     )
 }
 
-
-export const FeedbackResponsesTable = ({
+const FeedbackResponsesTable = ({
     responses,
 }: {
         responses: FeedbackResponse[];
@@ -204,3 +169,5 @@ new Date(value.to)
         </Table>
     );
 };
+
+export default AllResponsePage;

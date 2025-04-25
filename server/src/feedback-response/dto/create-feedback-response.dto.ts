@@ -14,4 +14,5 @@ export class CreateFeedbackResponseDto {
     }[];
     comments?: string;
     submittedAt: string;
+    authorId: number;
 }

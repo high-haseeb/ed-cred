@@ -7,12 +7,13 @@ import { useUserProfile } from "@/hooks/useProfile";
 import { Loader } from "@/components/ui/loader";
 
 const Dashboard = () => {
+
     const { user, loading } = useUserProfile();
     useEffect(() => {
         if (user && user.role !== "admin") {
             redirect("/");
         }
-    }, [user]);
+    }, []);
 
     if (loading || !user) {
         return <div className="w-full h-screen flex items-center justify-center"><Loader /></div>
@@ -30,5 +31,4 @@ const Dashboard = () => {
         </div>
     )
 };
-
 export default Dashboard;

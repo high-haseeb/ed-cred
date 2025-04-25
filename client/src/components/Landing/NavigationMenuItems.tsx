@@ -23,24 +23,11 @@ export function NavigationMenuItems({ userCategoryId }: { userCategoryId?: strin
         <NavigationMenu>
             <NavigationMenuList>
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger>Give Feedback</NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                        <div className="flex flex-col gap-2 w-60">
-                        {
-                            loading ? <Loader /> : categories ?
-                            categories.map((category) => <ListItem key={category.id} title={category.name} href={`/review/${userCategoryId}/${category.id}`}>
-                                        <div className="flex gap-2 w-full items-start">
-                                            <img src={category.iconUrl} width={40} height={80} alt={`${category.name}-icon`} className="w-[40px] h-auto object-contain" />
-                                            <div>
-                                                <div className="font-semibold text-black">{category.name}</div>
-                                                Give your feedback on your schools {category.name}
-                                            </div>
-                                        </div>
-                                    </ListItem>)
-                            : <div>No categories found</div>
-                        }
-                        </div>
-                    </NavigationMenuContent>
+                    <Link href="/review" legacyBehavior passHref>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                            Give Feedback
+                        </NavigationMenuLink>
+                    </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>

@@ -9,79 +9,13 @@ import {
 export const data = {
     navMain: [
         {
-            title: "Dashboard",
-            url: "/dashboard",
-            icon: SquareTerminal,
-        },
-        {
-            title: "Categories",
-            url: "#",
+            title: "Feedbacks",
+            url: "/feedback",
             icon: Layers,
             items: [
                 {
-                    title: "Genesis",
-                    url: "#",
-                },
-                {
-                    title: "Explorer",
-                    url: "#",
-                },
-                {
-                    title: "Quantum",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Posts",
-            url: "/posts",
-            icon: StickyNote,
-            items: [
-                {
-                    title: "Create Post",
-                    url: "/create"
-                },
-                {
-                    title: "Recent Posts",
-                    url: "/"
-                }
-            ]
-        },
-        {
-            title: "Role Management",
-            url: "/role-management",
-            icon: UserRoundPenIcon,
-            items: [
-                {
-                    title: "Admin User",
-                    url: "#",
-                },
-                {
-                    title: "General User",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Settings",
-            url: "#",
-            icon: Settings2,
-            items: [
-                {
-                    title: "General",
-                    url: "#",
-                },
-                {
-                    title: "Team",
-                    url: "#",
-                },
-                {
-                    title: "Billing",
-                    url: "#",
-                },
-                {
-                    title: "Limits",
-                    url: "#",
+                    title: "All responses",
+                    url: "/responses/all",
                 },
             ],
         },

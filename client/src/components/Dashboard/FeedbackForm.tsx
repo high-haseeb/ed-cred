@@ -28,11 +28,20 @@ export const GeneralFormSchema = z.object({
     subcategory: z.string().min(1, "Subcategory is required"),
     status: z.enum(["active", "inactive"]),
     details: z.object({
-        name: z.boolean(),
-        country: z.boolean(),
-        dates: z.boolean(),
+        // common
         salary: z.boolean(),
-        web: z.boolean(),
+        schoolName:      z.boolean(),
+        schoolWebsite:   z.boolean(),
+        schoolCountry: z.boolean(),
+        reportingPeriod: z.boolean(),
+
+        // for the category pricipal
+        pricipalName:    z.boolean(),
+        pricipalDivison: z.boolean(),
+
+        // for the category director
+        directorName: z.boolean(),
+
     })
 });
 
@@ -61,11 +70,14 @@ const FeedbackForm = () => {
             title: "",
             subcategory: "",
             details: {
-                name:    false,
-                country: false,
-                dates:   false,
-                salary:  false,
-                web:     false,
+                salary:          false,
+                schoolName:      false,
+                schoolWebsite:   false,
+                schoolCountry:   false,
+                reportingPeriod: false,
+                pricipalName:    false,
+                pricipalDivison: false,
+                directorName:    false,
             },
             status: "inactive",
         },
@@ -113,7 +125,7 @@ const MetaDataInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralForm
                 <div className="text-2xl font-semibold">Form Metadata</div>
                 <p className="text-muted-foreground mb-0 text-sm">Metadata means data about data. This is information about the feedback form.</p>
             </div>
-            <div className={`mt-2 flex flex-col gap-4 overflow-hidden transition-[max-height] ${collapsed ? "max-h-0" : "max-h-96"}`} >
+            <div className={`mt-2 flex flex-col gap-4 overflow-hidden transition-[max-height]`} >
                 <TitleInput form={form} />
                 <div className="flex gap-2">
                     <CategoryInput form={form} />

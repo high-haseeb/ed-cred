@@ -6,20 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useRouter } from "next/navigation"
 import { getProfile } from "@/api/auth"
+import { useUserProfile } from "@/hooks/useProfile";
 
 export default function WelcomePage() {
     const router = useRouter()
+    const { user, loading } = useUserProfile();
+    console.log(user);
 
-    const [user, setUser] = useState<any>();
-    useEffect(() => {
-        const setup = async() => {
-            const user = await getProfile();
-            setUser(user);
-        }
-        setup();
-    }, []);
-
-    if (!user) {
+    if (loading || user == null) {
         return <div>Loading...</div>
     }
 
@@ -29,7 +23,7 @@ export default function WelcomePage() {
                 <CardHeader className="text-center">
                     <div className="flex justify-center mb-4">
                         <Avatar className="w-16 h-16">
-                            <AvatarFallback>{user.username.slice(0, 2)}</AvatarFallback>
+                            <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
                         </Avatar>
                     </div>
                     <CardTitle className="text-2xl font-semibold">

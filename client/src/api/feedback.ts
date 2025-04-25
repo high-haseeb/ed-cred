@@ -5,7 +5,7 @@ const API_URL = `${API_BASE_URL}/feedback-form`
 
 export async function getFeedbackByCategory(categoryId: string, subcategoryId: string) {
     try {
-        const response = await fetch(`${API_URL}/category/${categoryId}/subcategory/${subcategoryId}`);
+        const response = await fetch(`${API_URL}/category/${categoryId}`);
 
         if (!response.ok) {
             throw new Error(`Error ${response.status}: ${response.statusText}`);

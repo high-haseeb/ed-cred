@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import { signup } from "@/api/auth";
+import Image from "next/image";
+import Footer from "@/components/Landing/Footer";
+import Navbar from "@/components/Landing/Navbar";
 
 const SingupPage = () => {
 
@@ -37,7 +40,8 @@ const SingupPage = () => {
     }
 
     return(
-        <main className="w-full h-screen font-inter flex items-center justify-center">
+        <main className="w-full h-screen font-inter flex flex-col items-center justify-between gap-40 mt-40">
+            <Navbar />
             <div className="w-lg text-center">
                 <div className="font-semibold text-3xl">Sign Up</div>
                 <p className="mt-4">Already have an account? <a className="underline underline-offset-4 text-base">login</a></p>
@@ -95,6 +99,7 @@ const SingupPage = () => {
                     <p className="mt-4 text-sm text-muted-foreground">By clicking continue, you agree to our <br/> <a className="underline underline-offset-4" href="terms-and-conditions">Terms of Service</a> and <a className="underline underline-offset-4" href="/privacy-policy">Privacy Policy</a>.</p>
                 </form>
             </div>
+            <Footer />
         </main>
     )
 }

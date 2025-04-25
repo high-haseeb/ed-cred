@@ -31,7 +31,6 @@ export default function FeedbacksPage() {
 
     return (
         <div className="w-3xl mx-auto my-10 flex max-w-4xl flex-col">
-            <Navbar />
             <Title 
                 title="Feedbacks"
                 desc="Here are the recent feedback forms. You can go here to create a new feedback form."

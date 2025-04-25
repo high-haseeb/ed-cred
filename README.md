@@ -20,9 +20,10 @@ npm install
 npm run dev
 ```
 
-### Todo
-* make a happy flow
-* JWT refresh tokens
-* Refactor types into shared module
+### Flow
+* After submitting the feedbackc admin must have to approve
+* Complete the user/dashboard page like https://www.yelp.com/search
+* Single review page needs to be finished
+* Focus on UI/UX 
 
 > <div style="display:flex;align-items:center;gap:1rem;">A project of<img src="./client/public/images/high-house-logo.png" width="100" style="margin-left:0.5rem;" ></img></div>

@@ -61,8 +61,8 @@ const Searchbar = () => {
                             results.length > 0 ? (
                                 results.map((result, index) => (
                                     <a key={index}  href={`/feedback/response/${result.id}`}>
-                                        <div className="p-2 cursor-pointer hover:bg-gray-200">
-                                            <div className="font-semibold">{result.details.name || 'Untitled'}</div>
+                                        <div className="p-2 cursor-pointer hover:bg-gray-200 text-left">
+                                            <div className="font-semibold">{result.details.schoolName || 'Untitled'}</div>
                                             <div className="text-sm text-gray-600">{result.comments || 'No comments available'}</div>
                                             <div className="text-xs text-gray-400">Submitted on {new Date(result.submittedAt).toLocaleDateString()}</div>
                                         </div>

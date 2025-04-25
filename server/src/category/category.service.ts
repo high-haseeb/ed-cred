@@ -16,7 +16,7 @@ export class CategoryService {
     }
 
     async getAllCategories(): Promise<Category[]> {
-        return await this.categoryRepository.find({ relations: ['subCategories'] });
+        return await this.categoryRepository.find({ relations: ['subCategories', 'feedbackForms'] });
     }
 
     async getCategoryById(id: number): Promise<Category> {

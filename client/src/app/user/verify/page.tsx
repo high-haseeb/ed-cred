@@ -14,6 +14,10 @@ import {
 } from "@/components/ui/card";
 import { postFormDataRequest, postRequest } from "@/api/config";
 import { toast } from "sonner";
+import Navbar from "@/components/Landing/Navbar";
+import Footer from "@/components/Landing/Footer";
+import { useUserProfile } from "@/hooks/useProfile";
+import { Loader } from "@/components/ui/loader";
 
 interface User {
     id:         string;
@@ -25,24 +29,13 @@ interface User {
 }
 
 const UserVerifyPage = () => {
-    const [user, setUser] = useState<User | null>(null)
-
-    const setup = async () => {
-        const user = await getProfile();
-        if (user.isVerified) {
-            // move the user out of this page if he/she is already verified
-            // router.push("/");
-        }
-        setUser(user);
-    }
-
-    useEffect(() => {
-        setup();
-    }, [])
+    const { user } = useUserProfile();
+    const [emailSent, setEmailSent] = useState(false);
 
     async function sendVerificationCode(email: string) {
         const res = await postRequest('auth/send-verification-email', JSON.stringify({ email: email }));
-        console.log(res);
+        toast.info(`Email sent to ${email}. Please check your inbox!`);
+        if (res) setEmailSent(true);
     }
 
     const [verificationFile, setVerificationFile] = useState<File | null>(null);
@@ -63,61 +56,65 @@ const UserVerifyPage = () => {
         // router.push("/");
     };
 
-
-    if (!user) {
-        return <div className="flex h-screen items-center justify-center text-lg">Loading...</div>
-    }
-
-    if (user.isVerified) {
-        return <div className="flex h-screen items-center justify-center text-lg">You are already verified!</div>
-    }
-
-    if (user.verificationDocumentUrl) {
-        return <div className="flex h-screen items-center justify-center text-lg">Your verification docuement has been uploaded!</div>
-    }
-
+    if (!user) return (<div className="w-full h-screen items-center justify-center"><Loader /></div>)
 
     return (
-        <main className="min-h-screen w-full bg-gradient-to-br from-sky-50 to-white text-foreground py-12 px-4 flex items-center justify-center">
-            <div className="max-w-xl mx-auto space-y-6">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold capitalize">Welcome, {user.username}!</h1>
-                    <p className="text-muted-foreground">
-                        You selected the <strong>{user.category.name}</strong> category. This category requires verification. Please choose one of the following options:
-                    </p>
-                </div>
+        <main className="min-h-screen w-full text-foreground flex flex-col gap-20 pt-20 mt-40 items-center justify-between">
+            <Navbar />
+            {
+                emailSent ? <div className="text-2xl flex flex-col gap-8 text-center">
+                    Email has been sent.<br/> Check your email for verfication
+                    <Button onClick={() => sendVerificationCode(user.email)}>Resend</Button>
+                </div> :
+                user ? user.isVerified ? <div className="flex items-center justify-center text-lg">You are already verified!</div> :
+                    user.verificationDocumentUrl ? <div className="flex items-center justify-center text-lg">Your verification docuement has been uploaded!</div> :  
+                        <>
+                            <div className="max-w-xl mx-auto space-y-6">
+                                <div className="space-y-1">
+                                    <h1 className="text-3xl font-bold capitalize">Welcome, {user.name}!</h1>
+                                    <p className="text-muted-foreground">
+                                        You selected the <strong>{user.category.name}</strong> category. This category requires verification. Please choose one of the following options:
+                                    </p>
+                                </div>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Verify via Email</CardTitle>
+                                        <CardDescription>Send a verification code to your email: <strong>{user.email}</strong></CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <Button onClick={() => sendVerificationCode(user.email)}>Send Verification Code</Button>
+                                    </CardContent>
+                                </Card>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Verify via Email</CardTitle>
-                        <CardDescription>Send a verification code to your email: <strong>{user.email}</strong></CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button onClick={() => sendVerificationCode(user.email)}>Send Verification Code</Button>
-                    </CardContent>
-                </Card>
+                                <div className="flex items-center gap-3 px-2">
+                                    <span className="text-sm text-muted-foreground whitespace-nowrap">OR</span>
+                                </div>
 
-                <div className="flex items-center gap-3 px-2">
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">OR</span>
-                </div>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Verify with Document</CardTitle>
-                        <CardDescription>
-                            Upload a valid government-issued ID or official document to verify your identity.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex gap-2">
-                            <Input type="file" onChange={(e) => setVerificationFile(e.target.files?.[0] ?? null)} />
-                            <Button variant="default" onClick={uploadVerificationDocument}>
-                                Upload Document
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Verify with Document</CardTitle>
+                                        <CardDescription>
+                                            Upload a valid government-issued ID or official document to verify your identity.
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="flex flex-col gap-2">
+                                            {
+                                                verificationFile ? 
+                                                    // TODO: show the document if they have uploaded one
+                                                    <img src={verificationFile.name} width="200" height="200" /> : 
+                                                    <Input type="file" onChange={(e) => setVerificationFile(e.target.files?.[0] ?? null)} />
+                                            }
+                                            <Button variant="default" onClick={uploadVerificationDocument}>
+                                                Upload Document
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </> : <></>
+            }
+            <Footer />
         </main>
     )
 }

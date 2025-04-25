@@ -1,4 +1,5 @@
 
+import { logout } from "@/api/auth";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -44,7 +45,7 @@ export const UserBubble = ({ user } : { user : UserProfile }) => {
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => console.log("logout please!")}>
+                <DropdownMenuItem onClick={() => logout()}>
                     Log out
                 </DropdownMenuItem>
             </DropdownMenuContent>

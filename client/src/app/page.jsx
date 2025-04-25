@@ -4,7 +4,7 @@ import Categories from '@/components/Landing/Categories';
 import Feedbacks from '@/components/Landing/RecentFeedbacks';
 import Footer from '@/components/Landing/Footer';
 import Header from '@/components/Landing/Header';
-import Metrics from '@/components/Landing/Metrics';
+// import Metrics from '@/components/Landing/Metrics';
 import Navbar from '@/components/Landing/Navbar';
 import Dissussions from '@/components/Landing/RecentDisscussions';
 
@@ -15,7 +15,7 @@ const HomePage = () => {
             <Header />
             <Categories />
             <About />
-            <Metrics />
+            {/* <Metrics /> */}
             <Feedbacks />
             <Dissussions />
             <Footer />

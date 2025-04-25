@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
 import { FeedbackForm } from "src/feedback-form/entities/feedback-form.entity";
+import { User } from "src/auth/user.entity";
 
 @Entity()
 export class FeedbackResponse {
@@ -8,6 +9,12 @@ export class FeedbackResponse {
 
     @ManyToOne(() => FeedbackForm, (feedbackForm) => feedbackForm.responses, { onDelete: "CASCADE" })
     feedbackForm: FeedbackForm;
+
+    @ManyToOne(() => User, (user) => user.feedbackFormsResponses, { nullable: true })
+    author: User;
+
+    @Column({ default: false })
+    accepted: false;
 
     @Column("jsonb")
     details: {

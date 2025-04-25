@@ -98,8 +98,8 @@ export class AuthService {
                 'role',
                 // 'permissions',
                 'subscription',
-                // 'isVerified',
-                // 'verificationDocumentUrl',
+                'isVerified',
+                'verificationDocumentUrl',
             ],
             relations: ["category"],
         });
@@ -190,6 +190,7 @@ export class AuthService {
 
         const verifyUrl = `http://localhost:3000/verify?token=${token}`;
 
+        // TODO: Make this editable by the admin user
         await this.mailerService.sendMail({
           to: user.email,
           subject: 'Verify Your Email - Ed-Cred',

@@ -36,11 +36,14 @@ export default function FeedbackResponseViewPage({ params }: { params: Promise<{
 type FeedbackViewProps = {
     feedbackForm: any;
     details: {
-        name?: string;
-        country?: string;
-        dates?: string;
-        salary?: string;
-        web?: string;
+        salary:          any;
+        schoolName:      any;
+        schoolWebsite:   any;
+        schoolCountry:   any;
+        reportingPeriod: any;
+        pricipalName:    any;
+        pricipalDivison: any;
+        directorName:    any;
     };
     answers: {
         questionId: string;
@@ -64,8 +67,8 @@ function FeedbackView({
     feedbackForm,
 }: FeedbackViewProps) {
     return (
-        <div className="p-6 space-y-6 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-semibold">Feedback Summary</h2>
+        <div className="p-6 space-y-6 w-4xl max-w-5xl mx-auto">
+            <h2 className="text-2xl font-semibold">{feedbackForm.title}</h2>
 
             <Separator />
 
@@ -75,8 +78,8 @@ function FeedbackView({
                     value ? (
                         <div key={key} className="flex justify-between text-sm">
                             <span className="capitalize text-muted-foreground">{key}</span>
-                            <span className="font-medium">{value}</span>
-                        </div>
+                            <span className="font-medium">{key !== "reportingPeriod" ? value : 
+                                <div>{new Intl.DateTimeFormat("en-US", { day: "numeric", month: "long", year: "numeric", }).format(new Date(value.from))} to {new Intl.DateTimeFormat("en-US", { day: "numeric", month: "long", year: "numeric", }).format(new Date(value.to))}</div>}</span> </div>
                     ) : null
                 )}
             </div>
@@ -87,7 +90,7 @@ function FeedbackView({
                 <h3 className="text-lg font-semibold">Answers</h3>
                 {answers.map(({ questionId, answer }, idx) => (
                     <div key={idx} className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">{feedbackForm.questions.filter((q: any) => q.id == questionId)[0].text}</span>
+                        <span className="text-muted-foreground">{feedbackForm.questions.filter((q: any) => q.id == questionId)[0]?.text}</span>
                         <span className="font-medium">{formatAnswer(answer)}</span>
                     </div>
                 ))}

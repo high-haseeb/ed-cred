@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect } from 'react';
-import { redirect } from 'next/navigation';
+import { useEffect } from "react";
 import Image from 'next/image';
 import Signup from '@/components/Landing/Signup';
 import Signin from '@/components/Landing/Signin';
@@ -16,7 +15,7 @@ const Navbar = () => {
 
     useEffect(() => {
         if (user && user.role === "admin") {
-            redirect("/dashboard");
+            //redirect("/dashboard");
         }
     }, [user]);
 
@@ -30,7 +29,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <NavigationMenuItems userCategoryId={user ? user.category.id : 0} />
+                    <NavigationMenuItems userCategoryId={user && user.category ? user.category.id : 0} />
                     {
                         loading ? 
                             <Loader /> :

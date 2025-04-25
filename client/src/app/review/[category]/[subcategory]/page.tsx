@@ -1,5 +1,6 @@
 "use client"
 import { getFeedbackByCategory } from "@/api/feedback";
+import Navbar from "@/components/Landing/Navbar";
 import { Feedback } from "@/components/MainDashboard/RecentFeedbacks";
 import FeedbackForm from "@/components/Review/FeedbackForm";
 import { LoaderIcon } from "lucide-react";
@@ -13,7 +14,6 @@ export default function ReivewPage({ params }: { params: Promise<{ category: str
     useEffect(() => {
         async function loadFeedbacks() {
             const data = await getFeedbackByCategory(category, subcategory);
-            console.log(data);
             if (data.error || data.length == 0) {
                 setNotFound(true);
                 return;
@@ -36,22 +36,13 @@ export default function ReivewPage({ params }: { params: Promise<{ category: str
                         feedbacks.length <= 0 ? 
                             <LoaderIcon className="animate-spin" />
                             :
-                            <div className="w-2xl flex h-full flex-col items-start py-10">
+                            <div className="w-full flex h-full flex-col items-start mt-40">
+                                <Navbar />
                                 {
                                     feedbacks.map((feedback) => (
                                         <div key={feedback.id} className="w-full">
-                                            <div>
-                                                <div className="text-3xl font-semibold">{feedback.title}</div>
-                                                <p className="text-muted-foreground text-base font-normal">
-                                                    published by <span className="font-semibold">{feedback.author.username}</span>
-                                                </p>
-                                                <p className="text-muted-foreground text-base font-normal lowercase">
-                                                    on {new Intl.DateTimeFormat("en-US", {
-                                                        day: "numeric",
-                                                        month: "long",
-                                                        year: "numeric",
-                                                    }).format(new Date(feedback.createdAt ?? ""))}
-                                                </p>
+                                            <div className="flex flex-col items-center justify-center bg-[#F5F8F3] py-16">
+                                                <div className="text-4xl font-semibold">{feedback.title}</div>
                                             </div>
 
                                             <FeedbackForm feedback={feedback} />

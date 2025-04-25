@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { FeedbackResponse } from './entities/feedback-response.entity';
 import { FeedbackForm } from 'src/feedback-form/entities/feedback-form.entity';
 import { CreateFeedbackResponseDto } from './dto/create-feedback-response.dto';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class FeedbackResponseService {
@@ -13,6 +14,9 @@ export class FeedbackResponseService {
 
         @InjectRepository(FeedbackForm)
         private readonly feedbackFormRepository: Repository<FeedbackForm>,
+
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
     ) {}
 
     // Create a new feedback response
@@ -25,12 +29,21 @@ export class FeedbackResponseService {
             throw new NotFoundException('Feedback form not found');
         }
 
+        const user = await this.userRepository.findOne({
+            where: { id: Number(dto.authorId) },
+        });
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
         const feedbackResponse = this.feedbackResponseRepository.create({
             feedbackForm,
             details: dto.details,
             answers: dto.answers,
             comments: dto.comments,
             submittedAt: new Date(dto.submittedAt),
+            author: user,
         });
 
         return await this.feedbackResponseRepository.save(feedbackResponse);

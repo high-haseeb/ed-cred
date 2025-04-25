@@ -1,11 +1,14 @@
 
 // Optional details toggles
 export interface FeedbackDetails {
-    name:    boolean;
-    country: boolean;
-    dates:   boolean;
-    salary:  boolean;
-    web:     boolean;
+        salary:          boolean;
+        schoolName:      boolean;
+        schoolWebsite:   boolean;
+        schoolCountry:   boolean;
+        reportingPeriod: boolean;
+        pricipalName:    boolean;
+        pricipalDivison: boolean;
+        directorName:    boolean;
 }
 
 export interface Question {

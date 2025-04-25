@@ -156,11 +156,12 @@ export const StatusInput = ({ form }: {form: UseFormReturn<z.infer<typeof Genera
 }
 
 export const SwitchInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
+    console.log();
     return (
         <div className="flex flex-col gap-4">
             <Label>Feedback Details</Label>
-            <div className="flex justify-between flex-wrap">
-                {["name", "country", "dates", "salary", "web"].map((detail) => (
+            <div className="flex flex-wrap gap-4">
+                {Object.keys(form.getValues('details')).map((detail) => (
                     <FormField
                         key={detail}
                         control={form.control}

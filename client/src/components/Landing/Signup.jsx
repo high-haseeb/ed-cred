@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { CircleXIcon } from 'lucide-react';
 import { signup } from '@/api/auth';
+import { useRouter } from 'next/navigation';
 
 const Signup = () => {
     const [open, setOpen] = useState(false);
@@ -11,6 +12,7 @@ const Signup = () => {
     const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const router = useRouter();
 
     const handleSignup = async (e) => {
         e.preventDefault();
@@ -23,7 +25,12 @@ const Signup = () => {
 
         try {
             const response = await signup(username, email, password);
-            setError(response.message);
+            if (response.error) {
+                setError(response.message);
+                return;
+            }
+
+            router.push("/signup/category/");
 
         } catch (error) {
             console.error(error);

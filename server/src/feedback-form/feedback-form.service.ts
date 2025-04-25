@@ -48,13 +48,13 @@ export class FeedbackFormService {
     }
 
     async findAll(): Promise<FeedbackForm[]> {
-        return await this.feedbackFormRepository.find({ relations: ['author', 'category', 'subcategory', 'responses'] });
+        return await this.feedbackFormRepository.find({ relations: ['author', 'category', 'subcategory', 'responses', 'responses.author'] });
     }
 
     async findOne(id: number): Promise<FeedbackForm> {
         const feedbackForm = await this.feedbackFormRepository.findOne({
             where: { id },
-            relations: ['author', 'category', 'subcategory', 'responses'],
+            relations: ['author', 'category', 'subcategory', 'responses', 'responses.author'],
         });
 
         if (!feedbackForm) throw new NotFoundException(`FeedbackForm with ID ${id} not found`);

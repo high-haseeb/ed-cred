@@ -4,6 +4,7 @@ import { ForumReply } from 'src/forum-reply/entities/forum-reply.entity';
 import { FeedbackForm } from 'src/feedback-form/entities/feedback-form.entity';
 import { UserRole, Permission, SubscriptionPlan } from "./../../types/user";
 import { Category } from 'src/category/category.entity';
+import { FeedbackResponse } from 'src/feedback-response/entities/feedback-response.entity';
 
 @Entity()
 export class User {
@@ -71,4 +72,7 @@ export class User {
 
     @OneToMany(() => FeedbackForm, (form) => form.author)
     feedbackForms: FeedbackForm[];
+
+    @OneToMany(() => FeedbackResponse, (form) => form.author)
+    feedbackFormsResponses: FeedbackResponse[];
 }

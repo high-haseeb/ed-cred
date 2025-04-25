@@ -9,8 +9,9 @@ import { fetchFeedbacks } from "@/api/feedback";
 import { SubCategory  } from "@/store/categoryStore";
 import { Feedback } from "@/components/MainDashboard/RecentFeedbacks";
 import { Category } from "@/types/user";
+import Navbar from "@/components/Landing/Navbar";
 
-const CategoryCard = ({ category, subcategory, feedbacks }: { category: Category, subcategory: SubCategory, feedbacks: Feedback[] }) => {
+const CategoryCard = ({ category }: { category: Category }) => {
     const router = useRouter();
     
     return (
@@ -19,24 +20,10 @@ const CategoryCard = ({ category, subcategory, feedbacks }: { category: Category
                 className={cn("outline-foreground/20 bg-foreground/2 rounded-2xl px-10 py-12 outline",
                     "w-xs flex flex-col items-center justify-center gap-4",
                     "hover:bg-foreground/5 shadow-sm transition-colors")}
-                onClick={() => router.push(`review/${category.id}/${subcategory.id}`)}
+                onClick={() => router.push(`review/${category.id}/0`)}
             >
-                <Image src={"/icons/teacher.png"} width={100} height={200} alt={subcategory.name} className="h-auto w-24" />
-                <div className="text-center text-lg font-semibold capitalize">{subcategory.name}</div>
-            </div>
-
-            {/* Show feedbacks under each subcategory */}
-            <div className="mt-4 space-y-2">
-                {feedbacks.length > 0 ? (
-                    feedbacks.map(feedback => (
-                        <div key={feedback.id} className="p-4 bg-muted rounded-lg shadow-sm">
-                            <p className="text-sm font-medium">{feedback.title}</p>
-                            <p className="text-xs text-muted-foreground">{feedback.author.username}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-xs text-muted-foreground">No feedback yet</p>
-                )}
+                <Image src={`/uploads/categoryIcons/${category.name.toLowerCase()}.png`} width={100} height={200} alt={category.name} className="h-auto w-24" />
+                <div className="text-center text-lg font-semibold capitalize">{category.name}</div>
             </div>
         </div>
     );
@@ -49,6 +36,7 @@ const ReviewPage = () => {
     useEffect(() => {
         const setup = async () => {
             const categoryData = await getAllCategories();
+            console.log(categoryData);
             setCategories(categoryData);
             console.log(categoryData);
 
@@ -75,7 +63,7 @@ const ReviewPage = () => {
             "flex h-screen w-screen flex-col gap-20", 
             "items-center justify-center overflow-hidden")}
         >
-            <ThemeToggle className="absolute right-4 top-4" />
+            <Navbar />
             <div className="flex max-w-3xl flex-col items-center justify-center gap-4 text-center">
                 <span 
                     className={cn("bg-[#A1AF001A] font-normal text-[#439E5E] dark:bg-green-800/50",
@@ -88,19 +76,12 @@ const ReviewPage = () => {
 
             <div className="flex max-w-5xl flex-row flex-wrap items-center justify-center gap-8">
                 {categories.map(category => (
-                    <div key={category.id} className="flex flex-col gap-4">
-                        <div className="font-semibold text-3xl">{category.name}</div>
-                        <div className="flex gap-4">
-                            {category.subCategories.map(subcategory => (
-                                <CategoryCard 
-                                    key={subcategory.id} 
-                                    category={category} 
-                                    subcategory={subcategory} 
-                                    feedbacks={feedbacksBySubcategory[subcategory.id ?? 0] || []} 
-                                />
-                            ))}
-                        </div>
-                    </div>
+                    //@ts-ignore
+                    category.feedbackForms.length > 0 &&
+                    <CategoryCard 
+                        key={category.id} 
+                        category={category} 
+                    />
                 ))}
             </div>
         </div>
