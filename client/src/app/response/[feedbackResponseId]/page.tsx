@@ -54,7 +54,7 @@ export default function FeedbackResponseViewPage({ params }: { params: Promise<{
             <Navbar />
             {
                 feedback ? 
-                    <div>
+                    <div className="w-4xl">
                         <FeedbackView 
                             details={feedback.responses[0].details} 
                             feedbackForm={feedback.responses[0].feedbackForm} 
@@ -137,7 +137,7 @@ function FeedbackView({
     averageRating,
 }: FeedbackViewProps) {
     return (
-        <div className="w-4xl flex flex-col mt-20">
+        <div className="w-4xl max-w-4xl flex flex-col mt-20">
             <div className="text-2xl font-semibold mb-6">{feedbackForm.title}</div>
             <div className="flex gap-4 items-start">
                 <Image src={`/uploads/categoryIcons/${feedbackForm.category.name.toLowerCase()}.png`} width={100} height={200} alt={""} className="h-auto w-12 object-contain" />
