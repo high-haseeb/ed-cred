@@ -188,7 +188,7 @@ export class AuthService {
         user.emailVerificationToken = token;
         await this.userRepository.save(user);
 
-        const verifyUrl = `http://localhost:3000/verify?token=${token}`;
+        const verifyUrl = `http://${process.env.BASE_URL}/verify?token=${token}`;
 
         // TODO: Make this editable by the admin user
         await this.mailerService.sendMail({
