@@ -1,12 +1,10 @@
 "use client";
 
 import { create } from 'zustand';
-import { fetchFeedbackById, fetchFeedbacks } from "@/api/feedback";
+import { fetchFeedbackById } from "@/api/feedback";
 import { FeedbackResponse } from "@/api/feedback-response";
-import { UserProfile, Category } from "@/types/user";
 import { Stats } from "@/components/Common/Stats";
 import { Title } from "@/components/Common/Title";
-import {  SubCategory } from "@/store/categoryStore";
 import { use, useEffect } from "react";
 import { useState, useMemo } from "react";
 import {
@@ -23,11 +21,11 @@ import { API_BASE_URL } from "@/api/config";
 
 
 // useFeedbackStore.ts
-export const useFeedbackStore = create((set, get) => ({
+const useFeedbackStore = create<any>((set, get) => ({
     feedback: {},
     id: 0,
 
-    setId: (id) => set({ id }),
+    setId: (id: any) => set({ id }),
 
     fetchFeedbacks: async () => {
         const { id } = get();
@@ -35,14 +33,14 @@ export const useFeedbackStore = create((set, get) => ({
         set({ feedback: response });
     },
 
-    setFeedback: (feedback) => set({ feedback }), // directly update the feedback
+    setFeedback: (feedback: any) => set({ feedback }), // directly update the feedback
 }));
 
 // PostPage component
 export default function PostPage({ params }: { params: Promise<{ feedbackId: string }> }) {
 
     const { feedbackId } = use(params);
-    const { feedback, fetchFeedbacks, setId, setFeedback } = useFeedbackStore();
+    const { feedback, fetchFeedbacks, setId } = useFeedbackStore();
 
     useEffect(() => {
         setId(feedbackId);
@@ -69,7 +67,7 @@ export default function PostPage({ params }: { params: Promise<{ feedbackId: str
 }
 
 // Accept or delete feedback function
-export async function deleteFeedback(responseId: string): Promise<void> {
+async function deleteFeedback(responseId: string): Promise<void> {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
@@ -85,7 +83,7 @@ export async function deleteFeedback(responseId: string): Promise<void> {
     }
 }
 
-export async function acceptFeedback(responseId: string): Promise<any> {
+async function acceptFeedback(responseId: string): Promise<any> {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
@@ -106,7 +104,7 @@ export async function acceptFeedback(responseId: string): Promise<any> {
 // Feedback Responses Table
 const FeedbackResponsesTable = ({ responses }: { responses: FeedbackResponse[] }) => {
     const [filters, setFilters] = useState<{ [key: string]: string }>({});
-    const { fetchFeedbacks, setFeedback } = useFeedbackStore();
+    const { fetchFeedbacks } = useFeedbackStore();
 
     const detailKeys = useMemo(() => {
         if (responses.length === 0) return [];
@@ -127,6 +125,7 @@ const FeedbackResponsesTable = ({ responses }: { responses: FeedbackResponse[] }
 
     const filteredResponses = useMemo(() => {
         return responses.filter((response) => {
+            // @ts-ignore
             const submittedBy = response.author?.username || "Anonymous";
             if (
                 filters["Submitted by"] &&
@@ -136,6 +135,7 @@ const FeedbackResponsesTable = ({ responses }: { responses: FeedbackResponse[] }
             }
 
             for (const key of detailKeys) {
+                // @ts-ignore
                 const val = formatValue(key, response.details[key]);
                 if (
                     filters[key] &&
@@ -199,7 +199,9 @@ const FeedbackResponsesTable = ({ responses }: { responses: FeedbackResponse[] }
             <TableBody>
                 {filteredResponses.map((response) => (
                     <TableRow key={response.id}>
+                        {/* @ts-ignore */}
                         <TableCell>{response.author ? response.author.username : "Anonymous"}</TableCell>
+                        {/* @ts-ignore */}
                         {detailKeys.map((key) => (
                             <TableCell key={key}>{formatValue(key, response.details[key])}</TableCell>
                         ))}

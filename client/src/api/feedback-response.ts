@@ -3,15 +3,9 @@ import { API_BASE_URL } from "./config";
 const API_URL = `${API_BASE_URL}/feedback-responses`;
 
 export interface CreateFeedbackResponseDto {
-    feedbackFormId: string;
     feedbackFormId: any;
-    details: {
-        name?: string;
-        country?: string;
-        dates?: string;
-        salary?: string;
-        web?: string;
-    };
+    details: any;
+    accepted: boolean;
     answers: {
         questionId: string;
         answer: string | string[] | boolean | number;

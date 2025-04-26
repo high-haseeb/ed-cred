@@ -2,16 +2,14 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { ThemeToggle } from "@/components/Common/ThemeToggle";
 import { useEffect, useState } from "react";
 import { getAllCategories } from "@/api/categories";
 import { fetchFeedbacks } from "@/api/feedback";
-import { SubCategory  } from "@/store/categoryStore";
 import { Feedback } from "@/components/MainDashboard/RecentFeedbacks";
 import { Category } from "@/types/user";
 import Navbar from "@/components/Landing/Navbar";
 
-export const CategoryCard = ({ category }: { category: Category }) => {
+const CategoryCard = ({ category }: { category: Category }) => {
     const router = useRouter();
     
     return (

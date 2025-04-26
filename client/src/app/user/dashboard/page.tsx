@@ -6,8 +6,7 @@ import Navbar from "@/components/Landing/Navbar";
 import { useCategories } from "@/hooks/useCategories";
 import { Category } from "@/types/user";
 import Image from "next/image";
-import { AppleIcon, ExternalLinkIcon, FilterIcon, SearchIcon, TimerIcon, FilterXIcon } from "lucide-react";
-import { v4 } from "uuid";
+import { FilterIcon, SearchIcon, TimerIcon, FilterXIcon, AppleIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CountryDropdown } from "@/components/Review/FeedbackForm";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -20,8 +19,8 @@ import {
     CommandEmpty,
     CommandGroup
 } from "@/components/ui/command";
-import { useRouter } from "next/navigation";
 import { getRequest } from "@/api/config";
+import { ReviewCard } from "@/components/Common/ReviewCard";
 
 const UserDashboardPage = () => {
     const [reviews, setReviews] = useState<any[]>([]);
@@ -30,13 +29,14 @@ const UserDashboardPage = () => {
     useEffect(() => {
         const setup = async () => {
             const res = await getRequest("/feedback-form/groups");
+            if (!res) return;
             const reviews = await res.json();
 
-            const filteredReviews = [];
-            reviews.forEach(review => {
+            const filteredReviews: any[] = [];
+            reviews.forEach((review: any) => {
                 let totalRating = 0;
                 let totalResponses = 0;
-                review.responses.forEach(response => response.answers.forEach(answer => {
+                review.responses.forEach((response: any) => response.answers.forEach((answer: any) => {
                     if (Number.isInteger(answer.answer)) {
                         totalRating += answer.answer;
                         totalResponses += 1;
@@ -97,6 +97,7 @@ const UserDashboardPage = () => {
                 } else {
                     const match = Object.entries(response.details).some(
                         ([detailKey, detailValue]) =>
+                            // @ts-ignore
                             detailKey === key && detailValue.toLowerCase().includes(value.toLowerCase())
                     );
                     if (!match) {
@@ -213,7 +214,7 @@ const ClearFilters = ({ clearFilters }: {clearFilters: () => void}) => {
 
 const FilterBar = ({ setFilter, schools, clearFilters }: { setFilter: (key: string, value: string) => void, schools: Set<string>, clearFilters: () => void}) => {
     const [country, setCountry] = useState("");
-    const [school, setSchool] = useState("");
+    const [_school, setSchool] = useState("");
 
     return (
         <div className="w-full h-max bg-white outline-foreground/20 outline rounded-md flex flex-col gap-4 p-4 shadow-md">
@@ -264,7 +265,7 @@ const FilterBar = ({ setFilter, schools, clearFilters }: { setFilter: (key: stri
 }
 
 
-const SchoolSearch = ({ schools, setSchool, setFilter }: {
+const SchoolSearch = ({ schools, setFilter }: {
     schools: Set<string>,
     setFilter: (key: string, value: string) => void
 }) => {
@@ -354,57 +355,6 @@ const CategoryCard = ({ category, setFilterCategory }: { category: Category, set
 };
 
 
-export const ReviewCard = ({ response, hideRating=false } : { response: any, hideRating?: boolean}) => {
-    const router = useRouter();
 
-    return (
-        <div className="w-full border-2 border-muted rounded-md px-3 py-2 flex flex-col gap-2 shadow-lg hover:shadow-xl" onClick={
-            () => router.push(`/response/${response.id}`)
-        }>
-            <div className="flex gap-4">
-                <Image
-                    src={`/uploads/categoryIcons/${response.feedbackForm.category.name.toLowerCase()}.png`}
-                    width={200} height={200} alt={''} className="w-12 h-auto object-contain" />
-                {response.details?.pricipalName ?
-                    <div className="flex flex-col leading-snug gap-0">
-                        <div className="text-lg font-semibold">Principal {response.details.pricipalName}</div>
-                        <div className="text-base font-normal">{response.details.schoolName} {response.details.schoolCountry}</div>
-                    </div> : 
-                    response.details?.directorName ?
-                        <div className="flex flex-col">
-                            <div className="text-lg font-semibold">Pricipal {response.details.directorName}</div>
-                            <div className="text-lg font-semibold">{response.details.schoolName}</div>
-                        </div> : 
-                        <div className="text-lg font-semibold">
-                            <div className="">{response.details.schoolName}</div>
-                            <div className="text-base">{response.details.schoolCountry}</div>
-                        </div>
-                }
-            </div>
-            {
-                !hideRating && <RatingBar rating={response.rating} />
-            }
-            <div className="text-ellipsis line-clamp-1 italic">{response.comments}</div>
-            <a className="text-base text-muted-foreground font-normal flex gap-2 items-center mt-auto" href={`https://www.${response.details.schoolWebsite}`}>
-                {response.details.schoolWebsite}
-                <ExternalLinkIcon stroke="gray" size={16} />
-            </a>
-            {
-                !hideRating && <div>{response.totalReviews} reviews</div>
-            }
-        </div>
-    )
-}
-
-const RatingBar = ({ rating } : { rating: number }) => {
-    return (
-        <div className="flex gap-1 items-center justify-start">
-            {
-                Array.from({length: 10}).map((_, i) => <AppleIcon key={v4()} size={16} fill={i + 1 < rating ? "red" : "gray"} stroke={i + 1 < rating ? "red" : "gray"} />)
-            }
-            <div className="text-base ml-2">{ rating.toFixed(0) }/10</div>
-        </div>
-    )
-}
 
 export default UserDashboardPage;

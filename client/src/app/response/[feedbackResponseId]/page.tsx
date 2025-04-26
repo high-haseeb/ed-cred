@@ -7,7 +7,7 @@ import Image from "next/image";
 import { AppleIcon } from "lucide-react";
 import { v4 } from "uuid";
 import { FeedbackResponse } from "@/api/feedback-response";
-import { ReviewCard } from "@/app/user/dashboard/page";
+import { ReviewCard } from "@/components/Common/ReviewCard";
 import {
     Tabs,
     TabsList,

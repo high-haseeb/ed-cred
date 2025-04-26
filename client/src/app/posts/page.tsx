@@ -1,6 +1,5 @@
 "use client";
 import { usePostStore } from "@/store/usePostStore";
-import { Separator } from "@/components/ui/separator";
 import { PostsListing } from "@/components/Posts/Listing";
 import { Stats } from "@/components/Common/Stats";
 import { Title } from "@/components/Common/Title";
@@ -26,7 +25,7 @@ const PostListingPage = () => {
     )
 };
 
-export const StatsComponent = () => {
+const StatsComponent = () => {
     const { posts } = usePostStore();
 
     const stats = [
