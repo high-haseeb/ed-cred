@@ -166,4 +166,12 @@ export class FeedbackResponseService {
         if (!response) throw new NotFoundException('Feedback not found');
         await this.feedbackResponseRepository.remove(response);
     }
+
+    async getLastFourFeedbacks(): Promise<FeedbackResponse[]> {
+        return this.feedbackResponseRepository.find({
+            order: { submittedAt: 'DESC' },
+            take: 4,
+            where: { accepted: true }
+        });
+    }
 }

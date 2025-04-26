@@ -7,6 +7,7 @@ import { User } from 'src/auth/user.entity';
 import { Category } from 'src/category/category.entity';
 import { Subcategory } from 'src/subcategory/subcategory.entity';
 import { FeedbackResponse } from 'src/feedback-response/entities/feedback-response.entity';
+import { response } from 'express';
 
 @Injectable()
 export class FeedbackFormService {
@@ -102,6 +103,7 @@ export class FeedbackFormService {
 
         const schoolGroupResults = Object.entries(schoolGroups).map(([key, responses]) => {
             const [schoolName, schoolWebsite, schoolCountry] = key.split('|');
+            responses.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
             return {
                 groupType: 'school',
                 schoolName,
@@ -114,6 +116,7 @@ export class FeedbackFormService {
 
         const principalGroupResults = Object.entries(principalGroups).map(([key, responses]) => {
             const [pricipalName, schoolName] = key.split('|');
+            responses.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
             return {
                 groupType: 'principal',
                 pricipalName,
@@ -123,7 +126,13 @@ export class FeedbackFormService {
             };
         });
 
-        return [...schoolGroupResults, ...principalGroupResults];
+        const combinedResults = [...schoolGroupResults, ...principalGroupResults].sort((a, b) => {
+            const latestA = a.responses[0]?.submittedAt;
+            const latestB = b.responses[0]?.submittedAt;
+            return new Date(latestB).getTime() - new Date(latestA).getTime();
+        });
+
+        return combinedResults;
     }
 
     async findAll(): Promise<FeedbackForm[]> {
@@ -145,7 +154,10 @@ export class FeedbackFormService {
 
         if (!feedbackForm) throw new NotFoundException(`FeedbackForm with ID ${id} not found`);
 
-        //feedbackForm.responses = feedbackForm.responses.filter(r => r.accepted);
+        feedbackForm.responses = feedbackForm.responses
+            .filter(r => r.accepted)
+            .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
+
         return feedbackForm;
     }
 
@@ -158,10 +170,18 @@ export class FeedbackFormService {
             relations: ['author', 'category', 'subcategory', 'responses', 'responses.author'],
         });
 
-        return forms.map(form => ({
-            ...form,
-            responses: form.responses.filter(r => r.accepted),
-        }));
+        return forms
+            .map(form => ({
+                ...form,
+                responses: form.responses.filter(r => r.accepted).sort((a, b) =>
+                    new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+                ),
+            }))
+            .sort((a, b) => {
+                const latestA = a.responses[0]?.submittedAt;
+                const latestB = b.responses[0]?.submittedAt;
+                return new Date(latestB).getTime() - new Date(latestA).getTime();
+            });
     }
 
     async findByCategoryAndSubcategory(categoryId: number, subcategoryId: number): Promise<FeedbackForm[]> {
