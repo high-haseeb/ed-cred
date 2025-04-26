@@ -154,9 +154,7 @@ export class FeedbackFormService {
 
         if (!feedbackForm) throw new NotFoundException(`FeedbackForm with ID ${id} not found`);
 
-        feedbackForm.responses = feedbackForm.responses
-            .filter(r => r.accepted)
-            .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
+        feedbackForm.responses = feedbackForm.responses.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
 
         return feedbackForm;
     }
