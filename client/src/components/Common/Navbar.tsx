@@ -109,6 +109,7 @@ function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
                 { href: "/feedback", label: "Feedback" },
                 { href: "/feedback/create", label: "Create Feedback" },
                 { href: "/forum", label: "Forum" },
+                { href: "/users", label: "Manage users" },
                 { href: "/review/", label: "Review" },
                 { href: "/posts", label: "Posts" },
                 { href: "/category", label: "Categories" },

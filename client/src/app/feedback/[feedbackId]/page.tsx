@@ -220,9 +220,6 @@ const FeedbackResponsesTable = ({ responses }: { responses: FeedbackResponse[] }
                                             await acceptFeedback(response.id);
                                             fetchFeedbacks();
                                         }}>Accept</Button>
-                                        <Button size="sm" variant="secondary" className="text-black">
-                                            Edit
-                                        </Button>
                                         <Button size="sm" variant="destructive" onClick={async () => {
                                             await deleteFeedback(response.id);
                                             fetchFeedbacks();
