@@ -40,11 +40,11 @@ export default function VerifyPage() {
                     status === "success" ? 
                         <div className='flex flex-col gap-4'>
                                 You are successfully verified
-                                <Button onClick={() => router.push("/")}>Go to dashboard</Button>
+                                <Button onClick={() => router.push("/user/dashboard")}>Go to dashboard</Button>
                             </div> :
                             <div className='flex flex-col gap-4'>
                                 You are already verified
-                                <Button onClick={() => router.push("/")}>Go to dashboard</Button>
+                                <Button onClick={() => router.push("/user/dashboard")}>Go to dashboard</Button>
                             </div>
             }
             </div>
