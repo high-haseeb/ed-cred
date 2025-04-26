@@ -13,10 +13,11 @@ export default function FeedbackResponseViewPage({ params }: { params: Promise<{
     useEffect(() => {
 
         const fetchFeedback = async() => {
-            const responseRaw = await getRequest(`/feedback-responses/${feedbackResponseId}`);
+            const responseRaw = await getRequest(`/feedback-responses/response/${feedbackResponseId}`);
             if (!responseRaw) return;
             const response = await responseRaw.json();
-            setFeedback(response);
+            console.log(response);
+            setFeedback(response[0]);
         }
 
         fetchFeedback();

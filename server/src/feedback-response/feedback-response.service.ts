@@ -59,6 +59,12 @@ export class FeedbackResponseService {
             relations: ['feedbackForm'],
         });
     }
+    async findOneResponse(id: string) {
+        return await this.feedbackResponseRepository.find({
+            where: {id: id},
+            relations: ['feedbackForm']
+        });
+    }
 
     async findRelatedResponses(responseId: string): Promise<{
         responses: FeedbackResponse[],

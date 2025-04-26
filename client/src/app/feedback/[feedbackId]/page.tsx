@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_BASE_URL } from "@/api/config";
+import { useRouter } from 'next/navigation';
 
 
 // useFeedbackStore.ts
@@ -105,6 +106,7 @@ async function acceptFeedback(responseId: string): Promise<any> {
 const FeedbackResponsesTable = ({ responses }: { responses: FeedbackResponse[] }) => {
     const [filters, setFilters] = useState<{ [key: string]: string }>({});
     const { fetchFeedbacks } = useFeedbackStore();
+    const router = useRouter();
 
     const detailKeys = useMemo(() => {
         if (responses.length === 0) return [];
@@ -220,6 +222,11 @@ const FeedbackResponsesTable = ({ responses }: { responses: FeedbackResponse[] }
                                             await acceptFeedback(response.id);
                                             fetchFeedbacks();
                                         }}>Accept</Button>
+
+                                        <Button size="sm" onClick={async () => {
+                                            router.push(`/feedback/response/${response.id}`)
+
+                                        }}>View</Button>
                                         <Button size="sm" variant="destructive" onClick={async () => {
                                             await deleteFeedback(response.id);
                                             fetchFeedbacks();

@@ -17,6 +17,12 @@ export class FeedbackResponseController {
     async findAllByForm(@Param('formId') formId: string) {
         return await this.feedbackResponseService.getResponsesByForm(formId);
     }
+    
+    @Get('response/:id')
+    async findOneResponse(@Param('id') id: string) {
+        return await this.feedbackResponseService.findOneResponse(id);
+    }
+
 
     @Get('recent/')
     async getLastFourFeedbacks() {
