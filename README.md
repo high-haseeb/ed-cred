@@ -21,9 +21,9 @@ npm run dev
 ```
 
 ### Flow
-* After submitting the feedbackc admin must have to approve
-* Complete the user/dashboard page like https://www.yelp.com/search
-* Single review page needs to be finished
-* Focus on UI/UX 
+* Payments
+* Contact Us Admin listing
+* pages admin listing 
+* UI/UX changes
 
 > <div style="display:flex;align-items:center;gap:1rem;">A project of<img src="./client/public/images/high-house-logo.png" width="100" style="margin-left:0.5rem;" ></img></div>
