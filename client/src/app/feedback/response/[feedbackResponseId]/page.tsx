@@ -12,7 +12,6 @@ export default function FeedbackResponseViewPage({ params }: { params: Promise<{
 
     useEffect(() => {
 
-        // fetch the feedback response here
         const fetchFeedback = async() => {
             const responseRaw = await getRequest(`/feedback-responses/${feedbackResponseId}`);
             if (!responseRaw) return;

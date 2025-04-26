@@ -25,6 +25,11 @@ export class FeedbackFormController {
         return this.feedbackFormService.findAll();
     }
 
+    @Get('/groups')
+    findAllGroups() {
+        return this.feedbackFormService.getGroupedResponsesBySchool();
+    }
+
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.feedbackFormService.findOne(+id);

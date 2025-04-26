@@ -317,7 +317,7 @@ export function DateRangePicker({
 }
 
 
-const CountryDropdown = ({ value, onChange }: { value: string, onChange: (val: string) => void }) => {
+export const CountryDropdown = ({ value, onChange }: { value: string, onChange: (val: string) => void }) => {
     const countries = [
         "United States",
         "Canada",

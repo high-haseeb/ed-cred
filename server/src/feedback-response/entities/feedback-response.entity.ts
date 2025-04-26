@@ -14,15 +14,18 @@ export class FeedbackResponse {
     author: User;
 
     @Column({ default: false })
-    accepted: false;
+    accepted: boolean;
 
     @Column("jsonb")
     details: {
-        name?: string;
-        country?: string;
-        dates?: string;
-        salary?: string;
-        web?: string;
+        salary:          string;
+        schoolName:      string;
+        schoolWebsite:   string;
+        schoolCountry:   string;
+        reportingPeriod: string;
+        pricipalName:    string;
+        pricipalDivison: string;
+        directorName:    string;
     };
 
     @Column("jsonb")

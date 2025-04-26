@@ -11,7 +11,7 @@ import { Feedback } from "@/components/MainDashboard/RecentFeedbacks";
 import { Category } from "@/types/user";
 import Navbar from "@/components/Landing/Navbar";
 
-const CategoryCard = ({ category }: { category: Category }) => {
+export const CategoryCard = ({ category }: { category: Category }) => {
     const router = useRouter();
     
     return (

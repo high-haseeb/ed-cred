@@ -4,6 +4,7 @@ const API_URL = `${API_BASE_URL}/feedback-responses`;
 
 export interface CreateFeedbackResponseDto {
     feedbackFormId: string;
+    feedbackFormId: any;
     details: {
         name?: string;
         country?: string;

@@ -6,6 +6,7 @@ import { FeedbackForm } from './entities/feedback-form.entity';
 import { User } from 'src/auth/user.entity';
 import { Category } from 'src/category/category.entity';
 import { Subcategory } from 'src/subcategory/subcategory.entity';
+import { FeedbackResponse } from 'src/feedback-response/entities/feedback-response.entity';
 
 @Injectable()
 export class FeedbackFormService {
@@ -47,8 +48,93 @@ export class FeedbackFormService {
         return await this.feedbackFormRepository.save(feedbackForm);
     }
 
+    async getGroupedResponsesBySchool() {
+        const forms = await this.feedbackFormRepository.find({
+            relations: [
+                'category',
+                'subcategory',
+                'responses',
+                'responses.author',
+                'responses.feedbackForm',
+                'responses.feedbackForm.category',
+            ],
+        });
+
+        const allResponses = forms.flatMap(form =>
+            form.responses.filter(response => response.accepted)
+        );
+
+        const schoolGroups: Record<string, FeedbackResponse[]> = {};
+        const principalGroups: Record<string, FeedbackResponse[]> = {};
+
+        for (const response of allResponses) {
+            const details = response.details;
+
+            const schoolName = details?.schoolName?.trim();
+            const schoolWebsite = details?.schoolWebsite?.trim();
+            const schoolCountry = details?.schoolCountry?.trim();
+            const pricipalName = details?.pricipalName?.trim();
+
+            const hasValidSchool = schoolName && schoolWebsite && schoolCountry && !pricipalName;
+
+            // Build school group key
+            const schoolKey = hasValidSchool ? [schoolName, schoolWebsite, schoolCountry].join('|') : null;
+
+            // Build principal group key
+            const principalKey = pricipalName && schoolName ? [pricipalName, schoolName].join('|') : null;
+
+            // Group by school
+            if (schoolKey) {
+                if (!schoolGroups[schoolKey]) {
+                    schoolGroups[schoolKey] = [];
+                }
+                schoolGroups[schoolKey].push(response);
+            }
+
+            // Group by principal only if valid
+            if (principalKey) {
+                if (!principalGroups[principalKey]) {
+                    principalGroups[principalKey] = [];
+                }
+                principalGroups[principalKey].push(response);
+            }
+        }
+
+        const schoolGroupResults = Object.entries(schoolGroups).map(([key, responses]) => {
+            const [schoolName, schoolWebsite, schoolCountry] = key.split('|');
+            return {
+                groupType: 'school',
+                schoolName,
+                schoolWebsite,
+                schoolCountry,
+                details: responses[0].details,
+                responses,
+            };
+        });
+
+        const principalGroupResults = Object.entries(principalGroups).map(([key, responses]) => {
+            const [pricipalName, schoolName] = key.split('|');
+            return {
+                groupType: 'principal',
+                pricipalName,
+                schoolName,
+                details: responses[0].details,
+                responses,
+            };
+        });
+
+        return [...schoolGroupResults, ...principalGroupResults];
+    }
+
     async findAll(): Promise<FeedbackForm[]> {
-        return await this.feedbackFormRepository.find({ relations: ['author', 'category', 'subcategory', 'responses', 'responses.author'] });
+        const forms = await this.feedbackFormRepository.find({
+            relations: ['category', 'subcategory', 'responses', 'responses.author', 'responses.feedbackForm.category'],
+        });
+
+        return forms.map(form => ({
+            ...form,
+            responses: form.responses.filter(r => r.accepted),
+        }));
     }
 
     async findOne(id: number): Promise<FeedbackForm> {
@@ -58,37 +144,44 @@ export class FeedbackFormService {
         });
 
         if (!feedbackForm) throw new NotFoundException(`FeedbackForm with ID ${id} not found`);
+
+        //feedbackForm.responses = feedbackForm.responses.filter(r => r.accepted);
         return feedbackForm;
     }
 
     async findByCategoryId(categoryId: number): Promise<FeedbackForm[]> {
         const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
+        if (!category) throw new NotFoundException(`Category with ID ${categoryId} not found`);
 
-        if (!category) {
-            throw new NotFoundException(`Category with ID ${categoryId} not found`);
-        }
-
-        return await this.feedbackFormRepository.find({
+        const forms = await this.feedbackFormRepository.find({
             where: { category },
-            relations: ['author', 'category', 'subcategory', 'responses'],
+            relations: ['author', 'category', 'subcategory', 'responses', 'responses.author'],
         });
+
+        return forms.map(form => ({
+            ...form,
+            responses: form.responses.filter(r => r.accepted),
+        }));
     }
 
     async findByCategoryAndSubcategory(categoryId: number, subcategoryId: number): Promise<FeedbackForm[]> {
         const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
-        if (!category) {
-            throw new NotFoundException(`Category with ID ${categoryId} not found`);
-        }
+        if (!category) throw new NotFoundException(`Category with ID ${categoryId} not found`);
 
-        const subcategory = await this.subcategoryRepository.findOne({ where: { id: subcategoryId, parentCategory: category } });
-        if (!subcategory) {
-            throw new NotFoundException(`Subcategory with ID ${subcategoryId} not found in Category ${categoryId}`);
-        }
-
-        return await this.feedbackFormRepository.find({
-            where: { category, subcategory: subcategory },
-            relations: ['author', 'category', 'subcategory', 'responses'],
+        const subcategory = await this.subcategoryRepository.findOne({
+            where: { id: subcategoryId, parentCategory: category },
         });
+        if (!subcategory) throw new NotFoundException(`Subcategory with ID ${subcategoryId} not found in Category ${categoryId}`);
+
+        const forms = await this.feedbackFormRepository.find({
+            where: { category, subcategory },
+            relations: ['author', 'category', 'subcategory', 'responses', 'responses.author'],
+        });
+
+        return forms.map(form => ({
+            ...form,
+            responses: form.responses.filter(r => r.accepted),
+        }));
     }
 
     async remove(id: number): Promise<void> {
@@ -97,4 +190,5 @@ export class FeedbackFormService {
             throw new NotFoundException(`FeedbackForm with ID ${id} not found`);
         }
     }
+
 }
