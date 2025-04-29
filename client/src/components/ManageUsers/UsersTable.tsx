@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getUsers, formatDate, deleteUser, changeUserCategory, changeUserRole, User } from "@/api/manage-users";
+import { getUsers, formatDate, deleteUser, changeUserCategory, changeUserRole, User, verifyUser } from "@/api/manage-users";
 import {
     Table,
     TableCaption,
@@ -19,7 +19,7 @@ import {
     SelectContent,
 } from "@/components/ui/select";
 import { useCategories } from "@/hooks/useCategories";
-import { BadgeAlertIcon, BadgeCheckIcon, CircleEllipsisIcon, Trash2Icon } from "lucide-react";
+import { BadgeAlertIcon, BadgeCheckIcon, CircleCheckIcon, CircleEllipsisIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
 
@@ -52,7 +52,7 @@ export const UsersTable = () => {
                         <TableCell className="flex gap-2 items-center">
                             <Image
                                 src={`/uploads/categoryIcons/${user.category ? user.category.name.toLowerCase() : "default"}.png`}
-                                width={200} height={200} alt={user.category?.name} className="w-8 h-auto object-cover" />
+                                width={200} height={200} alt={user.username} className="w-8 h-auto object-cover" />
 
                             {user.username}
                         </TableCell>
@@ -87,10 +87,17 @@ export const UsersTable = () => {
                                 </SelectContent>
                             </Select>
                         </TableCell>
-                        <TableCell>
-                            <Button variant={'destructive'} onClick={() => deleteUser(user.id)}>
+                        <TableCell className="flex gap-x-2">
+                            <Button variant={'destructive'} onClick={() => verifyUser(user.id, "reject")}>
                                 <Trash2Icon />
                             </Button>
+
+                            {
+                                !user.isVerified &&
+                                <Button onClick={() => verifyUser(user.id, "approve")}>
+                                    <CircleCheckIcon />
+                                </Button>
+                            }
                         </TableCell>
                     </TableRow>
                 ))}

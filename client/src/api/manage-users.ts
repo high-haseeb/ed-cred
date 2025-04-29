@@ -38,6 +38,10 @@ export async function deleteUser(userId: string): void {
     const resopnse = await postRequest("/auth/");
 }
 
+export async function verifyUser(userId: string, action: "approve" | "reject"): Promise<void> {
+    const _resopnse = await postRequest("auth/verify-user", JSON.stringify({ userId, action }));
+}
+
 export async function changeUserRole(userId: string, userRole: string): Promise<void> {
     const _resopnse = await postRequest("auth/users/role", JSON.stringify({userId, userRole}));
 }
