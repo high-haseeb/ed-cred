@@ -12,7 +12,6 @@ Your Trusted Platform for Honest Feedbacks. With stellar one-click reports and u
 ### Setup
 
 ```sh
-# For Frontend
 git clone git@github.com:high-haseeb/ed-cred.git
 cd ed-cred
 
