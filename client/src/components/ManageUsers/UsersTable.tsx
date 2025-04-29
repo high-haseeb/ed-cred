@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getUsers, formatDate, deleteUser, changeUserCategory, changeUserRole, User, verifyUser } from "@/api/manage-users";
+import { getUsers, formatDate, changeUserCategory, changeUserRole, User, verifyUser } from "@/api/manage-users";
 import {
     Table,
     TableCaption,
@@ -19,9 +19,10 @@ import {
     SelectContent,
 } from "@/components/ui/select";
 import { useCategories } from "@/hooks/useCategories";
-import { BadgeAlertIcon, BadgeCheckIcon, CircleCheckIcon, CircleEllipsisIcon, Trash2Icon } from "lucide-react";
+import { BadgeAlertIcon, BadgeCheckIcon, CircleCheckIcon, CircleEllipsisIcon, EyeIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 export const UsersTable = () => {
 
@@ -91,12 +92,24 @@ export const UsersTable = () => {
                             <Button variant={'destructive'} onClick={() => verifyUser(user.id, "reject")}>
                                 <Trash2Icon />
                             </Button>
-
                             {
                                 !user.isVerified &&
                                 <Button onClick={() => verifyUser(user.id, "approve")}>
                                     <CircleCheckIcon />
                                 </Button>
+                            }
+                            {
+                                user.verificationDocumentUrl &&
+                                <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button variant={"secondary"}>
+                                                <EyeIcon />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent>
+                                            <img src={`${user.verificationDocumentUrl}`} width={400} height={400} />
+                                        </PopoverContent>
+                                    </Popover>
                             }
                         </TableCell>
                     </TableRow>

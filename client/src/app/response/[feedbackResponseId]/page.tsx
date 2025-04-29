@@ -14,6 +14,7 @@ import {
     TabsTrigger,
     TabsContent,
 } from "@/components/ui/tabs";
+import { VerificationBadge } from "@/components/Common/VerificationBadge";
 
 export default function FeedbackResponseViewPage({ params }: { params: Promise<{ feedbackResponseId: string }> }) {
 
@@ -82,6 +83,9 @@ export default function FeedbackResponseViewPage({ params }: { params: Promise<{
                                             </TabsTrigger>
                                         ))
                                     }
+                                    <TabsTrigger value="verified">
+                                        Verified
+                                    </TabsTrigger>
                                 </TabsList>
 
                                 <TabsContent value="all">
@@ -106,6 +110,15 @@ export default function FeedbackResponseViewPage({ params }: { params: Promise<{
                                         </TabsContent>
                                     ))
                                 }
+                                <TabsContent value="verified">
+                                    {
+                                        feedback.responses
+                                        .filter((response) => response.author?.isVerified)
+                                        .map((response) => (
+                                            <IndividualReview key={response.id} response={response} />
+                                        ))
+                                    }
+                                </TabsContent>
                             </Tabs>
                         </div>
                     </div>: <Loader />
@@ -176,8 +189,11 @@ function FeedbackView({
 }
 
 const IndividualReview = ({ response }: { response : FeedbackResponse }) => {
+    console.log(response);
     return (
         <div className="flex flex-col gap-4 py-6 bg-white">
+            {/* @ts-ignore */}
+            <VerificationBadge isVerified={response.author.isVerified} />
             {
                 response.answers.slice(0, response.answers.length - 1).map(answer => (<div key={answer.questionId} className="flex bg-muted p-4 rounded-lg">
                     <div className="text-lg">{response.feedbackForm.questions.filter((question: any) => question.id == answer.questionId)[0]?.text}</div>
