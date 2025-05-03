@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getAllCategories } from "@/api/categories";
-import { fetchFeedbacks } from "@/api/feedback";
-import { Feedback } from "@/components/MainDashboard/RecentFeedbacks";
+import { fetchFeedbacksByUserCategory } from "@/api/feedback";
 import { Category } from "@/types/user";
 import Navbar from "@/components/Landing/Navbar";
+import { Feedback } from "@/store/createFeedbackStore";
 
 const CategoryCard = ({ category }: { category: Category }) => {
     const router = useRouter();
@@ -29,28 +29,14 @@ const CategoryCard = ({ category }: { category: Category }) => {
 
 const ReviewPage = () => {
     const [categories, setCategories] = useState<Category[]>([]);
-    const [feedbacksBySubcategory, setFeedbacksBySubcategory] = useState<{ [key: string]: Feedback[] }>({});
+    const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
 
     useEffect(() => {
         const setup = async () => {
             const categoryData = await getAllCategories();
-            console.log(categoryData);
             setCategories(categoryData);
-            console.log(categoryData);
-
-            const feedbackData = await fetchFeedbacks();
-
-            // Group feedbacks by subcategory ID
-            const groupedFeedbacks: { [key: string]: Feedback[] } = {};
-            feedbackData.forEach((feedback: Feedback) => {
-                const subcategoryId = feedback.subcategory.id ?? 0;
-                if (!groupedFeedbacks[subcategoryId]) {
-                    groupedFeedbacks[subcategoryId] = [];
-                }
-                groupedFeedbacks[subcategoryId].push(feedback);
-            });
-
-            setFeedbacksBySubcategory(groupedFeedbacks);
+            const feedbackData = await fetchFeedbacksByUserCategory();
+            setFeedbacks(feedbackData);
         };
 
         setup();
@@ -73,14 +59,11 @@ const ReviewPage = () => {
             </div>
 
             <div className="flex max-w-5xl flex-row flex-wrap items-center justify-center gap-8">
-                {categories.map(category => (
-                    //@ts-ignore
-                    category.feedbackForms.length > 0 &&
-                    <CategoryCard 
-                        key={category.id} 
-                        category={category} 
-                    />
-                ))}
+                {
+                    feedbacks.length > 0 ?
+                    feedbacks.map((feedback) => <CategoryCard key={feedback.id} category={feedback.formCategory} />)
+                    : <div className="text-lg font-semibold">No Feedback Forms yet for your category :(</div>
+                }
             </div>
         </div>
     );

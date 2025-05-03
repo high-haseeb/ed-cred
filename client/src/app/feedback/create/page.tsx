@@ -1,6 +1,6 @@
 "use client";
 import { getProfile } from '@/api/auth';
-import { API_BASE_URL } from '@/api/config';
+import { postRequest } from '@/api/config';
 import FeedbackForm from '@/components/Dashboard/FeedbackForm';
 import QuestionsList from '@/components/Dashboard/QuestionsList';
 import ProtectedRoute from '@/components/Common/ProtectedRoute';
@@ -11,10 +11,8 @@ import { ArrowUpFromLineIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Title } from '@/components/Common/Title';
-import { Navbar } from '@/components/Common/Navbar';
 
 const Dashboard = () => {
-    const router = useRouter();
     return (
         <ProtectedRoute>
             <div className="bg-background font-inter relative flex flex-col overflow-x-hidden">
@@ -44,22 +42,23 @@ const PublishFeedback = () => {
             if (!feedback || questions.length < 2) {
                 return;
             }
-            const response = await fetch(`${API_BASE_URL}/feedback-form`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify( {
+            const response = await postRequest(`feedback-form`, 
+                JSON.stringify({
                     title: feedback.title,
                     isDraft: feedback.status === "inactive",
-                    categoryId: feedback.category.valueOf(),
-                    subCategory: feedback.subcategory,
+
+                    formCategoryId: feedback.formCategoryId.valueOf(),
+                    userCategoryId: feedback.userCategoryId.valueOf(),
+
                     details: feedback.details,
                     authorId: user.id,
-                    questions: questions 
+                    questions: questions,
                 }),
-            });
+            );
+            console.log(response);
 
-            if (!response.ok) {
-                toast.error("Failed to save the feedback");
+            if (response.error) {
+                toast.error(response.message);
                 return;
             }
 

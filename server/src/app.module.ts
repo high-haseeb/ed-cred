@@ -10,8 +10,6 @@ import { ForumQuestionModule } from './forum-question/forum-question.module';
 import { ForumReplyModule } from './forum-reply/forum-reply.module';
 import { FeedbackFormModule } from './feedback-form/feedback-form.module';
 import { FeedbackResponseModule } from './feedback-response/feedback-response.module';
-import { SubcategoryModule } from './subcategory/subcategory.module';
-import { Subcategory } from './subcategory/subcategory.entity';
 import { RoleModule } from './role/role.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { SearchController } from './search/search.controller';
@@ -44,11 +42,10 @@ import { FeedbackForm } from './feedback-form/entities/feedback-form.entity';
                 from: '"No Reply" <no-reply@yourdomain.com>',
             },
         }),
-        TypeOrmModule.forFeature([User, Category, Subcategory, Post, FeedbackResponse, FeedbackForm]),
+        TypeOrmModule.forFeature([User, Category, Post, FeedbackResponse, FeedbackForm]),
         AuthModule,
         PostModule,
         CategoryModule,
-        SubcategoryModule,
         ForumQuestionModule,
         ForumReplyModule,
         FeedbackFormModule,

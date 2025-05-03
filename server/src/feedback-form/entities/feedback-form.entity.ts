@@ -2,7 +2,6 @@ import { User } from "src/auth/user.entity";
 import { Category } from "src/category/category.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { FeedbackDetails, Question } from "../dto/create-feedback-form.dto";
-import { Subcategory } from "src/subcategory/subcategory.entity";
 import { FeedbackResponse } from "src/feedback-response/entities/feedback-response.entity";
 
 @Entity()
@@ -14,10 +13,10 @@ export class FeedbackForm {
     author: User;
 
     @ManyToOne(() => Category, (category) => category.feedbackForms, { onDelete: 'CASCADE' })
-    category: Category;
+    formCategory: Category;
 
-    @ManyToOne(() => Subcategory, (subcategory) => subcategory.feedbackForms, { onDelete: 'CASCADE' })
-    subcategory: Subcategory;
+    @ManyToOne(() => Category, { nullable: true, onDelete: 'CASCADE' })
+    userCategory: Category;
 
     @Column({ type: "text" })
     title: string;

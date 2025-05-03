@@ -24,7 +24,7 @@ import { AppleIcon, CheckIcon, MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Question, useQuestionStore } from "@/store/questionStore";
 import { v4 as uuidv4 } from "uuid";
-import { useCategoryStore, useSubCategoryStore } from "@/store/categoryStore";
+import { useCategoryStore } from "@/store/categoryStore";
 import { useEffect } from "react";
 
 export const TitleInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
@@ -63,7 +63,39 @@ export const QuestionSelectInput = ({ form }: {form: UseFormReturn<z.infer<typeo
     )
 }
 
-export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
+// export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
+//     const { categories, fetchCategories } = useCategoryStore();
+//     useEffect(() => {
+//         fetchCategories();
+//     }, []);
+//
+//     return (
+//         <FormField
+//             control={form.control}
+//             name="category"
+//             render={({ field }) => (
+//                 <FormItem className="w-full">
+//                     <FormLabel>Category</FormLabel>
+//                     <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
+//                         <FormControl>
+//                             <SelectTrigger className="w-full">
+//                                 <SelectValue placeholder="Select a category" />
+//                             </SelectTrigger>
+//                         </FormControl>
+//                         <SelectContent className="">
+//                             {
+//                                 categories.map((category) => <SelectItem value={category.id?.toString() ?? ""} key={category.id}>{category.name}</SelectItem>)
+//                             }
+//                         </SelectContent>
+//                     </Select>
+//                     <FormMessage />
+//                 </FormItem>
+//             )}
+//         />
+//     )
+// }
+
+export const UserCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
     const { categories, fetchCategories } = useCategoryStore();
     useEffect(() => {
         fetchCategories();
@@ -72,10 +104,10 @@ export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof Gene
     return (
         <FormField
             control={form.control}
-            name="category"
+            name="userCategoryId"
             render={({ field }) => (
                 <FormItem className="w-full">
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>User Category</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
                         <FormControl>
                             <SelectTrigger className="w-full">
@@ -95,8 +127,8 @@ export const CategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof Gene
     )
 }
 
-export const SubCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
-    const { categories, fetchCategories } = useSubCategoryStore();
+export const FormCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
+    const { categories, fetchCategories } = useCategoryStore();
     useEffect(() => {
         fetchCategories();
     }, []);
@@ -104,21 +136,19 @@ export const SubCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof G
     return (
         <FormField
             control={form.control}
-            name="subcategory"
+            name="formCategoryId"
             render={({ field }) => (
                 <FormItem className="w-full">
-                    <FormLabel>Subcategory</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel>Form Category</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
                         <FormControl>
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select a subcategory" />
+                                <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="">
                             {
-                                categories.length > 0 &&
-                                categories.filter(category => category.parentCategory.id?.toString()  == form.watch("category"))
-                                .map((category) => <SelectItem value={category.id?.toString() ?? ""} key={category.id}>{category.name}</SelectItem>)
+                                categories.map((category) => <SelectItem value={category.id?.toString() ?? ""} key={category.id}>{category.name}</SelectItem>)
                             }
                         </SelectContent>
                     </Select>
@@ -128,6 +158,40 @@ export const SubCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof G
         />
     )
 }
+
+// export const SubCategoryInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
+//     const { categories, fetchCategories } = useSubCategoryStore();
+//     useEffect(() => {
+//         fetchCategories();
+//     }, []);
+//
+//     return (
+//         <FormField
+//             control={form.control}
+//             name="subcategory"
+//             render={({ field }) => (
+//                 <FormItem className="w-full">
+//                     <FormLabel>Subcategory</FormLabel>
+//                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+//                         <FormControl>
+//                             <SelectTrigger className="w-full">
+//                                 <SelectValue placeholder="Select a subcategory" />
+//                             </SelectTrigger>
+//                         </FormControl>
+//                         <SelectContent>
+//                             {
+//                                 categories.length > 0 &&
+//                                 categories.filter(category => category.parentCategory.id?.toString()  == form.watch("category"))
+//                                 .map((category) => <SelectItem value={category.id?.toString() ?? ""} key={category.id}>{category.name}</SelectItem>)
+//                             }
+//                         </SelectContent>
+//                     </Select>
+//                     <FormMessage />
+//                 </FormItem>
+//             )}
+//         />
+//     )
+// }
 
 export const StatusInput = ({ form }: {form: UseFormReturn<z.infer<typeof GeneralFormSchema>>}) => {
     return (
