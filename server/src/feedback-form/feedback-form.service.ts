@@ -70,7 +70,7 @@ export class FeedbackFormService {
                 'responses',
                 'responses.author',
                 'responses.feedbackForm',
-                'responses.feedbackForm.category',
+                'responses.feedbackForm.formCategory',
             ],
         });
 
@@ -162,7 +162,7 @@ export class FeedbackFormService {
     async findOne(id: number): Promise<FeedbackForm> {
         const feedbackForm = await this.feedbackFormRepository.findOne({
             where: { id },
-            relations: ['author', 'category', 'subcategory', 'responses', 'responses.author'],
+            relations: ['author', 'formCategory', 'responses', 'responses.author'],
         });
 
         if (!feedbackForm) throw new NotFoundException(`FeedbackForm with ID ${id} not found`);
